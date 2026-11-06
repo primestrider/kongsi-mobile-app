@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="crash_title">Something went wrong</string>
+    <string name="crash_body">The app closed unexpectedly last time. You can continue where you left off.</string>
+    <string name="crash_details">Details</string>
+    <string name="crash_type">Error type</string>
+    <string name="crash_time">Time</string>
+    <string name="crash_continue">Continue</string>
+    <string name="permission_grant">Grant access</string>
+    <string name="permission_open_settings">Open Settings</string>
+    <string name="permission_blocked_suffix">Enable it in Settings to continue.</string>
+    <string name="example_file_label">File: %1$s</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme_label">Color scheme</string>
+    <string name="settings_language_label">App language</string>
+    <string name="settings_developer">Developer</string>
+    <string name="settings_crash">Crash the app</string>
+</resources>

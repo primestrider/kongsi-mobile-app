@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Kotlin Starter</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_components">Components</string>
+    <string name="nav_profile">Profile</string>
+    <string name="app_placeholder_title">Start building here</string>
+    <string name="app_placeholder_body">This is the starter’s Home. Replace it with your app’s first screen, or add a feature module that provides one.</string>
+</resources>

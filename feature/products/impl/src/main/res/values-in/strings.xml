@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="products_title">Produk</string>
+    <string name="products_subtitle">Paging 3, gulir tanpa batas, dan pencarian ke API sungguhan</string>
+    <string name="products_search_placeholder">Cari produk</string>
+    <string name="products_empty_title">Produk tidak ditemukan</string>
+    <string name="products_empty_description">Coba kata kunci lain.</string>
+    <string name="products_pick_title">Pilih produk</string>
+    <string name="products_pick_description">Detailnya tampil di sini.</string>
+    <string name="products_error_title">Gagal memuat produk</string>
+    <string name="products_stock">Stok %1$d</string>
+    <string name="products_out_of_stock">Stok habis</string>
+    <string name="products_loading">Memuat…</string>
+    <string name="products_not_found">Produk ini sudah tidak tersedia.</string>
+    <string name="products_tab_overview">Ringkasan</string>
+    <string name="products_tab_specs">Spesifikasi</string>
+    <string name="products_tab_reviews">Ulasan</string>
+    <string name="products_brand">Merek</string>
+    <string name="products_category">Kategori</string>
+    <string name="products_rating">Rating</string>
+    <string name="products_stock_label">Stok</string>
+    <string name="products_no_reviews">Belum ada ulasan</string>
+    <string name="products_add_to_cart">Tambah ke keranjang</string>
+    <string name="products_quantity">Jumlah</string>
+    <string name="products_confirm">Konfirmasi</string>
+    <string name="products_added_to_cart">Ditambahkan ke keranjang</string>
+    <string name="products_cd_increase">Tambah jumlah</string>
+    <string name="products_cd_decrease">Kurangi jumlah</string>
+</resources>

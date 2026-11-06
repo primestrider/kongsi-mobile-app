@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_sign_in_title">Sign in</string>
+    <string name="auth_sign_in_subtitle">Retrofit, OkHttp and an encrypted token in DataStore</string>
+    <string name="auth_demo_title">Demo account</string>
+    <string name="auth_demo_description">DummyJSON accepts these credentials.</string>
+    <string name="auth_demo_fill">Fill the form</string>
+    <string name="auth_field_username">Username</string>
+    <string name="auth_field_password">Password</string>
+    <string name="auth_validation_username_min">Username must be at least 3 characters</string>
+    <string name="auth_validation_password_min">Password must be at least 6 characters</string>
+    <string name="auth_short_lived">Expire tokens after 1 minute (to try the refresh flow)</string>
+    <string name="auth_error_title">Could not sign in</string>
+    <string name="auth_profile_load_error">Could not load profile</string>
+    <string name="auth_signed_in">Welcome back</string>
+    <string name="auth_profile_signed_out_title">You are not signed in</string>
+    <string name="auth_profile_signed_out_body">Sign in to see your account.</string>
+    <string name="auth_account_title">Account</string>
+    <string name="auth_account_subtitle">A screen only a signed-in session can reach</string>
+    <string name="auth_server_profile">Server profile</string>
+    <string name="auth_load_profile">Load from /auth/me</string>
+    <string name="auth_sign_out">Sign out</string>
+    <string name="auth_sign_out_confirm_title">Sign out?</string>
+    <string name="auth_sign_out_confirm_body">You will need to sign in again to see your account.</string>
+    <string name="auth_signed_out">Signed out</string>
+    <string name="auth_sign_out_failed">Could not sign out. Please try again.</string>
+    <string name="auth_info_id">ID</string>
+    <string name="auth_info_email">Email</string>
+    <string name="account_profile_title">Profile</string>
+    <string name="account_settings_link">Settings</string>
+</resources>

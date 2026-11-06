@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="crash_title">Terjadi kesalahan</string>
+    <string name="crash_body">Aplikasi tertutup tiba-tiba sebelumnya. Kamu bisa melanjutkan.</string>
+    <string name="crash_details">Detail</string>
+    <string name="crash_type">Jenis error</string>
+    <string name="crash_time">Waktu</string>
+    <string name="crash_continue">Lanjutkan</string>
+    <string name="permission_grant">Beri akses</string>
+    <string name="permission_open_settings">Buka Pengaturan</string>
+    <string name="permission_blocked_suffix">Aktifkan di Pengaturan untuk melanjutkan.</string>
+    <string name="example_file_label">Berkas: %1$s</string>
+</resources>

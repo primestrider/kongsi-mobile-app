@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Kotlin Starter</string>
+    <string name="nav_home">Beranda</string>
+    <string name="nav_components">Komponen</string>
+    <string name="nav_profile">Profil</string>
+    <string name="app_placeholder_title">Mulai membangun di sini</string>
+    <string name="app_placeholder_body">Ini Home bawaan starter. Ganti dengan layar pertama aplikasimu, atau tambahkan modul fitur yang menyediakannya.</string>
+</resources>

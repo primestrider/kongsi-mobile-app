@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="component_back">Kembali</string>
+    <string name="component_counter">%1$d/%2$d</string>
+    <string name="component_show_password">Tampilkan kata sandi</string>
+    <string name="component_hide_password">Sembunyikan kata sandi</string>
+    <string name="component_search">Cari</string>
+    <string name="component_clear_search">Hapus pencarian</string>
+    <string name="component_cancel">Batal</string>
+    <string name="component_retry">Coba lagi</string>
+    <string name="component_error_title">Terjadi kesalahan</string>
+    <string name="component_loading">Memuat</string>
+    <string name="component_dismiss">Tutup %1$s</string>
+    <string name="component_status_online">Online</string>
+    <string name="component_status_offline">Offline</string>
+    <string name="component_status_busy">Sibuk</string>
+    <string name="component_status_away">Tidak di tempat</string>
+    <string name="component_avatar_more">%1$d lainnya</string>
+    <string name="component_theme_system">Sistem</string>
+    <string name="component_theme_light">Terang</string>
+    <string name="component_theme_dark">Gelap</string>
+</resources>

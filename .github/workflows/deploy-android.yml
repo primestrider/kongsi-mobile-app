@@ -1,0 +1,265 @@
+name: Distribute Android
+
+# Builds the signed prod release and sends it to Firebase App Distribution testers.
+# Setup (Firebase, keystore, GitHub environment, secrets): docs/firebase-app-distribution-setup.md
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Which part of the version to raise (major only from here)"
+        type: choice
+        default: none
+        options: [none, patch, minor, major]
+
+concurrency:
+  group: android-distribution
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the version commit + tag
+  pull-requests: read # find the PR holding this commit, to read its branch name
+
+jobs:
+  distribute:
+    runs-on: ubuntu-latest
+    environment: app-distribution
+    timeout-minutes: 45
+
+    # Second guard against a loop: the version commit already carries [skip ci], but if that marker ever fell out of
+    # the message this workflow would trigger itself forever. This guard makes that loop impossible.
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
+
+    # Every step runs as `bash -eo pipefail`: without pipefail a failing command piped into tee (the signature check)
+    # would pass unnoticed.
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the version commit is pushed back to main, and a push from a shallow clone is rejected.
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # The executable bit on gradlew is not guaranteed after a checkout from Windows; without this the first
+      # Gradle step fails with a misleading "Permission denied".
+      - run: chmod +x gradlew
+
+      # The branch prefix decides which part of the version goes up:
+      #
+      #   feat, feature                      → minor  (1.2.3 → 1.3.0)
+      #   fix, patch, refactor, and the rest → patch  (1.2.3 → 1.2.4)
+      #   major                              → only via "Run workflow"
+      #
+      # An unknown prefix also falls through to patch rather than failing: every merge produces a build, and every
+      # build needs a unique versionCode. The branch name is read from the PR containing this commit (squash and
+      # rebase merges leave no branch name in the message); a direct push to main uses the conventional commit type
+      # of its subject instead.
+      - name: Resolve version bump
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MANUAL_BUMP: ${{ inputs.bump }}
+        run: |
+          SUBJECT="$(git log -1 --pretty=%s)"
+
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            BUMP="$MANUAL_BUMP"
+            SOURCE="manual choice"
+
+            # A manual run from a working branch is how the pipeline gets tested before a merge. Version commits may
+            # only be born on main, so the bump is switched off here instead of producing an APK whose version number
+            # is never recorded anywhere.
+            if [ "$BUMP" != "none" ] && [ "$GITHUB_REF_NAME" != "main" ]; then
+              echo "::warning::Versions are only bumped from main; the run on $GITHUB_REF_NAME keeps the current version."
+              BUMP=none
+              SOURCE="skipped (not main)"
+            fi
+          else
+            BRANCH="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" \
+              --jq '.[0].head.ref // empty' 2>/dev/null || true)"
+
+            if [ -n "$BRANCH" ]; then
+              PREFIX="${BRANCH%%/*}"
+              SOURCE="branch $BRANCH"
+            else
+              # "feat(ci): message" → "feat"; "docs: message" → "docs"; a subject without ":" matches nothing.
+              PREFIX="${SUBJECT%%[(:]*}"
+              SOURCE="commit subject"
+            fi
+
+            PREFIX="$(printf '%s' "$PREFIX" | tr '[:upper:]' '[:lower:]')"
+
+            case "$PREFIX" in
+              feat | feature)
+                BUMP=minor
+                ;;
+              fix | bugfix | hotfix | patch | refactor | perf | chore | docs | test | style | ci | build | revert)
+                BUMP=patch
+                ;;
+              *)
+                BUMP=patch
+                echo "::notice::Unknown prefix \"$PREFIX\", treated as patch."
+                ;;
+            esac
+          fi
+
+          echo "bump=$BUMP" >> "$GITHUB_OUTPUT"
+          echo "subject=$SUBJECT" >> "$GITHUB_OUTPUT"
+          echo "Bump: $BUMP (from $SOURCE)"
+
+      # A release build takes several minutes, so the suite runs first: distributing a build whose tests are red is far
+      # more expensive.
+      - name: Run tests
+        run: |
+          ./gradlew test
+          # The versionCode rules live in build-logic, which `test` does not reach.
+          ./gradlew -p build-logic test
+
+      - name: Decode release keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::Secret ANDROID_KEYSTORE_BASE64 is empty or missing. Check its exact name in the app-distribution environment."
+            exit 1
+          fi
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          # app/build.gradle.kts reads the keystore from ANDROID_KEYSTORE_PATH (absolute, so no path confusion).
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+
+      # Validated here, ahead of the build, because empty or malformed credentials only surface in the last step as
+      # "Failed to authenticate, have you run firebase login?", a message that never mentions the credentials file.
+      - name: Write Firebase service account
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          CREDS="$RUNNER_TEMP/firebase-service-account.json"
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT_JSON" > "$CREDS"
+
+          if [ ! -s "$CREDS" ]; then
+            echo "::error::Secret FIREBASE_SERVICE_ACCOUNT_JSON is empty or missing. Check its exact name in the app-distribution environment."
+            exit 1
+          fi
+          if ! jq -e . "$CREDS" > /dev/null 2>&1; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT_JSON is not valid JSON."
+            exit 1
+          fi
+          if [ "$(jq -r '.type // empty' "$CREDS")" != "service_account" ]; then
+            echo "::error::The type field is not \"service_account\": what was downloaded is probably not a service account key."
+            exit 1
+          fi
+          for FIELD in private_key client_email project_id; do
+            if [ -z "$(jq -r ".$FIELD // empty" "$CREDS")" ]; then
+              echo "::error::Field $FIELD is missing from the service account key."
+              exit 1
+            fi
+          done
+          echo "Service account key is valid for project $(jq -r .project_id "$CREDS")."
+
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$CREDS" >> "$GITHUB_ENV"
+
+      # After the tests and the credential check, so cheap failures do not burn a version number; before the build,
+      # because versionCode is derived from version= in gradle.properties.
+      - name: Bump version
+        id: version
+        env:
+          BUMP: ${{ steps.plan.outputs.bump }}
+        run: |
+          if [ "$BUMP" != "none" ]; then
+            ./gradlew --quiet bumpVersion -Pbump="$BUMP"
+          fi
+          VERSION="$(./gradlew --quiet printVersion)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Release version: $VERSION"
+
+      # Pushed before the build, not after. A failed build then leaves a version number spent without a release, which
+      # is cheap. The other order costs far more: the next run would pick up the same number and ship two different
+      # APKs with an identical versionCode to testers. [skip ci] keeps this commit from triggering the workflow itself.
+      - name: Commit version bump
+        if: steps.plan.outputs.bump != 'none'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore(release): v$VERSION [skip ci]"
+
+          # Rejected if anyone pushed to main while the run was in flight. Deliberately not rebased automatically: a
+          # rebase would pull changes that never went through the tests of this run into the APK being built.
+          git push origin "HEAD:$GITHUB_REF_NAME"
+
+      - name: Build release APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          API_URL: ${{ vars.API_URL }}
+        run: ./gradlew assembleProdRelease verifyReleaseKeeps
+
+      # The signing config is chosen at Gradle runtime (it falls back to the debug key when the keystore is missing),
+      # so only a check of the APK proves the release key was used. Without this step a debug-signed APK could reach
+      # testers with no symptom at all.
+      - name: Verify APK is signed with the release key
+        run: |
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -Vr | head -1)"
+          if [ -z "$APKSIGNER" ]; then
+            echo "::error::apksigner not found under $ANDROID_HOME/build-tools; the signature cannot be verified."
+            exit 1
+          fi
+          "$APKSIGNER" verify --print-certs app/build/outputs/apk/prod/release/app-prod-release.apk \
+            | tee "$RUNNER_TEMP/certs.txt"
+          # Fail closed: no certificate printed means nothing was verified.
+          # Older build-tools print "Signer #1 certificate DN:", newer ones "V2 Signer: certificate DN:".
+          if ! grep -q "certificate DN: " "$RUNNER_TEMP/certs.txt"; then
+            echo "::error::apksigner printed no signer certificate."
+            exit 1
+          fi
+          if grep -qi "CN=Android Debug" "$RUNNER_TEMP/certs.txt"; then
+            echo "::error::The APK is signed with the debug key, not the release key."
+            exit 1
+          fi
+
+      # Uploaded before the Firebase step so the APK can still be fetched by hand if the upload fails.
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-prod-release-v${{ steps.version.outputs.version }}
+          path: |
+            app/build/outputs/apk/prod/release/app-prod-release.apk
+            app/build/outputs/mapping/prodRelease/mapping.txt
+          if-no-files-found: error
+
+      - name: Distribute to Firebase App Distribution
+        env:
+          FIREBASE_ANDROID_APP_ID: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+          FIREBASE_TESTER_GROUPS: ${{ vars.FIREBASE_TESTER_GROUPS }}
+          VERSION: ${{ steps.version.outputs.version }}
+          SUBJECT: ${{ steps.plan.outputs.subject }}
+        run: |
+          RELEASE_NOTES="v$VERSION — $SUBJECT (#${{ github.run_number }} ${GITHUB_SHA::7})"
+          npx --yes firebase-tools@15 appdistribution:distribute \
+            app/build/outputs/apk/prod/release/app-prod-release.apk \
+            --app "$FIREBASE_ANDROID_APP_ID" \
+            --groups "$FIREBASE_TESTER_GROUPS" \
+            --release-notes "$RELEASE_NOTES"
+
+      # Created last, after a successful distribution, so v* tags only mark versions that reached testers. The version
+      # commit was already pushed, so a failure here never causes a version number to be reused.
+      - name: Tag released version
+        if: steps.plan.outputs.bump != 'none'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git tag "v$VERSION"
+          git push origin "v$VERSION"

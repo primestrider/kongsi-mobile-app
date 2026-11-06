@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_sign_in_title">Masuk</string>
+    <string name="auth_sign_in_subtitle">Retrofit, OkHttp, dan token terenkripsi di DataStore</string>
+    <string name="auth_demo_title">Akun demo</string>
+    <string name="auth_demo_description">DummyJSON menerima kredensial ini.</string>
+    <string name="auth_demo_fill">Isi formulir</string>
+    <string name="auth_field_username">Nama pengguna</string>
+    <string name="auth_field_password">Kata sandi</string>
+    <string name="auth_validation_username_min">Nama pengguna minimal 3 karakter</string>
+    <string name="auth_validation_password_min">Kata sandi minimal 6 karakter</string>
+    <string name="auth_short_lived">Token kedaluwarsa setelah 1 menit (untuk mencoba alur refresh)</string>
+    <string name="auth_error_title">Gagal masuk</string>
+    <string name="auth_profile_load_error">Gagal memuat profil</string>
+    <string name="auth_signed_in">Selamat datang kembali</string>
+    <string name="auth_profile_signed_out_title">Kamu belum masuk</string>
+    <string name="auth_profile_signed_out_body">Masuk untuk melihat akunmu.</string>
+    <string name="auth_account_title">Akun</string>
+    <string name="auth_account_subtitle">Layar yang hanya bisa dibuka setelah masuk</string>
+    <string name="auth_server_profile">Profil dari server</string>
+    <string name="auth_load_profile">Muat dari /auth/me</string>
+    <string name="auth_sign_out">Keluar</string>
+    <string name="auth_sign_out_confirm_title">Keluar dari akun?</string>
+    <string name="auth_sign_out_confirm_body">Kamu perlu masuk lagi untuk melihat akunmu.</string>
+    <string name="auth_signed_out">Berhasil keluar</string>
+    <string name="auth_sign_out_failed">Gagal keluar. Silakan coba lagi.</string>
+    <string name="auth_info_id">ID</string>
+    <string name="auth_info_email">Email</string>
+    <string name="account_profile_title">Profil</string>
+    <string name="account_settings_link">Pengaturan</string>
+</resources>

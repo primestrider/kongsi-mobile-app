@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 9.4.0" type="baseline" client="gradle" dependencies="false" name="AGP (9.4.0)" variant="all" version="9.4.0">
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be named modifier"
+        errorLine1="    clickable: Modifier,"
+        errorLine2="    ~~~~~~~~~">
+        <location
+            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControls.kt"
+            line="91"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControls.kt"
+            line="246"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/Skeleton.kt"
+            line="127"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;more&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;component_avatar_more&quot;>%1$d more&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="18"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UseOfNonLambdaOffsetOverload"
+        message="State backed values should use the lambda overload of Modifier.offset"
+        errorLine1="                        .offset(x = pillOffset)"
+        errorLine2="                         ~~~~~~">
+        <location
+            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControls.kt"
+            line="132"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="UseOfNonLambdaOffsetOverload"
+        message="State backed values should use the lambda overload of Modifier.offset"
+        errorLine1="                    .offset(x = thumbOffset)"
+        errorLine2="                     ~~~~~~">
+        <location
+            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/Toggles.kt"
+            line="171"
+            column="22"/>
+    </issue>
+
+</issues>

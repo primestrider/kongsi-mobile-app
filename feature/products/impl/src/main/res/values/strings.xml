@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="products_title">Products</string>
+    <string name="products_subtitle">Paging 3, infinite scroll and search against a live API</string>
+    <string name="products_search_placeholder">Search products</string>
+    <string name="products_empty_title">No products found</string>
+    <string name="products_empty_description">Try a different search term.</string>
+    <string name="products_pick_title">Pick a product</string>
+    <string name="products_pick_description">Its details show here.</string>
+    <string name="products_error_title">Could not load products</string>
+    <string name="products_stock">%1$d in stock</string>
+    <string name="products_out_of_stock">Out of stock</string>
+    <string name="products_loading">Loading…</string>
+    <string name="products_not_found">That product no longer exists.</string>
+    <string name="products_tab_overview">Overview</string>
+    <string name="products_tab_specs">Specs</string>
+    <string name="products_tab_reviews">Reviews</string>
+    <string name="products_brand">Brand</string>
+    <string name="products_category">Category</string>
+    <string name="products_rating">Rating</string>
+    <string name="products_stock_label">Stock</string>
+    <string name="products_no_reviews">No reviews yet</string>
+    <string name="products_add_to_cart">Add to cart</string>
+    <string name="products_quantity">Quantity</string>
+    <string name="products_confirm">Confirm</string>
+    <string name="products_added_to_cart">Added to cart</string>
+    <string name="products_cd_increase">Increase quantity</string>
+    <string name="products_cd_decrease">Decrease quantity</string>
+</resources>

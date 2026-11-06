@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="component_back">Back</string>
+    <string name="component_counter">%1$d/%2$d</string>
+    <string name="component_show_password">Show password</string>
+    <string name="component_hide_password">Hide password</string>
+    <string name="component_search">Search</string>
+    <string name="component_clear_search">Clear search</string>
+    <string name="component_cancel">Cancel</string>
+    <string name="component_retry">Retry</string>
+    <string name="component_error_title">Something went wrong</string>
+    <string name="component_loading">Loading</string>
+    <string name="component_dismiss">Dismiss %1$s</string>
+    <string name="component_status_online">Online</string>
+    <string name="component_status_offline">Offline</string>
+    <string name="component_status_busy">Busy</string>
+    <string name="component_status_away">Away</string>
+    <string name="component_avatar_more">%1$d more</string>
+    <string name="component_theme_system">System</string>
+    <string name="component_theme_light">Light</string>
+    <string name="component_theme_dark">Dark</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="todos_title">Todos</string>
+    <string name="todos_subtitle">Room on device — this one works offline</string>
+    <string name="todos_placeholder">What needs doing?</string>
+    <string name="todos_validation_min">Write at least 3 characters</string>
+    <string name="todos_validation_max">Use 100 characters or fewer</string>
+    <string name="todos_add">Add</string>
+    <string name="todos_clear_completed">Clear completed</string>
+    <string name="todos_filter_all">All</string>
+    <string name="todos_filter_active">Active</string>
+    <string name="todos_filter_done">Done</string>
+    <string name="todos_progress">%1$d of %2$d done</string>
+    <string name="todos_empty_title">Nothing to do</string>
+    <string name="todos_empty_description">Add your first task above. It survives a restart.</string>
+    <string name="todos_remove_title">Delete this task?</string>
+    <string name="todos_remove_description">This cannot be undone.</string>
+    <string name="todos_delete">Delete</string>
+    <string name="todos_added">Task added</string>
+    <string name="todos_removed">Task deleted</string>
+    <string name="todos_cleared">Completed tasks cleared</string>
+    <string name="todos_cd_delete">Delete %1$s</string>
+    <string name="todos_save_failed">Could not save. Please try again.</string>
+    <string name="todos_widget_description">Your open todos at a glance</string>
+    <plurals name="todos_widget_open">
+        <item quantity="one">%d open</item>
+        <item quantity="other">%d open</item>
+    </plurals>
+</resources>

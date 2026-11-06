@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="todos_title">Tugas</string>
+    <string name="todos_subtitle">Room di perangkat — bisa dipakai offline</string>
+    <string name="todos_placeholder">Apa yang perlu dikerjakan?</string>
+    <string name="todos_validation_min">Tulis minimal 3 karakter</string>
+    <string name="todos_validation_max">Maksimal 100 karakter</string>
+    <string name="todos_add">Tambah</string>
+    <string name="todos_clear_completed">Hapus yang selesai</string>
+    <string name="todos_filter_all">Semua</string>
+    <string name="todos_filter_active">Aktif</string>
+    <string name="todos_filter_done">Selesai</string>
+    <string name="todos_progress">%1$d dari %2$d selesai</string>
+    <string name="todos_empty_title">Tidak ada tugas</string>
+    <string name="todos_empty_description">Tambahkan tugas pertamamu di atas. Tetap tersimpan walau aplikasi ditutup.</string>
+    <string name="todos_remove_title">Hapus tugas ini?</string>
+    <string name="todos_remove_description">Tindakan ini tidak bisa dibatalkan.</string>
+    <string name="todos_delete">Hapus</string>
+    <string name="todos_added">Tugas ditambahkan</string>
+    <string name="todos_removed">Tugas dihapus</string>
+    <string name="todos_cleared">Tugas selesai dihapus</string>
+    <string name="todos_cd_delete">Hapus %1$s</string>
+    <string name="todos_save_failed">Gagal menyimpan. Silakan coba lagi.</string>
+    <string name="todos_widget_description">Tugas yang belum selesai, sekilas</string>
+    <plurals name="todos_widget_open">
+        <item quantity="other">%d belum selesai</item>
+    </plurals>
+</resources>
