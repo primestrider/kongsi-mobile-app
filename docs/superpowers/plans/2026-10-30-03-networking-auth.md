@@ -95,7 +95,7 @@ docs/architecture/{networking,auth-session}.md
 **Interfaces:**
 - Produces:
   - `@Serializable data class AuthUser(val id: Long, val username: String, val email: String, val firstName: String, val lastName: String, val image: String? = null) { val fullName: String get() = "$firstName $lastName".trim() }`; `@Serializable data class AuthTokens(val accessToken: String, val refreshToken: String)`; `@Serializable data class Session(val user: AuthUser, val tokens: AuthTokens)`; `enum class SignOutReason { USER, EXPIRED }`; `data class SignInCredentials(val username: String, val password: String)`.
-  - `interface SessionCipher { fun encrypt(plain: ByteArray): ByteArray; fun decrypt(cipher: ByteArray): ByteArray }` (the test seam: JVM tests have no Keystore); `class KeystoreSessionCipher @Inject constructor() : SessionCipher` — AES/GCM/NoPadding, 256-bit key alias `kotlinstarter_session`, generated in `AndroidKeyStore` on first use, IV (12 bytes) prepended to the ciphertext. Bound in a `SessionModule` (`@Binds`).
+  - `interface SessionCipher { fun encrypt(plain: ByteArray): ByteArray; fun decrypt(cipher: ByteArray): ByteArray }` (the test seam: JVM tests have no Keystore); `class KeystoreSessionCipher @Inject constructor() : SessionCipher` — AES/GCM/NoPadding, 256-bit key alias `kongsi_session`, generated in `AndroidKeyStore` on first use, IV (12 bytes) prepended to the ciphertext. Bound in a `SessionModule` (`@Binds`).
   - `@Singleton class SessionRepository @Inject constructor(@SessionStore dataStore: DataStore<Preferences>, cipher: SessionCipher, json: Json, @ApplicationScope scope: CoroutineScope)` with:
     - `val session: StateFlow<Session?>`, `val loaded: StateFlow<Boolean>` (true after the first read), `val signOutReason: StateFlow<SignOutReason?>`;
     - `val isSignedIn: Boolean get() = session.value != null`; `fun accessToken(): String?`;
@@ -117,7 +117,7 @@ docs/architecture/{networking,auth-session}.md
 
 **Files:**
 - Create: `core/auth/{AuthAdapter,SessionRefresher,AuthInterceptor,TokenAuthenticator,SessionExpiryAnnouncer}.kt`
-- Modify: `core/network/NetworkModule.kt` (add interceptor + authenticator), `KotlinStarterApp.kt` (start the announcer), `docs/architecture/auth-session.md` (request + refresh sections), strings ×2
+- Modify: `core/network/NetworkModule.kt` (add interceptor + authenticator), `KongsiApp.kt` (start the announcer), `docs/architecture/auth-session.md` (request + refresh sections), strings ×2
 - Test: `core/auth/AuthFlowTest.kt` (MockWebServer end-to-end), `core/auth/SessionRefresherTest.kt`, `core/auth/SessionExpiryAnnouncerTest.kt`
 
 **Interfaces:**
@@ -127,7 +127,7 @@ docs/architecture/{networking,auth-session}.md
   - `@Singleton class SessionRefresher @Inject constructor(repository: SessionRepository, adapter: AuthAdapter) { suspend fun refresh(failedAccessToken: String?): String? }` — under a `Mutex`: if the stored access token already differs from `failedAccessToken` (another caller refreshed meanwhile), return it without calling the adapter; if signed out return null; else call `adapter.refresh`, `updateTokens`, return the new access token; any exception → if still signed in `signOut(EXPIRED)`, return null.
   - `class AuthInterceptor @Inject constructor(repository: SessionRepository) : Interceptor` — adds `Authorization: Bearer …` when a token exists and the request is not `@Anonymous`.
   - `class TokenAuthenticator @Inject constructor(refresher: Provider<SessionRefresher>) : Authenticator` — returns null (give up) when the request is `@Anonymous`, has no bearer header, or `response.priorResponse != null` (already retried once); otherwise `runBlocking { refresher.get().refresh(failedToken) }` and rebuilds the request with the new bearer, or null. A `Provider` breaks the client → adapter → client cycle.
-  - `@Singleton class SessionExpiryAnnouncer @Inject constructor(repository: SessionRepository, messenger: Messenger, @ApplicationScope scope: CoroutineScope) { fun start() }` — on `signOutReason == EXPIRED`: `messenger.error(UiText.Resource(R.string.auth_session_expired))` then `clearSignOutReason()`. `KotlinStarterApp.onCreate` calls `start()` (field-injected).
+  - `@Singleton class SessionExpiryAnnouncer @Inject constructor(repository: SessionRepository, messenger: Messenger, @ApplicationScope scope: CoroutineScope) { fun start() }` — on `signOutReason == EXPIRED`: `messenger.error(UiText.Resource(R.string.auth_session_expired))` then `clearSignOutReason()`. `KongsiApp.onCreate` calls `start()` (field-injected).
 - Strings: `auth_session_expired` "Your session has expired. Please sign in again." / "Sesi kamu sudah berakhir. Silakan masuk lagi."
 
 - [ ] **Step 1: Write failing tests**: `AuthFlowTest` (MockWebServer; real OkHttp with `AuthInterceptor` + `TokenAuthenticator`; a fake `AuthAdapter` counting `refresh` calls; repository signed in with tokens `a1`/`r1`):

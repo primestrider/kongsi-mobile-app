@@ -8,7 +8,7 @@ and explains the pattern every screen in the repository follows.
 ```mermaid
 sequenceDiagram
     participant OS as Android
-    participant App as KotlinStarterApp
+    participant App as KongsiApp
     participant Act as MainActivity
     participant VM as AppViewModel
     participant Shell as MainShell
@@ -26,13 +26,13 @@ sequenceDiagram
     Shell->>Shell: NavHost starts at HomeGraph / HomeRoute
 ```
 
-### `KotlinStarterApp`: the process
+### `KongsiApp`: the process
 
-`app/src/main/java/com/primestrider/kotlinstarter/KotlinStarterApp.kt`
+`app/src/main/java/com/primestrider/kongsi/KongsiApp.kt`
 
 ```kotlin
 @HiltAndroidApp
-class KotlinStarterApp : Application(), Configuration.Provider {
+class KongsiApp : Application(), Configuration.Provider {
     @Inject lateinit var sessionExpiryAnnouncer: SessionExpiryAnnouncer
     @Inject lateinit var workerFactory: HiltWorkerFactory
 
@@ -65,7 +65,7 @@ class KotlinStarterApp : Application(), Configuration.Provider {
 
 ### `MainActivity`: the window
 
-`app/src/main/java/com/primestrider/kotlinstarter/app/MainActivity.kt` (abridged)
+`app/src/main/java/com/primestrider/kongsi/app/MainActivity.kt` (abridged)
 
 ```kotlin
 @AndroidEntryPoint
@@ -133,7 +133,7 @@ The rule is **unidirectional data flow**: state goes down, events go up.
 
 ### Reading the todos screen
 
-The state, `feature/todos/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/todos/ui/TodosViewModel.kt`:
+The state, `feature/todos/impl/src/main/java/com/primestrider/kongsi/feature/example/todos/ui/TodosViewModel.kt`:
 
 ```kotlin
 data class TodosUiState(

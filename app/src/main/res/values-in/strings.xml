@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kotlin Starter</string>
+    <string name="app_name">Kongsi</string>
     <string name="nav_home">Beranda</string>
     <string name="nav_components">Komponen</string>
     <string name="nav_profile">Profil</string>

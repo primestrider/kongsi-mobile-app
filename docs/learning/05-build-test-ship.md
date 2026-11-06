@@ -22,8 +22,8 @@ flowchart LR
 
 - `gradle/libs.versions.toml` is the single list of libraries and versions; build files refer to them as
   `libs.androidx.room.runtime`.
-- `build-logic/` is a small Gradle project of its own. Its convention plugins (`kotlinstarter.android.library`,
-  `kotlinstarter.feature.impl`, `kotlinstarter.hilt`, …) hold the setup every module shares, defined in
+- `build-logic/` is a small Gradle project of its own. Its convention plugins (`kongsi.android.library`,
+  `kongsi.feature.impl`, `kongsi.hilt`, …) hold the setup every module shares, defined in
   `build-logic/convention/src/main/kotlin/Plugins.kt` and `FeaturePlugins.kt`, with SDK levels in `AndroidConfig.kt`.
 - Parallel builds, the build cache and the configuration cache are on (`gradle.properties`), so a second build only
   redoes what changed.
@@ -37,7 +37,7 @@ flowchart LR
 
 | | `debug` | `release` |
 | --- | --- | --- |
-| `dev` | daily work: `assembleDevDebug`; id `com.primestrider.kotlinstarter.dev`, version `1.0.0-dev`, scheme `kotlinstarter-dev` | rarely needed |
+| `dev` | daily work: `assembleDevDebug`; id `com.primestrider.kongsi.dev`, version `1.0.0-dev`, scheme `kongsi-dev` | rarely needed |
 | `prod` | rarely needed | what testers and users get: R8 minified, resources shrunk, signed with the release key |
 
 From `app/build.gradle.kts`:
@@ -67,7 +67,7 @@ then the default (`localOrEnv` in `AndroidConfig.kt`).
 ## Versions
 
 `version=1.0.0` in `gradle.properties` is the only place the version lives. `AppVersion`
-(`build-logic/convention/src/main/kotlin/com/primestrider/kotlinstarter/buildlogic/AppVersion.kt`) parses it and derives
+(`build-logic/convention/src/main/kotlin/com/primestrider/kongsi/buildlogic/AppVersion.kt`) parses it and derives
 the integer Android needs:
 
 ```kotlin
@@ -100,7 +100,7 @@ flowchart TB
   error state.
 - **Hilt tests** (`@HiltAndroidTest`) start the real `MainActivity` with the whole object graph, used for the shell, deep
   links and protected routes (`DeepLinkTest`, `ProtectedRouteTest`).
-- **Architecture tests** in `app/src/test/java/com/primestrider/kotlinstarter/architecture/` read the source tree and fail
+- **Architecture tests** in `app/src/test/java/com/primestrider/kongsi/architecture/` read the source tree and fail
   when a rule is broken: a screen using a stock Material checkbox, a string missing in Indonesian, a doc pointing at a
   deleted file.
 

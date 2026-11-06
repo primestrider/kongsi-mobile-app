@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "kotlin-starter"
+rootProject.name = "kongsi"
 include(":app")
  
 include(":core:common")
@@ -33,20 +33,4 @@ include(":core:designsystem")
 include(":core:network")
 include(":core:auth")
 include(":core:ui")
-include(":feature:catalog:api")
-include(":feature:catalog:impl")
-include(":feature:products:api")
-include(":feature:products:impl")
-include(":feature:todos:api")
-include(":feature:todos:impl")
-include(":feature:settings:api")
-include(":feature:settings:impl")
-include(":feature:account:api")
-include(":feature:account:impl")
-include(":feature:devices:api")
-include(":feature:devices:impl")
-include(":feature:animation:api")
-include(":feature:animation:impl")
-include(":feature:gestures:api")
-include(":feature:gestures:impl")
 include(":baselineprofile")

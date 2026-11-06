@@ -6,7 +6,7 @@ and how a link from outside the app opens a screen.
 ## Routes are types
 
 A route is a `@Serializable` Kotlin object or class, declared in the feature's `:api` module.
-`feature/products/api/src/main/java/com/primestrider/kotlinstarter/feature/example/ProductsRoutes.kt`:
+`feature/products/api/src/main/java/com/primestrider/kongsi/feature/example/ProductsRoutes.kt`:
 
 ```kotlin
 @Serializable
@@ -21,7 +21,7 @@ data class ProductDetailRoute(
 - Navigating is `navController.navigate(ProductDetailRoute(id = 42))`; the destination reads
   `entry.toRoute<ProductDetailRoute>().id`. A missing or mistyped argument is a compile error.
 - Navigation stores the route's serial name (its qualified class name) in the saved back stack. That is why the
-  example routes keep the package `com.primestrider.kotlinstarter.feature.example` in every module, and why
+  example routes keep the package `com.primestrider.kongsi.feature.example` in every module, and why
   `RouteNamesTest` pins all of them: renaming a shipped route would break restoring the app after process death.
 
 > **In React/Vue:** this replaces path strings (`/products/:id`) with a typed object. React Router's
@@ -49,7 +49,7 @@ flowchart TB
     bar["AppNavigationBar"] -. switches graph .-> NavHost
 ```
 
-`app/src/main/java/com/primestrider/kotlinstarter/app/navigation/MainShell.kt` puts a `Scaffold` with the bottom bar
+`app/src/main/java/com/primestrider/kongsi/app/navigation/MainShell.kt` puts a `Scaffold` with the bottom bar
 around one `NavHost` holding a nested graph per tab. Switching tab saves the current tab's back stack and restores the
 target's; re-selecting a tab pops it to its start; back at the root of another tab returns to Home. With only one tab
 (after removing the examples) the bottom bar hides.
@@ -102,7 +102,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController, screens: List<Ho
 ```
 
 and the products feature registers its own pages,
-`feature/products/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/products/ui/ProductsNavigation.kt`:
+`feature/products/impl/src/main/java/com/primestrider/kongsi/feature/example/products/ui/ProductsNavigation.kt`:
 
 ```kotlin
 fun NavGraphBuilder.productsDestinations(navController: NavController) {
@@ -127,7 +127,7 @@ is cleared when the page is popped.
 ### Home is built from contributions
 
 The Home list is not hard-coded either. Each feature contributes rows through Hilt, and the catalog renders whatever is
-contributed, `feature/products/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/products/data/ProductsModule.kt`:
+contributed, `feature/products/impl/src/main/java/com/primestrider/kongsi/feature/example/products/data/ProductsModule.kt`:
 
 ```kotlin
 @Provides
@@ -145,7 +145,7 @@ result to `HomeScreen`. Delete a feature and its rows are gone; no list to edit.
 ## Protected pages
 
 `AccountRoute` must only show with a session. The guard lives in the destination,
-`feature/account/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/auth/AccountNavigation.kt`:
+`feature/account/impl/src/main/java/com/primestrider/kongsi/feature/example/auth/AccountNavigation.kt`:
 
 ```kotlin
 composable<AccountRoute> {
@@ -176,7 +176,7 @@ composable<AccountRoute> {
 
 ## Deep links
 
-A link like `kotlinstarter://example/sdk/payment-code?amount=50000` (dev builds use `kotlinstarter-dev://…`) opens a
+A link like `kongsi://example/sdk/payment-code?amount=50000` (dev builds use `kongsi-dev://…`) opens a
 screen directly:
 
 ```mermaid
@@ -185,7 +185,7 @@ sequenceDiagram
     participant M as MainActivity (manifest intent filter)
     participant N as NavController
     participant D as composable<SdkDemoRoute>
-    OS->>M: VIEW kotlinstarter://example/sdk/payment-code?amount=50000
+    OS->>M: VIEW kongsi://example/sdk/payment-code?amount=50000
     M->>N: handleDeepLink(intent)
     N->>N: match navDeepLink basePath "$scheme://example/sdk"
     N->>D: SdkDemoRoute(id = "payment-code", amount = 50000)

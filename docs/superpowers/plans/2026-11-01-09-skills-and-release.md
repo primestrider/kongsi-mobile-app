@@ -32,7 +32,7 @@
 ### Task 1: One-source version and `bumpVersion`
 
 **Files:**
-- Create: `build-logic/convention/src/main/kotlin/com/primestrider/kotlinstarter/buildlogic/AppVersion.kt`, `BumpVersionTask.kt`; `build-logic/convention/src/test/kotlin/com/primestrider/kotlinstarter/buildlogic/AppVersionTest.kt`
+- Create: `build-logic/convention/src/main/kotlin/com/primestrider/kongsi/buildlogic/AppVersion.kt`, `BumpVersionTask.kt`; `build-logic/convention/src/test/kotlin/com/primestrider/kongsi/buildlogic/AppVersionTest.kt`
 - Modify: `build-logic/convention/build.gradle.kts` (JUnit test deps), `gradle.properties` (`version=1.0.0`), `app/build.gradle.kts` (versionName/versionCode from `AppVersion`, register `bumpVersion` and `printVersion` on the root project or `:app`), `docs/architecture/release.md` (Versioning section)
 
 **Interfaces:**
@@ -48,7 +48,7 @@
 ### Task 2: Distribution workflow and Firebase setup guide
 
 **Files:**
-- Create: `.github/workflows/deploy-android.yml`, `docs/firebase-app-distribution-setup.md`, `app/src/test/java/com/primestrider/kotlinstarter/architecture/DeployWorkflowTest.kt`
+- Create: `.github/workflows/deploy-android.yml`, `docs/firebase-app-distribution-setup.md`, `app/src/test/java/com/primestrider/kongsi/architecture/DeployWorkflowTest.kt`
 - Modify: `docs/architecture/release.md` (Distribution section linking the guide), `README.md` (one line), `.gitignore` if needed.
 
 Workflow steps (adapted from the RN pipeline, no Node/prebuild): checkout (full history) → setup-java 17 → setup-gradle → resolve bump (PR branch prefix via `gh api`, else commit subject; manual input; not on `main` → `none` with a warning) → `./gradlew test` → decode keystore to `$RUNNER_TEMP` and export `ANDROID_KEYSTORE_PATH` → validate the Firebase service-account JSON (type, private_key, client_email, project_id; using `jq`) → `./gradlew bumpVersion -Pbump=$BUMP` and read `./gradlew -q printVersion` → commit + push `chore(release): v$VERSION [skip ci]` (only when bumped) → `./gradlew assembleProdRelease verifyReleaseKeeps` with signing env vars → `apksigner verify --print-certs`, fail on `CN=Android Debug` → upload the APK artifact → `npx --yes firebase-tools@15 appdistribution:distribute` with app id, groups and release notes → tag `v$VERSION` (only when bumped). Job guard against loops (`!startsWith(head_commit.message, 'chore(release):')`), `concurrency` without cancel, `permissions: contents: write, pull-requests: read`, `environment: app-distribution`.
@@ -62,8 +62,8 @@ Workflow steps (adapted from the RN pipeline, no Node/prebuild): checkout (full 
 ### Task 3: Skills — structure, test, and the first four skills
 
 **Files:**
-- Create: `.agents/skills/{add-feature,add-screen-route,add-api-endpoint,add-translation}/SKILL.md`, `app/src/test/java/com/primestrider/kotlinstarter/architecture/SkillsTest.kt`
-- Modify: `app/src/test/java/com/primestrider/kotlinstarter/architecture/DocsLinksTest.kt` (also scan `.agents/skills/**/*.md`), `AGENTS.md` (Skills section: table of all nine with one line each; replaces "Added in plan 6"), `docs/architecture/testing.md` (SkillsTest line).
+- Create: `.agents/skills/{add-feature,add-screen-route,add-api-endpoint,add-translation}/SKILL.md`, `app/src/test/java/com/primestrider/kongsi/architecture/SkillsTest.kt`
+- Modify: `app/src/test/java/com/primestrider/kongsi/architecture/DocsLinksTest.kt` (also scan `.agents/skills/**/*.md`), `AGENTS.md` (Skills section: table of all nine with one line each; replaces "Added in plan 6"), `docs/architecture/testing.md` (SkillsTest line).
 
 Content rules per skill: frontmatter; "When to use"; numbered steps naming exact files, Gradle plugins, Hilt annotations and commands; "Checklist" (tests to write, `./gradlew test ktlintCheck lint assembleDevDebug`); "See also" links into `docs/architecture/`.
 - `add-feature`: new `feature/<name>/{api,impl}` with the conventions, `settings.gradle.kts` includes, `data/` (interface repository + `Default…` + `@Binds`, DTO → model mapper), `ui/` (stateless Screen + ViewModel with one `StateFlow`), `NavGraphBuilder.<name>Destinations`, `:app` wiring (no `region example:` markers for real features), optional `CatalogEntry`, strings in both locales, own manifest for permissions, tests (mapper, repository fake, ViewModel, screen), lint baseline note.

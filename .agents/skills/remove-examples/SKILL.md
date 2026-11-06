@@ -37,7 +37,7 @@ feature modules alone.
 ## What stays on purpose
 
 - `core:*` (including `ExamplePageScaffold`/`DemoSection` in `core:ui`, the PiP host, `PermissionGate`).
-- WorkManager's on-demand setup in `KotlinStarterApp` and the manifest, the deep-link intent filter on `MainActivity`.
+- WorkManager's on-demand setup in `KongsiApp` and the manifest, the deep-link intent filter on `MainActivity`.
 - Flavours, signing, R8, CI and the distribution workflow.
 
 Remove those by hand only if your app does not need them; `docs/examples.md` ("Deleting the section") lists what each

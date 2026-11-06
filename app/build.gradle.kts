@@ -1,17 +1,17 @@
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.HostTestBuilder
-import com.primestrider.kotlinstarter.buildlogic.AppVersion
-import com.primestrider.kotlinstarter.buildlogic.BumpVersionTask
-import com.primestrider.kotlinstarter.buildlogic.PrintVersionTask
-import com.primestrider.kotlinstarter.buildlogic.VerifyKeptClassesTask
-import com.primestrider.kotlinstarter.buildlogic.appScheme
-import com.primestrider.kotlinstarter.buildlogic.javaString
-import com.primestrider.kotlinstarter.buildlogic.localOrEnv
+import com.primestrider.kongsi.buildlogic.AppVersion
+import com.primestrider.kongsi.buildlogic.BumpVersionTask
+import com.primestrider.kongsi.buildlogic.PrintVersionTask
+import com.primestrider.kongsi.buildlogic.VerifyKeptClassesTask
+import com.primestrider.kongsi.buildlogic.appScheme
+import com.primestrider.kongsi.buildlogic.javaString
+import com.primestrider.kongsi.buildlogic.localOrEnv
 
 plugins {
-    id("kotlinstarter.android.application")
-    id("kotlinstarter.android.compose")
-    id("kotlinstarter.hilt")
+    id("kongsi.android.application")
+    id("kongsi.android.compose")
+    id("kongsi.hilt")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.baselineprofile)
 }
@@ -32,10 +32,10 @@ val releaseKeystore: String? = localOrEnv("android.keystore.path", "ANDROID_KEYS
 val appVersion = AppVersion.parse(providers.gradleProperty("version").get())
 
 android {
-    namespace = "com.primestrider.kotlinstarter"
+    namespace = "com.primestrider.kongsi"
 
     defaultConfig {
-        applicationId = "com.primestrider.kotlinstarter"
+        applicationId = "com.primestrider.kongsi"
         versionCode = appVersion.code
         versionName = appVersion.toString()
     }
@@ -120,38 +120,6 @@ dependencies {
     implementation(projects.core.auth)
     implementation(projects.core.ui)
 
-    // region example:account
-    implementation(projects.feature.account.api)
-    implementation(projects.feature.account.impl)
-    // endregion
-    // region example:animation
-    implementation(projects.feature.animation.api)
-    implementation(projects.feature.animation.impl)
-    // endregion
-    // region example:catalog
-    implementation(projects.feature.catalog.api)
-    implementation(projects.feature.catalog.impl)
-    // endregion
-    // region example:devices
-    implementation(projects.feature.devices.api)
-    implementation(projects.feature.devices.impl)
-    // endregion
-    // region example:gestures
-    implementation(projects.feature.gestures.api)
-    implementation(projects.feature.gestures.impl)
-    // endregion
-    // region example:products
-    implementation(projects.feature.products.api)
-    implementation(projects.feature.products.impl)
-    // endregion
-    // region example:settings
-    implementation(projects.feature.settings.api)
-    implementation(projects.feature.settings.impl)
-    // endregion
-    // region example:todos
-    implementation(projects.feature.todos.api)
-    implementation(projects.feature.todos.impl)
-    // endregion
     testImplementation(projects.core.testing)
 
     implementation(libs.androidx.core.ktx)

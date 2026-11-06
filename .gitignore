@@ -20,3 +20,6 @@ local.properties
 .env
 /.idea/*
 !/.idea/.gitignore
+
+# Example code kept by scripts/remove-examples.sh --keep (reference only)
+/.examples/

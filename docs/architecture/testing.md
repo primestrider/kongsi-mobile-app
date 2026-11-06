@@ -40,7 +40,7 @@ A test in `:app` that drives example screens without importing a feature package
 
 ## Screenshot tests (Roborazzi)
 
-`core/designsystem/src/test/java/com/primestrider/kotlinstarter/core/designsystem/screenshot/ControlsScreenshotTest.kt` captures every form control in light and dark.
+`core/designsystem/src/test/java/com/primestrider/kongsi/core/designsystem/screenshot/ControlsScreenshotTest.kt` captures every form control in light and dark.
 A plain `test` run does not capture. Reference images live in `core/designsystem/src/test/screenshots/` and are
 **recorded only on Linux**, by the manually triggered CI workflow (`record_screenshots` input), because fonts render
 differently on Windows and macOS. Never record locally. When references exist, CI runs

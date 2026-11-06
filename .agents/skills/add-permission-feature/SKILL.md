@@ -37,7 +37,7 @@ every common permission: copy the closest one.
 - ViewModel / pure logic tests, without hardware (the demos' tests are the pattern).
 - `PermissionGate` states are already covered in `core:ui`; test your screen's granted content and its denied text.
 - A merged-manifest test in `:app` if the permission is essential, like
-  `app/src/test/java/com/primestrider/kotlinstarter/architecture/DevicesManifestTest.kt`.
+  `app/src/test/java/com/primestrider/kongsi/architecture/DevicesManifestTest.kt`.
 - Real hardware behaviour: add a line to the physical-device checklist at the end of `docs/examples.md`.
 
 ## Checklist

@@ -8,7 +8,7 @@ if and only if a session exists.
 - **What is stored:** one preferences key, `auth.session`, in its own DataStore file `session`
   (qualifier `@SessionStore`), separate from the `settings` file.
 - **Encryption:** the session is serialized to JSON, encrypted with AES-256/GCM using a non-exportable
-  key (`kotlinstarter_session`) generated in the AndroidKeyStore on first use, and stored as Base64
+  key (`kongsi_session`) generated in the AndroidKeyStore on first use, and stored as Base64
   (12-byte IV followed by ciphertext). `SessionCipher` is the seam; tests use a fake because JVM
   tests have no Keystore.
 - **Backups:** `datastore/session.preferences_pb` is excluded from cloud backup and device transfer
@@ -105,7 +105,7 @@ retry 401 again -> authenticator gives up (priorResponse != null), caller gets t
   401 of the old session that arrives after the switch is covered by the outdated-token rule above
   (`SignedOut`), and a 401 of the new session starts its own attempt rather than joining the old one.
 - **Expiry:** signing out with `SignOutReason.EXPIRED` triggers `SessionExpiryAnnouncer`, which is
-  started in `KotlinStarterApp.onCreate`. It shows one error message (`auth_session_expired`) and
+  started in `KongsiApp.onCreate`. It shows one error message (`auth_session_expired`) and
   clears the reason. The reason is memory-only, so the message is not repeated on cold start.
 - **Cancellation:** the attempt runs in the application scope. Cancelling the call that started it
   does not cancel a refresh that is already in flight. If the attempt itself is cancelled (the scope

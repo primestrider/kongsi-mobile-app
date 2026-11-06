@@ -11,7 +11,7 @@ this skill relies on.
 
 ## Steps
 
-1. **Implement `AuthAdapter`** (`core/auth/src/main/java/com/primestrider/kotlinstarter/core/auth/AuthAdapter.kt`):
+1. **Implement `AuthAdapter`** (`core/auth/src/main/java/com/primestrider/kongsi/core/auth/AuthAdapter.kt`):
    - `signIn(credentials): AuthResult` calls your login endpoint and returns the user and tokens.
    - `refresh(refreshToken): AuthTokens` must use a Retrofit built on `@RefreshRetrofit` (its own client and
      dispatcher; the app client is blocked while a refresh runs). Throw an `IOException` when the server cannot be

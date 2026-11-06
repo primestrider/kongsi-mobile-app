@@ -4,7 +4,7 @@
 
 Rules:
 
-- Package `com.primestrider.kotlinstarter.core.designsystem.component`; never import `feature/*` or `app/*`.
+- Package `com.primestrider.kongsi.core.designsystem.component`; never import `feature/*` or `app/*`.
 - `modifier: Modifier = Modifier` is the first optional parameter.
 - Colors only from `MaterialTheme.colorScheme` / `AppThemeTokens.colors`.
 - Strings use the `component_` prefix, in `values/` and `values-in/`.

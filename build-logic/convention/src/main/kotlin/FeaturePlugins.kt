@@ -1,5 +1,5 @@
-import com.primestrider.kotlinstarter.buildlogic.lib
-import com.primestrider.kotlinstarter.buildlogic.libs
+import com.primestrider.kongsi.buildlogic.lib
+import com.primestrider.kongsi.buildlogic.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
@@ -8,7 +8,7 @@ import org.gradle.kotlin.dsl.dependencies
 class FeatureApiConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) =
         with(target) {
-            pluginManager.apply("kotlinstarter.android.library")
+            pluginManager.apply("kongsi.android.library")
             pluginManager.apply("org.jetbrains.kotlin.plugin.serialization")
             dependencies {
                 add("api", libs.lib("kotlinx-serialization-json"))
@@ -23,9 +23,9 @@ class FeatureApiConventionPlugin : Plugin<Project> {
 class FeatureImplConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) =
         with(target) {
-            pluginManager.apply("kotlinstarter.android.library")
-            pluginManager.apply("kotlinstarter.android.compose")
-            pluginManager.apply("kotlinstarter.hilt")
+            pluginManager.apply("kongsi.android.library")
+            pluginManager.apply("kongsi.android.compose")
+            pluginManager.apply("kongsi.hilt")
             pluginManager.apply("org.jetbrains.kotlin.plugin.serialization")
             dependencies {
                 add("implementation", project(":core:designsystem"))

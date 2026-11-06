@@ -60,7 +60,7 @@ my-web-app/
 This repository:
 
 ```text
-kotlin-starter/
+kongsi/
 ├── gradle/libs.versions.toml      # dependencies (package.json)
 ├── build-logic/                   # shared build config (vite/eslint/tsconfig presets)
 ├── gradle.properties              # version=1.0.0, build flags
@@ -293,7 +293,7 @@ The auth guard is written in the destination (chapter 4, "Protected pages") rath
 
 | Web | This app |
 | --- | --- |
-| CSS custom properties / Tailwind theme (`--color-primary`) | `AppColors` tokens in `core/designsystem/src/main/java/com/primestrider/kotlinstarter/core/designsystem/theme/AppColors.kt`, read with `LocalAppColors.current` / `MaterialTheme.colorScheme` |
+| CSS custom properties / Tailwind theme (`--color-primary`) | `AppColors` tokens in `core/designsystem/src/main/java/com/primestrider/kongsi/core/designsystem/theme/AppColors.kt`, read with `LocalAppColors.current` / `MaterialTheme.colorScheme` |
 | `prefers-color-scheme` + `.dark` class | `AppTheme(darkTheme)`; the user's choice stored in DataStore, applied before the first frame |
 | spacing scale (`p-4`, `gap-2`) | `Spacing.s4`, `Radii.xl` objects |
 | component library (MUI, Vuetify, shadcn) | `core:designsystem` components (`AppButton`, `AppTextField`, `AppCheckbox`, …); stock Material form controls are forbidden by a test |

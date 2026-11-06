@@ -1,7 +1,7 @@
 # Kotlin Android Starter Kit — Design
 
 Tanggal: 2026-10-30
-Proyek: `D:\Developer Stuff\Frontend_Mobile\kotlin-starter` (proyek Android Studio kosong, template Views, package `com.primestrider.kotlinstarter`, belum git)
+Proyek: `D:\Developer Stuff\Frontend_Mobile\kongsi` (proyek Android Studio kosong, template Views, package `com.primestrider.kongsi`, belum git)
 Referensi: `D:\RN\rn-expo-boilerplate` (boilerplate React Native Expo milik user)
 
 Tanda **[call Claude]** = keputusan yang diambil Claude, belum dikonfirmasi user. Selain itu = keputusan user.
@@ -56,7 +56,7 @@ Prinsip utama: **paritas fitur dengan boilerplate RN**, diterjemahkan ke cara id
 Struktur modul: **satu modul `:app`** dengan paket per lapisan/fitur, mengikuti struktur folder RN **[call Claude]**:
 
 ```
-com.primestrider.kotlinstarter/
+com.primestrider.kongsi/
   app/            # MainActivity, Application, NavHost root, AppProvider-equivalent
   core/
     network/      # Retrofit/OkHttp, interceptor, authenticator, ApiError

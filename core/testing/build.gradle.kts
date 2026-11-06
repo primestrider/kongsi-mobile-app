@@ -1,11 +1,11 @@
 plugins {
-    id("kotlinstarter.android.library")
-    id("kotlinstarter.android.compose")
+    id("kongsi.android.library")
+    id("kongsi.android.compose")
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.primestrider.kotlinstarter.core.testing"
+    namespace = "com.primestrider.kongsi.core.testing"
 }
 
 dependencies {

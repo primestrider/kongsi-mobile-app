@@ -1,11 +1,11 @@
 plugins {
-    id("kotlinstarter.android.library")
-    id("kotlinstarter.android.compose")
-    id("kotlinstarter.hilt")
+    id("kongsi.android.library")
+    id("kongsi.android.compose")
+    id("kongsi.hilt")
 }
 
 android {
-    namespace = "com.primestrider.kotlinstarter.core.ui"
+    namespace = "com.primestrider.kongsi.core.ui"
 }
 
 dependencies {

@@ -92,7 +92,7 @@ page in one focused file (plus small helpers next to it) so the file named is th
 
 - Follow `AGENTS.md` and the skills `add-feature`, `add-screen-route`, `add-component-example`,
   `add-translation`.
-- Routes are `@Serializable` in the feature's `:api`, package `com.primestrider.kotlinstarter.feature.example`
+- Routes are `@Serializable` in the feature's `:api`, package `com.primestrider.kongsi.feature.example`
   (`RouteNamesTest`).
 - Pages are built on `ExamplePageScaffold` / `DemoSection` from `core:ui`; user-chosen state in `rememberSaveable`.
 - Form controls (checkbox, radio, switch, slider, segmented, text fields) only from `core:designsystem`

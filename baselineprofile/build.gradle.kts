@@ -1,5 +1,5 @@
 plugins {
-    id("kotlinstarter.android.test")
+    id("kongsi.android.test")
     alias(libs.plugins.baselineprofile)
 }
 
@@ -7,7 +7,7 @@ plugins {
 //   ./gradlew :app:generateProdReleaseBaselineProfile     writes app/src/prodRelease/generated/baselineProfiles/
 //   ./gradlew :baselineprofile:connectedProdBenchmarkReleaseAndroidTest   runs StartupBenchmark
 android {
-    namespace = "com.primestrider.kotlinstarter.baselineprofile"
+    namespace = "com.primestrider.kongsi.baselineprofile"
     defaultConfig {
         // Macrobenchmark and baseline profile generation need API 28+.
         minSdk = 28

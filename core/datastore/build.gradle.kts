@@ -1,10 +1,10 @@
 plugins {
-    id("kotlinstarter.android.library")
-    id("kotlinstarter.hilt")
+    id("kongsi.android.library")
+    id("kongsi.hilt")
 }
 
 android {
-    namespace = "com.primestrider.kotlinstarter.core.datastore"
+    namespace = "com.primestrider.kongsi.core.datastore"
 }
 
 dependencies {

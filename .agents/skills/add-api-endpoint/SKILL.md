@@ -13,7 +13,7 @@ Networking lives in `core:network` (Retrofit + OkHttp + kotlinx serialization); 
 1. **DTO** in the feature's `data/` package: `@Serializable data class <Name>Dto(...)`. The shared `Json` ignores
    unknown keys and omits explicit nulls, so declare only the fields you use and give optional ones defaults.
 2. **Retrofit method** on the feature's interface (create one if needed, e.g.
-   `feature/products/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/products/data/ProductsApi.kt`):
+   `feature/products/impl/src/main/java/com/primestrider/kongsi/feature/example/products/data/ProductsApi.kt`):
    `suspend fun <name>(@Path("id") id: Long): <Name>Dto`. Paths are relative (no leading `/`) to the `@ApiBaseUrl`.
    Mark public calls `@Anonymous`: they then never carry the bearer token nor trigger the 401 refresh. Without it,
    requests to the API host get `Authorization: Bearer …` while signed in.

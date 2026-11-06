@@ -16,12 +16,12 @@ diagrams and quoted code, plus a chapter mapping every concept to React and Vue.
 
 ## Project map
 
-Classes keep the package they had before the split (root `com.primestrider.kotlinstarter`); each module's
+Classes keep the package they had before the split (root `com.primestrider.kongsi`); each module's
 namespace follows its path (e.g. `…core.network`, `…feature.products.impl`).
 
 ```
-build-logic/                 convention plugins: kotlinstarter.android.{application,library,test,compose}, kotlinstarter.hilt,
-                             kotlinstarter.feature.{api,impl}; AndroidConfig (SDK levels), localOrEnv, verifyReleaseKeeps
+build-logic/                 convention plugins: kongsi.android.{application,library,test,compose}, kongsi.hilt,
+                             kongsi.feature.{api,impl}; AndroidConfig (SDK levels), localOrEnv, verifyReleaseKeeps
 app/                         MainActivity, AppViewModel, MainShell (tabs) and AppNavHost.kt: the only place that wires features;
                              EnvironmentModule provides @ApiBaseUrl (BuildConfig.API_URL) and @CertificatePins (API_PINS); PlaceholderHomeScreen
 core/common                  @ApplicationScope, formatters (core.util), AppLanguage/LanguageController (core.i18n), CrashRecorder, AppConfig
@@ -62,14 +62,14 @@ Every screen and design-system component file has a light/dark `@ThemePreviews` 
 
 ## Adding a page to a feature
 
-1. Add a `@Serializable` route to the feature's `:api` module (package `com.primestrider.kotlinstarter.feature.example` for the examples, so serial names stay stable; `RouteNamesTest`).
+1. Add a `@Serializable` route to the feature's `:api` module (package `com.primestrider.kongsi.feature.example` for the examples, so serial names stay stable; `RouteNamesTest`).
 2. Write a stateless screen and register `composable<YourRoute> { … }` in the feature's `NavGraphBuilder.<feature>Destinations(navController)` function.
 3. To list it on Home, contribute a `CatalogEntry` with `@Provides @IntoSet` from the feature's Hilt module (and a `CatalogSection` if the feature owns a section).
 4. Cover it with a Robolectric test in the feature module.
 
 ## Adding a feature module
 
-1. Create `feature/<name>/api` (plugin `kotlinstarter.feature.api`) and `feature/<name>/impl` (plugin `kotlinstarter.feature.impl`, `api(projects.feature.<name>.api)`), and `include` both in `settings.gradle.kts`.
+1. Create `feature/<name>/api` (plugin `kongsi.feature.api`) and `feature/<name>/impl` (plugin `kongsi.feature.impl`, `api(projects.feature.<name>.api)`), and `include` both in `settings.gradle.kts`.
 2. In `:app`: add both as dependencies and call `<name>Destinations(navController)` in the right tab graph of `AppNavHost.kt` (or add a `TopLevelTab` to `topLevelTabs` for a new tab).
 3. Put the feature's manifest entries (permissions, providers, receivers) in its own `src/main/AndroidManifest.xml`.
 

@@ -43,7 +43,7 @@ sequenceDiagram
 
 ### The ViewModel: search as a pipeline
 
-`feature/products/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/products/ui/ProductsViewModel.kt`
+`feature/products/impl/src/main/java/com/primestrider/kongsi/feature/example/products/ui/ProductsViewModel.kt`
 
 ```kotlin
 @HiltViewModel
@@ -83,7 +83,7 @@ Read it top to bottom as a pipeline over the query text:
 
 ### The repository: the boundary between API and app
 
-`feature/products/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/products/data/ProductsRepository.kt`
+`feature/products/impl/src/main/java/com/primestrider/kongsi/feature/example/products/data/ProductsRepository.kt`
 
 ```kotlin
 interface ProductsRepository {
@@ -127,7 +127,7 @@ interface ProductsApi {
 
 ### Errors
 
-`core/network/src/main/java/com/primestrider/kotlinstarter/core/network/ApiError.kt`
+`core/network/src/main/java/com/primestrider/kongsi/core/network/ApiError.kt`
 
 ```kotlin
 data class ApiError(
@@ -185,7 +185,7 @@ The todos feature keeps its rows in SQLite through Room:
 
 ## Settings: DataStore
 
-`core/datastore/src/main/java/com/primestrider/kotlinstarter/core/datastore/DataStoreModule.kt` provides two
+`core/datastore/src/main/java/com/primestrider/kongsi/core/datastore/DataStoreModule.kt` provides two
 DataStore files: `settings` (theme, language) and `session` (the encrypted session). File names are constants in
 `DataStoreFiles`, because renaming one would lose every user's settings on update. `ThemePreferenceRepository` exposes
 `themeMode: Flow<ThemeMode>` and `suspend fun setThemeMode(...)`; `AppViewModel` reads it before the first frame.
@@ -220,7 +220,7 @@ flowchart LR
 ### How auth plugs into the network client
 
 `core:network` does not know `core:auth` (that would be a dependency cycle). It builds the app client from whatever
-other modules contribute, `core/network/src/main/java/com/primestrider/kotlinstarter/core/network/NetworkModule.kt`:
+other modules contribute, `core/network/src/main/java/com/primestrider/kongsi/core/network/NetworkModule.kt`:
 
 ```kotlin
 @Provides
@@ -235,7 +235,7 @@ fun okHttpClient(
         .build()
 ```
 
-and `core:auth` contributes, `core/auth/src/main/java/com/primestrider/kotlinstarter/core/auth/AuthModule.kt`:
+and `core:auth` contributes, `core/auth/src/main/java/com/primestrider/kongsi/core/auth/AuthModule.kt`:
 
 ```kotlin
 @Binds @IntoSet @AppInterceptors

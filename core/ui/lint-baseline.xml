@@ -7,7 +7,7 @@
         errorLine1="        enterPictureInPictureMode(PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build())"
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/pip/PictureInPicture.kt"
+            file="src/main/java/com/primestrider/kongsi/core/pip/PictureInPicture.kt"
             line="66"
             column="9"/>
     </issue>
@@ -18,7 +18,7 @@
         errorLine1="        enterPictureInPictureMode(PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build())"
         errorLine2="                                                                                                   ~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/pip/PictureInPicture.kt"
+            file="src/main/java/com/primestrider/kongsi/core/pip/PictureInPicture.kt"
             line="66"
             column="100"/>
     </issue>
@@ -29,7 +29,7 @@
         errorLine1="        enterPictureInPictureMode(PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build())"
         errorLine2="                                                                   ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/pip/PictureInPicture.kt"
+            file="src/main/java/com/primestrider/kongsi/core/pip/PictureInPicture.kt"
             line="66"
             column="68"/>
     </issue>
@@ -40,7 +40,7 @@
         errorLine1="        enterPictureInPictureMode(PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build())"
         errorLine2="                                                         ~~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/pip/PictureInPicture.kt"
+            file="src/main/java/com/primestrider/kongsi/core/pip/PictureInPicture.kt"
             line="66"
             column="58"/>
     </issue>
@@ -51,7 +51,7 @@
         errorLine1="    prefs.edit().putStringSet(REQUESTED_KEY, requested + permissions).apply()"
         errorLine2="    ~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/permission/PermissionGate.kt"
+            file="src/main/java/com/primestrider/kongsi/core/permission/PermissionGate.kt"
             line="115"
             column="5"/>
     </issue>

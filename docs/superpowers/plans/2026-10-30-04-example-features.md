@@ -132,7 +132,7 @@ docs/architecture/{data-loading,storage-database}.md
 
 **Files:**
 - Create: `core/crash/{CrashRecorder,CrashFallbackScreen}.kt`
-- Modify: `KotlinStarterApp.kt` (install recorder), `app/AppViewModel.kt` (+ `lastCrash`), `app/MainActivity.kt` (fallback before shell), `feature/example/settings/SettingsScreen.kt` (+ debug-only "Developer" section with "Crash the app"), strings ×2, `docs/architecture/overview.md` (error handling section)
+- Modify: `KongsiApp.kt` (install recorder), `app/AppViewModel.kt` (+ `lastCrash`), `app/MainActivity.kt` (fallback before shell), `feature/example/settings/SettingsScreen.kt` (+ debug-only "Developer" section with "Crash the app"), strings ×2, `docs/architecture/overview.md` (error handling section)
 - Test: `core/crash/CrashRecorderTest.kt`, `core/crash/CrashFallbackScreenTest.kt`, `app/AppViewModelTest.kt` (update), `feature/example/settings/SettingsScreenTest.kt` (update)
 
 **Interfaces:**
@@ -147,7 +147,7 @@ docs/architecture/{data-loading,storage-database}.md
 
 - [ ] **Step 1: Write failing tests**: `CrashRecorderTest` (Robolectric) — after `install()`, invoking the installed handler with `IllegalStateException("boom")` stores a report (class `java.lang.IllegalStateException`, message "boom") and calls the previous handler exactly once (a fake previous handler set before `install`); a message of 2,000 chars is stored truncated to 500; if writing fails (e.g. a `SharedPreferences` that throws — inject a factory) the previous handler is still called; `clear()` removes it. `CrashFallbackScreenTest` — shows title, error type "IllegalStateException", and "Continue" calls `onContinue`. `AppViewModelTest` — a stored report is exposed by `lastCrash`; `dismissCrash()` clears it and the recorder. `SettingsScreenTest` — "Crash the app" visible in debug builds (unit tests run debug).
 - [ ] **Step 2: Run** `./gradlew testDebugUnitTest --tests "*Crash*" --tests "*AppViewModelTest" --tests "*SettingsScreenTest"` → FAIL.
-- [ ] **Step 3: Implement**; install in `KotlinStarterApp.onCreate` before anything else.
+- [ ] **Step 3: Implement**; install in `KongsiApp.onCreate` before anything else.
 - [ ] **Step 4: Run** full proof command → PASS.
 - [ ] **Step 5: Docs**: `overview.md` "Error handling" — per-screen states (`LoadingState`/`EmptyState`/`ErrorState`, `ApiError`), app-wide messages (`Messenger`), the crash fallback and why it does not try to keep the process alive.
 - [ ] **Step 6: Manual check** (if `adb devices` lists a device): Products scroll to the end, search "phone", airplane mode while scrolling then Retry; open a product, add to cart; Todos add/toggle/delete, kill and relaunch → still there; Settings → Crash the app → relaunch shows the fallback, Continue → app.

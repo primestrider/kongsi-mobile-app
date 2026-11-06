@@ -475,7 +475,7 @@ scope.launch { listState.animateScrollToItem(0) }
 
 - There are no DOM nodes to grab. Instead you create a controller object (`FocusRequester`, `LazyListState`,
   `ScrollState`), pass it in, and call it.
-- In this repository only `SearchField` (`core/designsystem/src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/TextFields.kt`)
+- In this repository only `SearchField` (`core/designsystem/src/main/java/com/primestrider/kongsi/core/designsystem/component/TextFields.kt`)
   manages focus; the focus and scroll snippets above are the standard APIs to use when you need them.
 
 ## 13. Context

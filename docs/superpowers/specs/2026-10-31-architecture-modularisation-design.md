@@ -158,8 +158,8 @@ including how to add a new feature module and how to delete the examples. Fix th
   `HiltTestApplication`. On Windows, DataStore tests use the in-memory fake.
 - Supported languages `en` and `id` (`values-in/`): each module carries its own strings; `generateLocaleConfig`
   stays on `:app`.
-- Root package `com.primestrider.kotlinstarter`; each module gets its own namespace below it
-  (e.g. `com.primestrider.kotlinstarter.core.network`, `…feature.products.impl`).
+- Root package `com.primestrider.kongsi`; each module gets its own namespace below it
+  (e.g. `com.primestrider.kongsi.core.network`, `…feature.products.impl`).
 - Proof for every change: `./gradlew testDebugUnitTest ktlintCheck assembleDebug` (adjust task names for flavours,
   and add `lint` once configured).
 - The move is done in small, green steps (module by module), not one giant commit.

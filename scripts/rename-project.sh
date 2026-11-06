@@ -52,7 +52,8 @@ find . \( -name .git -prune \) -o -type d \( -name build -o -name .kotlin \) -pr
 export R_PKG="$package" R_PATH="$path" R_NAME="$name" R_PASCAL="$pascal" R_LOWER="$lower" R_KEBAB="$kebab"
 export R_PKG_RE="${package//./\\.}" R_LAST_RE="${package##*.}\\."
 find . \( -name build -o -name .git -o -name .gradle -o -name .kotlin -o -name .idea \) -prune -o -type f -print0 |
-    xargs -0 grep -IlE 'kotlinstarter|Kotlin Starter|KotlinStarter|kotlin-starter' 2>/dev/null |
+    # grep exits 1 for a batch without matches (xargs then exits 123), which pipefail would turn into a silent abort.
+    { xargs -0 grep -IlE 'kotlinstarter|Kotlin Starter|KotlinStarter|kotlin-starter' 2>/dev/null || true; } |
     while IFS= read -r file; do
         [ "$(cd "$(dirname "$file")" && pwd)/$(basename "$file")" = "$script" ] && continue
         perl -pi -e '

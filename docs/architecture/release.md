@@ -3,7 +3,7 @@
 ## Versioning
 
 The version is kept once, as `version=major.minor.patch` in `gradle.properties`. `:app` reads it through
-`AppVersion` (`build-logic/convention/src/main/kotlin/com/primestrider/kotlinstarter/buildlogic/AppVersion.kt`):
+`AppVersion` (`build-logic/convention/src/main/kotlin/com/primestrider/kongsi/buildlogic/AppVersion.kt`):
 `versionName` is the version (`-dev` added for the dev flavour) and `versionCode = major * 10000 + minor * 100 + patch`
 (`1.2.3` is 10203). Minor and patch therefore stay below 100: `1.2.99` cannot get a patch bump, raise the minor
 instead. A malformed value fails the build.
@@ -21,12 +21,12 @@ One dimension, `environment`:
 
 | Flavour | Application id | API base URL (default) |
 | --- | --- | --- |
-| `dev` | `com.primestrider.kotlinstarter.dev` (installs next to prod), version name `-dev` | `https://dummyjson.com/` |
-| `prod` | `com.primestrider.kotlinstarter` | `https://dummyjson.com/` |
+| `dev` | `com.primestrider.kongsi.dev` (installs next to prod), version name `-dev` | `https://dummyjson.com/` |
+| `prod` | `com.primestrider.kongsi` | `https://dummyjson.com/` |
 
 There is no real backend yet, so both point at DummyJSON; a real app changes the `prod` default in `apiUrl(...)` in
 `app/build.gradle.kts`. `local.properties` `api.url` or the env var `API_URL` overrides either. `:app` provides the URL to
-the rest of the app as `@ApiBaseUrl` (`app/src/main/java/com/primestrider/kotlinstarter/app/di/EnvironmentModule.kt`),
+the rest of the app as `@ApiBaseUrl` (`app/src/main/java/com/primestrider/kongsi/app/di/EnvironmentModule.kt`),
 and only that host receives the bearer token. `api.pins` / `API_PINS` (comma-separated `sha256/…`, empty by default)
 turns on certificate pinning for that host; see `networking.md`, "Certificate pinning".
 

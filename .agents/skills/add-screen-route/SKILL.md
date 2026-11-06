@@ -11,7 +11,7 @@ Navigation is type-safe Navigation Compose inside a bottom-navigation shell. Rea
 ## Steps
 
 1. **Route** in the feature's `:api` module, e.g.
-   `feature/products/api/src/main/java/com/primestrider/kotlinstarter/feature/example/ProductsRoutes.kt`:
+   `feature/products/api/src/main/java/com/primestrider/kongsi/feature/example/ProductsRoutes.kt`:
    `@Serializable data object <Name>Route`, or `data class <Name>Route(val id: Long)` for arguments (primitives,
    strings, nullable with defaults). The serial name is the qualified class name; it is stored in the saved back stack
    and matched by deep links, so **do not rename or move a shipped route** (the examples are pinned by
@@ -25,7 +25,7 @@ Navigation is type-safe Navigation Compose inside a bottom-navigation shell. Rea
    another tab's graph would be pushed onto the current stack. Another feature's page: depend on its `:api` and
    navigate to its route (the account feature opens `SettingsRoute` this way).
 5. **Protected page** (signed in only): copy the guard of `AccountRoute` in `accountDestinations`
-   (`feature/account/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/auth/AccountNavigation.kt`): wait
+   (`feature/account/impl/src/main/java/com/primestrider/kongsi/feature/example/auth/AccountNavigation.kt`): wait
    for the stored session to load, then replace the page with sign-in when the session is gone without the user
    signing out. Test it like `ProtectedRouteTest`.
 6. **Deep link**: `composable<<Name>Route>(deepLinks = listOf(navDeepLink<<Name>Route>(basePath = "$appScheme://example/…")))`,

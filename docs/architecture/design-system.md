@@ -1,6 +1,6 @@
 # Design system
 
-Tokens and theme live in `app/src/main/java/com/primestrider/kotlinstarter/core/designsystem/theme/`.
+Tokens and theme live in `app/src/main/java/com/primestrider/kongsi/core/designsystem/theme/`.
 
 ## Token files
 
@@ -116,4 +116,4 @@ Conventions the examples follow:
 - Disable a button while its action runs, so a double tap runs it once.
 - Material icons come from `material-icons-core` only; the extended set is not a dependency.
 
-To add a component example: put it in the page that matches its group (or add a page: route in `feature/catalog/api/src/main/java/com/primestrider/kotlinstarter/feature/example/CatalogRoutes.kt`, `composable<…>` in `catalogComponentsDestinations`, entry in `componentEntries` in `ExampleCatalog.kt`), add its strings to the catalog module's `values/` and `values-in/`, and cover its behavior in a Robolectric test next to the page's existing test.
+To add a component example: put it in the page that matches its group (or add a page: route in `feature/catalog/api/src/main/java/com/primestrider/kongsi/feature/example/CatalogRoutes.kt`, `composable<…>` in `catalogComponentsDestinations`, entry in `componentEntries` in `ExampleCatalog.kt`), add its strings to the catalog module's `values/` and `values-in/`, and cover its behavior in a Robolectric test next to the page's existing test.

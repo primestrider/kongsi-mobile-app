@@ -4,7 +4,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.primestrider.kotlinstarter.buildlogic"
+group = "com.primestrider.kongsi.buildlogic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -28,31 +28,31 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplication") {
-            id = "kotlinstarter.android.application"
+            id = "kongsi.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidLibrary") {
-            id = "kotlinstarter.android.library"
+            id = "kongsi.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidTest") {
-            id = "kotlinstarter.android.test"
+            id = "kongsi.android.test"
             implementationClass = "AndroidTestConventionPlugin"
         }
         register("androidCompose") {
-            id = "kotlinstarter.android.compose"
+            id = "kongsi.android.compose"
             implementationClass = "AndroidComposeConventionPlugin"
         }
         register("featureApi") {
-            id = "kotlinstarter.feature.api"
+            id = "kongsi.feature.api"
             implementationClass = "FeatureApiConventionPlugin"
         }
         register("featureImpl") {
-            id = "kotlinstarter.feature.impl"
+            id = "kongsi.feature.impl"
             implementationClass = "FeatureImplConventionPlugin"
         }
         register("hilt") {
-            id = "kotlinstarter.hilt"
+            id = "kongsi.hilt"
             implementationClass = "HiltConventionPlugin"
         }
     }

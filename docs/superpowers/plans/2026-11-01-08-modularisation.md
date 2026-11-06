@@ -14,7 +14,7 @@
 
 - Toolchain stays: AGP 9.4.0, Gradle 9.6.0, Kotlin 2.4.21, compileSdk/targetSdk 37, minSdk 24, JVM 17; every dependency and plugin in `gradle/libs.versions.toml`.
 - Module graph rules (enforced by Gradle): `core:*` never depends on `feature:*`; `feature:X:impl` depends only on `core:*` and `feature:Y:api`; `feature:X:api` depends on kotlinx-serialization only (at most `core:common`); `:app` is the only module depending on `feature:*:impl`.
-- Namespaces: `com.primestrider.kotlinstarter.<path>` with dots for colons, e.g. `…core.network`, `…feature.products.impl`, `…feature.products.api`. Keep existing package names of moved classes when they already match; otherwise move the package to the module namespace.
+- Namespaces: `com.primestrider.kongsi.<path>` with dots for colons, e.g. `…core.network`, `…feature.products.impl`, `…feature.products.api`. Keep existing package names of moved classes when they already match; otherwise move the package to the module namespace.
 - Each module owns its strings in `src/main/res/values/` and `values-in/`; `generateLocaleConfig` stays on `:app`.
 - MVVM + UDF: one `StateFlow` UI state per ViewModel, stateless `XxxScreen`, `XxxRoute` with `hiltViewModel()`. No MVI framework, no use-case layer by default.
 - Robolectric tests: `@Config(sdk = [36])`; Hilt tests: `HiltAndroidRule` before the Compose rule, `HiltTestApplication`; on Windows DataStore tests use the in-memory fake.
@@ -24,7 +24,7 @@
 
 ## Current state (facts the tasks rely on)
 
-- Single module `:app`, root package `com.primestrider.kotlinstarter`, 159 test files, 671 tests.
+- Single module `:app`, root package `com.primestrider.kongsi`, 159 test files, 671 tests.
 - Cycle: `core/network/NetworkModule.kt` imports `core.auth.AuthInterceptor` and `TokenAuthenticator`; `core/auth` imports `core.network` (`ApiBaseUrl`, `isAnonymous`).
 - `core/designsystem/theme/ThemePreferenceRepository.kt` imports `core.storage.StorageKeys`; `core/auth/SessionExpiryAnnouncer.kt` uses designsystem `Messenger`/`UiText` and string `auth_session_expired`.
 - `feature/example/todos/ExampleDatabase.kt` (v2, `example.db`) holds `TodoEntity` and the devices demo's `sdk/sqlite/TransactionEntity` + `TransactionDao`; `MIGRATION_1_2` creates `transactions`; schemas in `app/schemas/…ExampleDatabase/{1,2}.json`; `ExampleDatabaseMigrationTest` lives under `sdk/sqlite` tests.
@@ -52,7 +52,7 @@
 ## Review Focus
 
 1. **Process death / saved state across module boundaries:** routes moved to `:api` keep the same serial names, so a restored back stack still decodes. Pinned by `restored_back_stack_survives_route_move` in Task 7 (encode a route with the old FQN → decode after move fails only if names change: assert `serializer<ProductDetailRoute>().descriptor.serialName` equals the pre-move value captured in Task 7 step 1).
-2. **Deep links** `kotlinstarter://example/sdk?id=…` and notification/payment deep links still open the demo after devices moves. Pinned by the existing `DeepLinkTest` / `CrashDeepLinkTest`, which must stay in `:app` and pass in Task 12.
+2. **Deep links** `kongsi://example/sdk?id=…` and notification/payment deep links still open the demo after devices moves. Pinned by the existing `DeepLinkTest` / `CrashDeepLinkTest`, which must stay in `:app` and pass in Task 12.
 3. **Release build after R8** crashes on reflection (kotlinx serialization routes, Retrofit interfaces, Hilt workers, Room). Pinned by Task 14's `assembleProdRelease` + launching the minified APK on the emulator if one exists, and the keep-rule check `release_mapping_keeps_routes` (grep `mapping.txt` for every `@Serializable` route class kept).
 4. **Upgrade from the single-module app:** existing installs keep todos (Room `example.db` 2→3), DataStore files and the encrypted session (same file names, same keystore alias). Pinned by `migrate_2_to_3_keeps_todos_and_drops_transactions` (Task 9) and `datastore_file_names_unchanged` (Task 3).
 5. **All examples removed:** app builds, tests, starts, shows the placeholder Home, sign-in reports "not configured", no duplicate Hilt bindings. Pinned by Task 13's `examples-removed` run and `not_configured_adapter_reports_not_set_up` (Task 5).
@@ -62,8 +62,8 @@
 ### Task 1: build-logic and Gradle properties
 
 **Files:**
-- Create: `build-logic/settings.gradle.kts`, `build-logic/convention/build.gradle.kts`, `build-logic/convention/src/main/kotlin/` plugins: `AndroidApplicationConventionPlugin` (`kotlinstarter.android.application`), `AndroidLibraryConventionPlugin` (`kotlinstarter.android.library`), `AndroidComposeConventionPlugin` (`kotlinstarter.android.compose`), `HiltConventionPlugin` (`kotlinstarter.hilt`), `AndroidFeatureImplConventionPlugin` (`kotlinstarter.feature.impl`: library + compose + hilt + deps on `core:designsystem`, `core:ui`, `core:common`, navigation, hilt-navigation-compose, lifecycle), `FeatureApiConventionPlugin` (`kotlinstarter.feature.api`: library + serialization), `AndroidTestConventionPlugin` (applied by library/application: Robolectric `testOptions`, `--add-opens` jvmArg, common test deps), `KtlintConventionPlugin`.
-- Modify: `settings.gradle.kts` (`pluginManagement { includeBuild("build-logic") }`), `gradle/libs.versions.toml` (plugin ids for the conventions + `android-gradlePlugin`, `kotlin-gradlePlugin`, `ksp-gradlePlugin` artifacts for build-logic), `gradle.properties` (`org.gradle.parallel=true`, `org.gradle.caching=true`, `org.gradle.configuration-cache=true`), `app/build.gradle.kts` (apply `kotlinstarter.android.application`, `kotlinstarter.android.compose`, `kotlinstarter.hilt`; keep only app-specific config).
+- Create: `build-logic/settings.gradle.kts`, `build-logic/convention/build.gradle.kts`, `build-logic/convention/src/main/kotlin/` plugins: `AndroidApplicationConventionPlugin` (`kongsi.android.application`), `AndroidLibraryConventionPlugin` (`kongsi.android.library`), `AndroidComposeConventionPlugin` (`kongsi.android.compose`), `HiltConventionPlugin` (`kongsi.hilt`), `AndroidFeatureImplConventionPlugin` (`kongsi.feature.impl`: library + compose + hilt + deps on `core:designsystem`, `core:ui`, `core:common`, navigation, hilt-navigation-compose, lifecycle), `FeatureApiConventionPlugin` (`kongsi.feature.api`: library + serialization), `AndroidTestConventionPlugin` (applied by library/application: Robolectric `testOptions`, `--add-opens` jvmArg, common test deps), `KtlintConventionPlugin`.
+- Modify: `settings.gradle.kts` (`pluginManagement { includeBuild("build-logic") }`), `gradle/libs.versions.toml` (plugin ids for the conventions + `android-gradlePlugin`, `kotlin-gradlePlugin`, `ksp-gradlePlugin` artifacts for build-logic), `gradle.properties` (`org.gradle.parallel=true`, `org.gradle.caching=true`, `org.gradle.configuration-cache=true`), `app/build.gradle.kts` (apply `kongsi.android.application`, `kongsi.android.compose`, `kongsi.hilt`; keep only app-specific config).
 - Shared constants in build-logic: `compileSdk = 37`, `minSdk = 24`, `targetSdk = 37`, JVM 17; `fun Project.localOrEnv(key: String, env: String, default: String): String` (local.properties → env → default), used for `app.scheme`/`APP_SCHEME` and `api.url`/`API_URL`.
 
 - [ ] **Step 1:** Record the baseline: `gradlew.bat test` → note the test count (expected 671, 1 skipped) in the ledger.
@@ -82,9 +82,9 @@
 - Tests move with their code (`core/util`, `core/i18n`, `core/crash` recorder tests).
 
 **Interfaces:**
-- Produces: `object AppConfig { val appScheme: String }` in `com.primestrider.kotlinstarter.core.common`; `ThemeMode` in `com.primestrider.kotlinstarter.core.model`; test helpers in `com.primestrider.kotlinstarter.core.testing`.
+- Produces: `object AppConfig { val appScheme: String }` in `com.primestrider.kongsi.core.common`; `ThemeMode` in `com.primestrider.kongsi.core.model`; test helpers in `com.primestrider.kongsi.core.testing`.
 
-- [ ] **Step 1: Failing test** `AppConfigTest.app_scheme_matches_build_value`: `assertEquals("kotlinstarter", AppConfig.appScheme)` (default when no override).
+- [ ] **Step 1: Failing test** `AppConfigTest.app_scheme_matches_build_value`: `assertEquals("kongsi", AppConfig.appScheme)` (default when no override).
 - [ ] **Step 2:** Run `gradlew.bat :core:common:testDebugUnitTest` → FAIL (module/class missing).
 - [ ] **Step 3:** Create modules, move code with `git mv`, update imports in `:app`.
 - [ ] **Step 4:** `gradlew.bat test ktlintCheck assembleDebug` → green, test count unchanged + 1.

@@ -1,7 +1,7 @@
 plugins {
-    id("kotlinstarter.android.library")
+    id("kongsi.android.library")
 }
 
 android {
-    namespace = "com.primestrider.kotlinstarter.core.model"
+    namespace = "com.primestrider.kongsi.core.model"
 }

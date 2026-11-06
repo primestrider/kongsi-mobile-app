@@ -7,7 +7,7 @@
         errorLine1="    clickable: Modifier,"
         errorLine2="    ~~~~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControls.kt"
+            file="src/main/java/com/primestrider/kongsi/core/designsystem/component/ChoiceControls.kt"
             line="91"
             column="5"/>
     </issue>
@@ -18,7 +18,7 @@
         errorLine1="    modifier: Modifier = Modifier,"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControls.kt"
+            file="src/main/java/com/primestrider/kongsi/core/designsystem/component/ChoiceControls.kt"
             line="246"
             column="5"/>
     </issue>
@@ -29,7 +29,7 @@
         errorLine1="    modifier: Modifier = Modifier,"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/Skeleton.kt"
+            file="src/main/java/com/primestrider/kongsi/core/designsystem/component/Skeleton.kt"
             line="127"
             column="5"/>
     </issue>
@@ -51,7 +51,7 @@
         errorLine1="                        .offset(x = pillOffset)"
         errorLine2="                         ~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControls.kt"
+            file="src/main/java/com/primestrider/kongsi/core/designsystem/component/ChoiceControls.kt"
             line="132"
             column="26"/>
     </issue>
@@ -62,7 +62,7 @@
         errorLine1="                    .offset(x = thumbOffset)"
         errorLine2="                     ~~~~~~">
         <location
-            file="src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/Toggles.kt"
+            file="src/main/java/com/primestrider/kongsi/core/designsystem/component/Toggles.kt"
             line="171"
             column="22"/>
     </issue>

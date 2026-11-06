@@ -1,11 +1,11 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.dsl.TestExtension
-import com.primestrider.kotlinstarter.buildlogic.AndroidConfig
-import com.primestrider.kotlinstarter.buildlogic.configureAndroidApplication
-import com.primestrider.kotlinstarter.buildlogic.configureAndroidLibrary
-import com.primestrider.kotlinstarter.buildlogic.lib
-import com.primestrider.kotlinstarter.buildlogic.libs
+import com.primestrider.kongsi.buildlogic.AndroidConfig
+import com.primestrider.kongsi.buildlogic.configureAndroidApplication
+import com.primestrider.kongsi.buildlogic.configureAndroidLibrary
+import com.primestrider.kongsi.buildlogic.lib
+import com.primestrider.kongsi.buildlogic.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

@@ -1,12 +1,12 @@
 plugins {
-    id("kotlinstarter.android.library")
-    id("kotlinstarter.android.compose")
-    id("kotlinstarter.hilt")
+    id("kongsi.android.library")
+    id("kongsi.android.compose")
+    id("kongsi.hilt")
     alias(libs.plugins.roborazzi)
 }
 
 android {
-    namespace = "com.primestrider.kotlinstarter.core.designsystem"
+    namespace = "com.primestrider.kongsi.core.designsystem"
 }
 
 dependencies {

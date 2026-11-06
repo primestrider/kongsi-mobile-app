@@ -35,11 +35,11 @@
 ### Task 1: Field colours and restyled text inputs
 
 **Files:**
-- Create: `app/src/main/java/com/primestrider/kotlinstarter/core/designsystem/theme/ControlColors.kt`
-- Modify: `app/src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/TextFields.kt`
-- Modify: `app/src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/SelectField.kt`
-- Test: `app/src/test/java/com/primestrider/kotlinstarter/core/designsystem/theme/ControlColorsTest.kt` (new)
-- Test: `app/src/test/java/com/primestrider/kotlinstarter/core/designsystem/component/TextFieldsTest.kt`, `SelectFieldTest.kt`
+- Create: `app/src/main/java/com/primestrider/kongsi/core/designsystem/theme/ControlColors.kt`
+- Modify: `app/src/main/java/com/primestrider/kongsi/core/designsystem/component/TextFields.kt`
+- Modify: `app/src/main/java/com/primestrider/kongsi/core/designsystem/component/SelectField.kt`
+- Test: `app/src/test/java/com/primestrider/kongsi/core/designsystem/theme/ControlColorsTest.kt` (new)
+- Test: `app/src/test/java/com/primestrider/kongsi/core/designsystem/component/TextFieldsTest.kt`, `SelectFieldTest.kt`
 
 **Interfaces:**
 - Produces (theme, `ControlColors.kt`):
@@ -106,7 +106,7 @@ Expected: PASS.
 
 Run: `gradlew.bat testDebugUnitTest ktlintCheck assembleDebug` → BUILD SUCCESSFUL.
 ```bash
-git add app/src/main/java/com/primestrider/kotlinstarter/core/designsystem app/src/test/java/com/primestrider/kotlinstarter/core/designsystem
+git add app/src/main/java/com/primestrider/kongsi/core/designsystem app/src/test/java/com/primestrider/kongsi/core/designsystem
 git commit -m "feat(designsystem): restyle text fields as filled, borderless fields with a primary focus tint and a prefix chip"
 ```
 
@@ -115,10 +115,10 @@ git commit -m "feat(designsystem): restyle text fields as filled, borderless fie
 ### Task 2: AppCheckbox, AppRadioButton, AppSwitch
 
 **Files:**
-- Modify: `app/src/main/java/com/primestrider/kotlinstarter/core/designsystem/theme/ControlColors.kt` (add `ControlShapes.checkbox = RoundedCornerShape(7.dp)`, `ControlShapes.pill = RoundedCornerShape(Radii.full)`)
-- Create: `app/src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/Toggles.kt`
-- Modify: `app/src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControls.kt` (`SwitchRow` uses `AppSwitch`)
-- Test: `app/src/test/java/com/primestrider/kotlinstarter/core/designsystem/component/TogglesTest.kt` (new), `ChoiceControlsTest.kt`
+- Modify: `app/src/main/java/com/primestrider/kongsi/core/designsystem/theme/ControlColors.kt` (add `ControlShapes.checkbox = RoundedCornerShape(7.dp)`, `ControlShapes.pill = RoundedCornerShape(Radii.full)`)
+- Create: `app/src/main/java/com/primestrider/kongsi/core/designsystem/component/Toggles.kt`
+- Modify: `app/src/main/java/com/primestrider/kongsi/core/designsystem/component/ChoiceControls.kt` (`SwitchRow` uses `AppSwitch`)
+- Test: `app/src/test/java/com/primestrider/kongsi/core/designsystem/component/TogglesTest.kt` (new), `ChoiceControlsTest.kt`
 
 **Interfaces:**
 - Consumes: `controlFill`, `ControlShapes`, `CONTROL_ANIMATION_MS` from Task 1.
@@ -157,7 +157,7 @@ Run: `gradlew.bat testDebugUnitTest --tests "*TogglesTest" --tests "*ChoiceContr
 
 Run: `gradlew.bat testDebugUnitTest ktlintCheck assembleDebug` → BUILD SUCCESSFUL.
 ```bash
-git add app/src/main/java/com/primestrider/kotlinstarter/core/designsystem app/src/test/java/com/primestrider/kotlinstarter/core/designsystem
+git add app/src/main/java/com/primestrider/kongsi/core/designsystem app/src/test/java/com/primestrider/kongsi/core/designsystem
 git commit -m "feat(designsystem): add borderless AppCheckbox, AppRadioButton and iOS-style AppSwitch"
 ```
 
@@ -166,8 +166,8 @@ git commit -m "feat(designsystem): add borderless AppCheckbox, AppRadioButton an
 ### Task 3: Segmented controls and sliders
 
 **Files:**
-- Modify: `app/src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControls.kt`
-- Test: `app/src/test/java/com/primestrider/kotlinstarter/core/designsystem/component/ChoiceControlsTest.kt`
+- Modify: `app/src/main/java/com/primestrider/kongsi/core/designsystem/component/ChoiceControls.kt`
+- Test: `app/src/test/java/com/primestrider/kongsi/core/designsystem/component/ChoiceControlsTest.kt`
 
 **Interfaces:**
 - Consumes: `controlFill`, `ControlShapes`, `CONTROL_ANIMATION_MS`.
@@ -206,7 +206,7 @@ Commit: `feat(designsystem): restyle segmented choice and sliders, add multi-sel
 **Files:**
 - Modify: `feature/example/auth/SignInScreen.kt:82` (Checkbox → `AppCheckbox`), `feature/example/components/DisplayScreen.kt:133` (Switch → `AppSwitch`, keep `LONG_ROW_SWITCH_TAG`), `feature/example/components/FeedbackScreen.kt:115`, `feature/example/ThemeModeSelector.kt:22`, `feature/example/todos/TodosScreen.kt:88` (segmented rows → `SegmentedChoice`), `TodosScreen.kt:150` (→ `AppCheckbox`), `feature/example/settings/SettingsScreen.kt:78` (→ `AppRadioButton`), `core/designsystem/component/BottomSheets.kt:124` (→ `AppRadioButton`)
 - Modify: `feature/example/components/InputsScreen.kt` — raw `TextField`/`OutlinedTextField` demos (name with hint + leading icon, username error, disabled, bio with counter `BIO_MAX` via `maxLength`) → `AppTextField`; phone `KeyboardField` gets `prefix = "+62"` (string resource `components_field_phone_prefix` in `values/` and `values-in/`); checkbox/`TriStateCheckbox`/radio/switch → `AppCheckbox`/`AppRadioButton`/`AppSwitch` (rows keep their `toggleable`/`selectable` modifiers, controls get `null` callbacks); `Slider`/`RangeSlider` → `LabeledSlider`/`LabeledRangeSlider` with the existing value strings; single and multi segmented rows → `SegmentedChoice`/`MultiSegmentedChoice`. Tabs stay Material (non-goal).
-- Create test: `app/src/test/java/com/primestrider/kotlinstarter/core/designsystem/NoRawMaterialControlsTest.kt`
+- Create test: `app/src/test/java/com/primestrider/kongsi/core/designsystem/NoRawMaterialControlsTest.kt`
 - Modify docs: `docs/architecture/components.md` (new components, `prefix`, filled look, "use these, never Material controls directly"), `docs/architecture/design-system.md` (control colours derived from `primary`/`destructive`, the accepted focus-contrast trade-off, no outline rule).
 - Tests of migrated screens that reference Material-specific nodes (e.g. `InputsScreenTest`, `TodosScreenTest`, `SettingsScreenTest`, `SignInScreenTest`, `DisplayScreenTest`, `FeedbackScreenTest`, `BottomSheetsTest`) must keep passing; fix selectors only if they relied on Material internals, never weaken assertions.
 

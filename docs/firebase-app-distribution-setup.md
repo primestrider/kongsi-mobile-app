@@ -47,14 +47,14 @@ Firebase Console → **Project settings** → **Your apps** → **Add app** → 
 `prod` application id from `app/build.gradle.kts`:
 
 ```
-com.primestrider.kotlinstarter
+com.primestrider.kongsi
 ```
 
 It is case-sensitive and cannot be changed after registration. Skip downloading `google-services.json` and adding the
 SDK: uploading to App Distribution needs neither. Copy the **App ID** from the app's general settings; it looks like
 `1:123456789012:android:a1b2c3d4e5f6a7b8` (not the project ID `name-abc12`, not the project number).
 
-To distribute the `dev` flavour as well, register `com.primestrider.kotlinstarter.dev` as a second app.
+To distribute the `dev` flavour as well, register `com.primestrider.kongsi.dev` as a second app.
 
 ### A2. Enable App Distribution and create a tester group
 

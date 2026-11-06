@@ -1,4 +1,4 @@
-# Kotlin Starter
+# Kongsi
 
 A Kotlin Android starter kit built with Jetpack Compose, Material 3, and Hilt. It is a port of a React Native boilerplate.
 

@@ -19,9 +19,9 @@ Every module carries its own strings. English is the fallback (`values/`), Indon
    same name, same placeholders (`%1$s`, `%1$d`, in the same set). Plurals: a `<plurals>` entry in both files.
    Text that is never translated (e.g. `+62`) gets `translatable="false"` in `values/` only.
 4. **Use it** with `stringResource(R.string.<name>)` in Compose, or `UiText.Resource(R.string.<name>)` from a
-   ViewModel. `R` is the module's own class (`com.primestrider.kotlinstarter.feature.<name>.impl.R`).
+   ViewModel. `R` is the module's own class (`com.primestrider.kongsi.feature.<name>.impl.R`).
 5. **Another module's string** (only from a module that depends on it): import its R under an alias, e.g.
-   `import com.primestrider.kotlinstarter.core.designsystem.R as DesignR` and `DesignR.string.component_retry`. A
+   `import com.primestrider.kongsi.core.designsystem.R as DesignR` and `DesignR.string.component_retry`. A
    feature must not read another feature's strings: copy the text under its own prefix instead.
 
 ## Checklist

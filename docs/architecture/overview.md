@@ -1,6 +1,6 @@
 # Architecture overview
 
-Multi-module app in the style of Google's Now in Android, root package `com.primestrider.kotlinstarter`.
+Multi-module app in the style of Google's Now in Android, root package `com.primestrider.kongsi`.
 
 ## Modules
 
@@ -31,7 +31,7 @@ Three levels, from narrow to wide:
 
 1. **Per screen.** A failed load is state, not an exception: ViewModels catch and map failures to `ApiError` (`safeApiCall`, `toApiError`, see `data-loading.md`) and screens render `LoadingState` / `EmptyState` / `ErrorState` (with Retry) from `core/designsystem/component/StateViews.kt`. A 404 for a single item is "not found", with no Retry.
 2. **App-wide messages.** Short confirmations and non-blocking failures go through the injected `Messenger` (snackbar shown by `MessengerHost` in the shell), so ViewModels never need a `Context`.
-3. **Crashes.** `core/crash/CrashRecorder` is installed in `KotlinStarterApp.attachBaseContext`, before content providers and Hilt start, so crashes during startup are recorded too. On an uncaught exception it stores the class name, a message truncated to 500 characters and the time (no stack trace) with a synchronous `commit()`, then always hands the crash to the previous handler, so the system and any crash reporter still see it and the process still dies. On the next launch `AppViewModel.lastCrash` is non-null and `MainActivity` shows `CrashFallbackScreen` instead of the shell; Continue clears it.
+3. **Crashes.** `core/crash/CrashRecorder` is installed in `KongsiApp.attachBaseContext`, before content providers and Hilt start, so crashes during startup are recorded too. On an uncaught exception it stores the class name, a message truncated to 500 characters and the time (no stack trace) with a synchronous `commit()`, then always hands the crash to the previous handler, so the system and any crash reporter still see it and the process still dies. On the next launch `AppViewModel.lastCrash` is non-null and `MainActivity` shows `CrashFallbackScreen` instead of the shell; Continue clears it.
 
 The recorder deliberately does not try to keep the process alive: after an uncaught exception the app's state is unknown, and continuing would hide the bug and risk corrupting data. A crash reporter (Firebase Crashlytics, Sentry) installs its own handler; install it before `CrashRecorder.install()` so the chain is recorder → reporter → system.
 
@@ -39,7 +39,7 @@ Debug builds have Settings → Developer → "Crash the app" to try it.
 
 ## Background work
 
-WorkManager (`work-runtime-ktx`) runs deferrable work that must survive the app closing. It is initialised on demand, not at startup: the manifest removes `androidx.work.WorkManagerInitializer` from `androidx.startup.InitializationProvider` (`tools:node="remove"`), and `KotlinStarterApp` implements `Configuration.Provider` with the injected `HiltWorkerFactory`. The first `WorkManager.getInstance(context)` builds WorkManager with that configuration, so app start pays nothing for it.
+WorkManager (`work-runtime-ktx`) runs deferrable work that must survive the app closing. It is initialised on demand, not at startup: the manifest removes `androidx.work.WorkManagerInitializer` from `androidx.startup.InitializationProvider` (`tools:node="remove"`), and `KongsiApp` implements `Configuration.Provider` with the injected `HiltWorkerFactory`. The first `WorkManager.getInstance(context)` builds WorkManager with that configuration, so app start pays nothing for it.
 
 - Write workers as `@HiltWorker class XxxWorker @AssistedInject constructor(@Assisted context: Context, @Assisted params: WorkerParameters, ...deps) : CoroutineWorker(...)`; Hilt injects the other constructor parameters.
 - Use unique work names (`enqueueUniquePeriodicWork(name, UPDATE, ...)`) so a worker is never enqueued twice, and keep what a worker records somewhere a fresh process can read (it may run without any activity).

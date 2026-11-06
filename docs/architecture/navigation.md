@@ -22,7 +22,7 @@ Behavior:
 ## Adaptive layouts
 
 - **Shell:** bar or rail, see above (`AppNavigationSuiteTest` checks both with Robolectric `qualifiers = "w840dp-h900dp"`).
-- **List-detail:** `ProductsListDetail` (`feature/products/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/products/ui/ProductsListDetail.kt`) uses Material's `ListDetailPaneScaffold`. When the window fits two panes (`navigator.scaffoldDirective.maxHorizontalPartitions >= 2`), tapping a product shows it beside the list; on narrower windows it is just `ProductsScreen` and a tap navigates to `ProductDetailRoute` as before. The detail's ViewModel takes the id through assisted injection (`hiltViewModel<ProductDetailViewModel, ProductDetailViewModel.Factory>(key = "product-$id") { it.create(id) }`), so the same ViewModel serves the page and the pane.
+- **List-detail:** `ProductsListDetail` (`feature/products/impl/src/main/java/com/primestrider/kongsi/feature/example/products/ui/ProductsListDetail.kt`) uses Material's `ListDetailPaneScaffold`. When the window fits two panes (`navigator.scaffoldDirective.maxHorizontalPartitions >= 2`), tapping a product shows it beside the list; on narrower windows it is just `ProductsScreen` and a tap navigates to `ProductDetailRoute` as before. The detail's ViewModel takes the id through assisted injection (`hiltViewModel<ProductDetailViewModel, ProductDetailViewModel.Factory>(key = "product-$id") { it.create(id) }`), so the same ViewModel serves the page and the pane.
 - **Sizes inside a screen:** derive from the window, not the device type, e.g. the camera preview's `cameraPreviewHeight(screenHeightDp)` keeps the controls visible in landscape.
 
 ## Route objects
@@ -30,7 +30,7 @@ Behavior:
 Each destination is a `@Serializable` object or data class:
 
 - `HomeRoute` and the graph objects live in `app/navigation/AppNavHost.kt`.
-- Feature routes live in the feature's `:api` module (e.g. `feature/products/api/src/main/java/com/primestrider/kotlinstarter/feature/example/ProductsRoutes.kt`). They keep the package `com.primestrider.kotlinstarter.feature.example`, because a route's serial name is its qualified class name and the saved back stack and deep links store it (`RouteNamesTest`); R8 keeps the names too (`verifyReleaseKeeps`).
+- Feature routes live in the feature's `:api` module (e.g. `feature/products/api/src/main/java/com/primestrider/kongsi/feature/example/ProductsRoutes.kt`). They keep the package `com.primestrider.kongsi.feature.example`, because a route's serial name is its qualified class name and the saved back stack and deep links store it (`RouteNamesTest`); R8 keeps the names too (`verifyReleaseKeeps`).
 
 ## Registering a destination
 
@@ -90,7 +90,7 @@ Animations > Page transitions (`animation/transitions/` in `feature/animation/im
 
 The example feature opens screens from outside the app with `<scheme>://example/...`.
 
-- **Scheme:** `appScheme` in `app/build.gradle.kts`: `app.scheme` in `local.properties`, else env `APP_SCHEME`, else `kotlinstarter`. It reaches the manifest as the `${appScheme}` placeholder and the code as `BuildConfig.APP_SCHEME`, so one value drives both.
+- **Scheme:** `appScheme` in `app/build.gradle.kts`: `app.scheme` in `local.properties`, else env `APP_SCHEME`, else `kongsi`. It reaches the manifest as the `${appScheme}` placeholder and the code as `BuildConfig.APP_SCHEME`, so one value drives both.
 - **Manifest:** `MainActivity` has a `VIEW` intent filter (`DEFAULT` + `BROWSABLE`, scheme `${appScheme}`, host `example`) and `launchMode="singleTop"`, so a link delivered to the running activity arrives in `onNewIntent` instead of creating a second instance. That does not keep the back stack for links from outside the app: browsers, other apps, `adb shell am start` and notification taps send the intent with `FLAG_ACTIVITY_NEW_TASK`, and `NavController.handleDeepLink` answers such an intent by restarting the task (`FLAG_ACTIVITY_CLEAR_TASK`) with a back stack built from the graph. Whatever the user had open is gone, and back from the target returns to Home. Only an intent without `NEW_TASK` (one started from inside the app) is navigated to on top of the current back stack.
 - **Graph:** a destination declares its links with the type-safe builder, which derives the path and query from the route class:
 
@@ -104,4 +104,4 @@ The example feature opens screens from outside the app with `<scheme>://example/
 - **Already running:** `MainActivity` creates the `NavHostController` and forwards `onNewIntent` to it with `addOnNewIntentListener { navController.handleDeepLink(it) }`. The first launch is handled by the NavHost itself.
 - **Reading the argument:** a ViewModel gets route fields from its `SavedStateHandle` (`savedStateHandle["amount"]` or `savedStateHandle.toRoute<SdkDemoRoute>()`), which survives rotation and process death.
 - **Plain URI patterns:** a route without fields can use `navDeepLink { uriPattern = "$appScheme://example/todos" }` (`todosDestinations`); the Todos home-screen widget opens the app with that link.
-- **Try it:** `adb shell am start -a android.intent.action.VIEW -d "kotlinstarter://example/sdk/payment-code?amount=50000"`.
+- **Try it:** `adb shell am start -a android.intent.action.VIEW -d "kongsi://example/sdk/payment-code?amount=50000"`.

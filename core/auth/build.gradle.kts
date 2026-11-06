@@ -1,11 +1,11 @@
 plugins {
-    id("kotlinstarter.android.library")
-    id("kotlinstarter.hilt")
+    id("kongsi.android.library")
+    id("kongsi.hilt")
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.primestrider.kotlinstarter.core.auth"
+    namespace = "com.primestrider.kongsi.core.auth"
 }
 
 dependencies {

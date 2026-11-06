@@ -21,4 +21,4 @@
 #-renamesourcefileattribute SourceFile
 # Navigation routes (@Serializable *Route classes in the feature :api modules) keep their names: the saved back
 # stack and deep links refer to them. Checked by ./gradlew verifyReleaseKeeps.
--keepnames @kotlinx.serialization.Serializable class com.primestrider.kotlinstarter.**Route
+-keepnames @kotlinx.serialization.Serializable class com.primestrider.kongsi.**Route

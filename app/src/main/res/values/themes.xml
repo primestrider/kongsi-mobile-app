@@ -1,9 +1,9 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.KotlinStarter" parent="Theme.AppCompat.DayNight.NoActionBar" />
+    <style name="Theme.Kongsi" parent="Theme.AppCompat.DayNight.NoActionBar" />
 
     <!-- Launch theme: shows the system splash screen, then switches to the base theme. -->
-    <style name="Theme.KotlinStarter.Starting" parent="Theme.SplashScreen">
-        <item name="postSplashScreenTheme">@style/Theme.KotlinStarter</item>
+    <style name="Theme.Kongsi.Starting" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.Kongsi</item>
     </style>
 </resources>

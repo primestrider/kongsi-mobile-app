@@ -1,6 +1,6 @@
 # Examples
 
-The example features (`feature/*`) are demo code and can be removed without touching `core/*` (`scripts/remove-examples.sh`). This page covers the "Device APIs" Home section, the `devices` feature (`feature/devices/impl`, package `com.primestrider.kotlinstarter.feature.example.sdk`; paths below are relative to that package): small, real Android screens that exercise one platform API each.
+The example features (`feature/*`) are demo code and can be removed without touching `core/*` (`scripts/remove-examples.sh`). This page covers the "Device APIs" Home section, the `devices` feature (`feature/devices/impl`, package `com.primestrider.kongsi.feature.example.sdk`; paths below are relative to that package): small, real Android screens that exercise one platform API each.
 
 ## The Home list
 
@@ -42,7 +42,7 @@ For a permission asked for when a button is pressed (no gate card), use `remembe
 
 The whole section is the `:feature:devices:api` and `:feature:devices:impl` modules: its manifest (permissions, `<queries>`, the `FileProvider`, the notification receiver), resources, strings, `DevicesDatabase` and dependencies all live there. To remove only this section, delete `feature/devices/`, its two `include` lines in `settings.gradle.kts` and the `// region example:devices` blocks in `app/build.gradle.kts` and `AppNavHost.kt`, then run `./gradlew ktlintFormat` (it drops the now unused imports). Run `bash scripts/remove-examples.sh` (on a copy first, see AGENTS.md) to remove every example feature at once. The deep-link `<intent-filter>` with `${appScheme}` on `MainActivity` stays in `:app`: it is app infrastructure, harmless without demos.
 
-Before deleting, cancel the Background Task demo's periodic work on installed builds (`WorkManager.getInstance(context).cancelUniqueWork("example-background-sync")`, once, for example in an app-update migration), or WorkManager keeps trying to start a `SyncWorker` class that no longer exists (it fails and is dropped, but it is noise). WorkManager itself stays in `:app` (`Configuration.Provider` with the `HiltWorkerFactory` in `KotlinStarterApp`, and the manifest block that removes `androidx.work.WorkManagerInitializer`): it is app infrastructure for on-demand initialisation with Hilt-injected workers. Drop `work-runtime-ktx`, `hilt-work` and the `androidx.hilt.compiler` ksp dependency from `app/build.gradle.kts` together with that code only if no worker is left. The picture-in-picture plumbing also stays: `core/pip/` in `core:ui` (`PictureInPictureHost`, `PictureInPictureFrame`), the host injected in `MainActivity`, and `android:supportsPictureInPicture="true"` and `android:configChanges` on `MainActivity`.
+Before deleting, cancel the Background Task demo's periodic work on installed builds (`WorkManager.getInstance(context).cancelUniqueWork("example-background-sync")`, once, for example in an app-update migration), or WorkManager keeps trying to start a `SyncWorker` class that no longer exists (it fails and is dropped, but it is noise). WorkManager itself stays in `:app` (`Configuration.Provider` with the `HiltWorkerFactory` in `KongsiApp`, and the manifest block that removes `androidx.work.WorkManagerInitializer`): it is app infrastructure for on-demand initialisation with Hilt-injected workers. Drop `work-runtime-ktx`, `hilt-work` and the `androidx.hilt.compiler` ksp dependency from `app/build.gradle.kts` together with that code only if no worker is left. The picture-in-picture plumbing also stays: `core/pip/` in `core:ui` (`PictureInPictureHost`, `PictureInPictureFrame`), the host injected in `MainActivity`, and `android:supportsPictureInPicture="true"` and `android:configChanges` on `MainActivity`.
 
 Tests go with the demos: they live in `feature/devices/impl/src/test/`. Three `:app` tests also depend on demo code and carry the `// remove-examples:` marker: `DeepLinkTest` opens Payment Code through `<scheme>://example/sdk/payment-code` and `DevicesManifestTest` checks the merged permissions, so delete them with the section or point them at your own deep link and permissions; `CrashDeepLinkTest` and `PictureInPictureModeTest` exercise `:app` and `core:ui` plumbing and stay.
 
@@ -130,7 +130,7 @@ Tests go with the demos: they live in `feature/devices/impl/src/test/`. Three `:
 
 ### Share Target (`share-target`)
 
-- **Purpose:** appear in other apps' share sheets and show what they share: text (with its subject) and up to 10 images. The Device APIs page explains it and shares a sample text through the chooser so you can pick Kotlin Starter yourself.
+- **Purpose:** appear in other apps' share sheets and show what they share: text (with its subject) and up to 10 images. The Device APIs page explains it and shares a sample text through the chooser so you can pick Kongsi yourself.
 - **Android API:** intent filters on `ShareReceiverActivity` for `ACTION_SEND` (`text/plain`, `image/*`) and `ACTION_SEND_MULTIPLE` (`image/*`); `SharedContent.from(intent)` reads `EXTRA_TEXT`, `EXTRA_SUBJECT` and `EXTRA_STREAM` (`IntentCompat` for the typed parcelable reads). Images are content URIs the sender grants for as long as the receiving activity lives; Coil loads them.
 - **Why its own activity:** sharing opens one small page on top of the sending app (back returns there) instead of the whole app and its back stack. It is `exported` because other apps start it, so its input is untrusted: unknown actions or types and missing extras give an empty state.
 - **Permissions:** none.
@@ -169,7 +169,7 @@ Tests go with the demos: they live in `feature/devices/impl/src/test/`. Three `:
 - **Permissions:** none. Android 11+ package visibility needs the `<queries>` entries in the manifest.
 - **API-level fallback:** not applicable. `ActivityNotFoundException` is caught everywhere: a missing handler shows a warning banner, and a Custom Tab with no Custom Tabs browser falls back to a plain `ACTION_VIEW`.
 - **Files:** `sdk/browser/ExternalApps.kt` (`ExternalApp`, `openExternal`, `openCustomTab`, `paymentDeepLink`), `sdk/browser/WebBrowserScreen.kt`.
-- **Try the link:** `adb shell am start -a android.intent.action.VIEW -d "kotlinstarter://example/sdk/payment-code?amount=50000"` (the scheme is `appScheme`, see below).
+- **Try the link:** `adb shell am start -a android.intent.action.VIEW -d "kongsi://example/sdk/payment-code?amount=50000"` (the scheme is `appScheme`, see below).
 
 ### Payment Code (`payment-code`)
 
@@ -260,17 +260,17 @@ Tests go with the demos: they live in `feature/devices/impl/src/test/`. Three `:
 
 ### Deep link scheme
 
-The scheme is `appScheme`: `app.scheme` in `local.properties`, else the `APP_SCHEME` environment variable, else `kotlinstarter`. `app/build.gradle.kts` passes it to the manifest as the `${appScheme}` placeholder and to code as `BuildConfig.APP_SCHEME`. The deep link is `<scheme>://example/sdk/<demo id>` (Payment Code also takes `?amount=<IDR>`). Deep-link arguments come from outside the app (any app, web page or `adb` can fire the link), so validate them before use, as `PaymentCodeViewModel` does with a negative `amount`; see docs/architecture/navigation.md.
+The scheme is `appScheme`: `app.scheme` in `local.properties`, else the `APP_SCHEME` environment variable, else `kongsi`. `app/build.gradle.kts` passes it to the manifest as the `${appScheme}` placeholder and to code as `BuildConfig.APP_SCHEME`. The deep link is `<scheme>://example/sdk/<demo id>` (Payment Code also takes `?amount=<IDR>`). Deep-link arguments come from outside the app (any app, web page or `adb` can fire the link), so validate them before use, as `PaymentCodeViewModel` does with a negative `amount`; see docs/architecture/navigation.md.
 
 ## Todos home-screen widget
 
-`feature/todos/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/todos/widget/TodosWidget.kt` is a **Glance** app widget: Compose-style code (`androidx.glance.*` composables only) that Glance turns into `RemoteViews` for the launcher. It shows the number of open todos and the three newest, and a tap opens Todos through `<scheme>://example/todos`.
+`feature/todos/impl/src/main/java/com/primestrider/kongsi/feature/example/todos/widget/TodosWidget.kt` is a **Glance** app widget: Compose-style code (`androidx.glance.*` composables only) that Glance turns into `RemoteViews` for the launcher. It shows the number of open todos and the three newest, and a tap opens Todos through `<scheme>://example/todos`.
 
 - **Data:** a widget is not created by Hilt, so `provideGlance` gets `TodosRepository` through a Hilt `@EntryPoint` (`TodosWidgetEntryPoint`).
 - **Updates:** no polling (`updatePeriodMillis="0"`); `DefaultTodosRepository` calls `TodosWidgetUpdater.update()` (`TodosWidget().updateAll(context)`) after every write, so the widget changes as soon as a todo does.
 - **Declared in** `feature/todos/impl/src/main/AndroidManifest.xml` (`TodosWidgetReceiver` + `res/xml/todos_widget_info.xml`); deleting the feature deletes the widget.
 - **Tests:** `TodosWidgetTest` (`runGlanceAppWidgetUnitTest`), `TodosRepositoryTest` (every write updates), `DeepLinkTest` (the link opens Todos).
-- **Try it:** long-press the home screen > Widgets > Kotlin Starter > Todos.
+- **Try it:** long-press the home screen > Widgets > Kongsi > Todos.
 
 ## The Animations section
 
@@ -283,7 +283,7 @@ The section sits on the Home tab after Device APIs. It shows motion patterns wel
 
 ### Adding an animation page
 
-1. Add a `@Serializable data object` route to `feature/animation/api/src/main/java/com/primestrider/kotlinstarter/feature/example/AnimationRoutes.kt`.
+1. Add a `@Serializable data object` route to `feature/animation/api/src/main/java/com/primestrider/kongsi/feature/example/AnimationRoutes.kt`.
 2. Write `XxxScreen(onBack)` on top of `ExamplePageScaffold`, composed of `AnimExample(title, usage, api) { ... }` cards. Keep user-chosen state in `rememberSaveable`.
 3. Add an `AnimationPage(route, title, subtitle)` entry to `animationPages` in its place in the order.
 4. Add `composable<XxxRoute> { XxxScreen(onBack = back) }` to `animationDestinations` in `animation/AnimationNavigation.kt`.
@@ -297,7 +297,7 @@ The section is the `:feature:animation:api` and `:feature:animation:impl` module
 
 ## The Gestures section
 
-The section sits on the Home tab after Animations. Each page is a list of live gesture examples. Every example is a `DemoSection(title, usage, api, file)` (from `core:ui`), so it shows when to use it, the Compose API behind it, and the file to open (`feature/gestures/impl`, package `com.primestrider.kotlinstarter.feature.example.gestures`). The pages are listed in `gesturePages` (`GesturePages.kt`) in Home order, and each has its own route in `GestureRoutes.kt`. Inline gesture surfaces have a fixed height and consume their pointer input, so the page's vertical scroll never steals a drag that starts on them. Every gesture-only action also has a button or a TalkBack action.
+The section sits on the Home tab after Animations. Each page is a list of live gesture examples. Every example is a `DemoSection(title, usage, api, file)` (from `core:ui`), so it shows when to use it, the Compose API behind it, and the file to open (`feature/gestures/impl`, package `com.primestrider.kongsi.feature.example.gestures`). The pages are listed in `gesturePages` (`GesturePages.kt`) in Home order, and each has its own route in `GestureRoutes.kt`. Inline gesture surfaces have a fixed height and consume their pointer input, so the page's vertical scroll never steals a drag that starts on them. Every gesture-only action also has a button or a TalkBack action.
 
 - **Tap** (`TapScreen.kt`):
   - `Modifier.clickable` with a tap counter.
@@ -330,7 +330,7 @@ The section sits on the Home tab after Animations. Each page is a list of live g
 
 ### Adding a gesture page
 
-1. Add a `@Serializable data object` route to `feature/gestures/api/src/main/java/com/primestrider/kotlinstarter/feature/example/GestureRoutes.kt`.
+1. Add a `@Serializable data object` route to `feature/gestures/api/src/main/java/com/primestrider/kongsi/feature/example/GestureRoutes.kt`.
 2. Write `XxxScreen(onBack)` on top of `ExamplePageScaffold`, made of `DemoSection(title, usage, api, file) { ... }` blocks. Keep user-chosen state in `rememberSaveable`.
 3. Add a `GesturePage(route, title, subtitle)` entry to `gesturePages` in its place in the order.
 4. Add `composable<XxxRoute> { XxxScreen(onBack = back) }` to `gestureDestinations` in `GesturesNavigation.kt`.

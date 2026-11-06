@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - Branch `feat/foundation` (user: stay on it, do not merge). Toolchain unchanged.
-- Components live in `core/designsystem/component/`, package `com.primestrider.kotlinstarter.core.designsystem.component`; they must not import `feature/*` or `app/*`.
+- Components live in `core/designsystem/component/`, package `com.primestrider.kongsi.core.designsystem.component`; they must not import `feature/*` or `app/*`.
 - Components are stateless (state + callbacks in, UI out), take `modifier: Modifier = Modifier` as the first optional parameter, and read colors only from `MaterialTheme.colorScheme` / `AppThemeTokens.colors`.
 - Component strings use the `component_` prefix and exist in `values/` and `values-in/`.
 - Accessibility: icon-only controls have a `contentDescription`; touch targets ≥ 48dp; state carried in semantics (selected tab, error text, disabled).
@@ -72,7 +72,7 @@ docs/architecture/components.md # component catalog (grows per task)
   - `ExamplePageScaffold` keeps its signature and delegates to `AppScaffold` (scroll + subtitle + IME padding stay in `ExamplePageScaffold`).
 - Strings: `nav_home` Home/Beranda, `nav_components` Components/Komponen, `nav_profile` Profile/Profil, `component_back` Back/Kembali (replaces `common_action_back` usages; delete the old key).
 
-- [ ] **Step 1: Write failing tests**: `AppScaffoldTest` — with `onBack = null` no node with content description "Back"; with `onBack` set, clicking it calls it; a 200-char title still leaves an action icon `assertIsDisplayed()`. `AppNavigationBarTest` — 3 items, `selectedIndex = 1` → second item `assertIsSelected()`; clicking third calls `onSelect(2)`; `badgeCount = 120` shows "99+". `MainShellTest` (Hilt, `createAndroidComposeRule<MainActivity>`, content replaced with `MainShell(navController)` like `AppNavHostTest`): (a) open "Colors" from Home, tap Profile tab, tap Home tab → "Colors" top bar title displayed (Review Focus 1); (b) while on Colors, tap Home tab again → Home root ("Kotlin Starter") displayed; (c) on Profile root, `pressBack` via `activity.onBackPressedDispatcher.onBackPressed()` → Home root displayed. Update `AppNavHostTest` to navigate every catalog entry and every Components entry through `MainShell`.
+- [ ] **Step 1: Write failing tests**: `AppScaffoldTest` — with `onBack = null` no node with content description "Back"; with `onBack` set, clicking it calls it; a 200-char title still leaves an action icon `assertIsDisplayed()`. `AppNavigationBarTest` — 3 items, `selectedIndex = 1` → second item `assertIsSelected()`; clicking third calls `onSelect(2)`; `badgeCount = 120` shows "99+". `MainShellTest` (Hilt, `createAndroidComposeRule<MainActivity>`, content replaced with `MainShell(navController)` like `AppNavHostTest`): (a) open "Colors" from Home, tap Profile tab, tap Home tab → "Colors" top bar title displayed (Review Focus 1); (b) while on Colors, tap Home tab again → Home root ("Kongsi") displayed; (c) on Profile root, `pressBack` via `activity.onBackPressedDispatcher.onBackPressed()` → Home root displayed. Update `AppNavHostTest` to navigate every catalog entry and every Components entry through `MainShell`.
 - [ ] **Step 2: Run** `./gradlew testDebugUnitTest --tests "*AppScaffoldTest" --tests "*AppNavigationBarTest" --tests "*MainShellTest"` → FAIL (unresolved).
 - [ ] **Step 3: Implement** components, shell, graphs, `ComponentsHomeScreen`, catalog changes, strings.
 - [ ] **Step 4: Run** full proof command → PASS.

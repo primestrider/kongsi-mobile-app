@@ -11,9 +11,9 @@ A feature is two Gradle modules: `:feature:<name>:api` (routes other modules may
 
 ## Steps
 
-1. **Modules.** Create `feature/<name>/api/build.gradle.kts` with `id("kotlinstarter.feature.api")` and
-   `feature/<name>/impl/build.gradle.kts` with `id("kotlinstarter.feature.impl")`, each with its own
-   `android { namespace = "com.primestrider.kotlinstarter.feature.<name>.api|impl" }`. In `impl` add
+1. **Modules.** Create `feature/<name>/api/build.gradle.kts` with `id("kongsi.feature.api")` and
+   `feature/<name>/impl/build.gradle.kts` with `id("kongsi.feature.impl")`, each with its own
+   `android { namespace = "com.primestrider.kongsi.feature.<name>.api|impl" }`. In `impl` add
    `api(projects.feature.<name>.api)` plus only what you use (`projects.core.network`, `projects.core.datastore`,
    `projects.core.auth`, another feature's `:api`, libraries from `gradle/libs.versions.toml`). Never another `:impl`.
    Add both `include(":feature:<name>:api")` / `include(":feature:<name>:impl")` lines to `settings.gradle.kts`.
@@ -25,7 +25,7 @@ A feature is two Gradle modules: `:feature:<name>:api` (routes other modules may
    - `interface <Name>Repository` + `class Default<Name>Repository @Inject constructor(...)` that returns models.
    - A Hilt module (`@Module @InstallIn(SingletonComponent::class) abstract class <Name>Module`) with
      `@Binds abstract fun bindRepository(impl: Default<Name>Repository): <Name>Repository` and `@Provides` for the
-     Retrofit interface or database. Example: `feature/products/impl/src/main/java/com/primestrider/kotlinstarter/feature/example/products/data/ProductsModule.kt`.
+     Retrofit interface or database. Example: `feature/products/impl/src/main/java/com/primestrider/kongsi/feature/example/products/data/ProductsModule.kt`.
 4. **UI** (`…<name>.ui`): a stateless `<Name>Screen(state, callbacks…)`, a `@HiltViewModel` exposing one
    `StateFlow` of UI state, and `fun NavGraphBuilder.<name>Destinations(navController: NavController)` that registers
    `composable<Route> { … hiltViewModel() … }`. Form controls only from `core:designsystem`.
@@ -33,7 +33,7 @@ A feature is two Gradle modules: `:feature:<name>:api` (routes other modules may
    (see `add-translation`). Permissions, providers or receivers go in the module's own
    `src/main/AndroidManifest.xml` (see `add-permission-feature`).
 6. **Wire in `:app`.** In `app/build.gradle.kts` add `implementation(projects.feature.<name>.api)` and `.impl`. In
-   `app/src/main/java/com/primestrider/kotlinstarter/app/navigation/AppNavHost.kt` call `<name>Destinations(navController)`
+   `app/src/main/java/com/primestrider/kongsi/app/navigation/AppNavHost.kt` call `<name>Destinations(navController)`
    inside the tab graph it belongs to (`homeGraph`, or a `navigation<…Graph>` in `featureGraphs`); a new tab is a
    `TopLevelTab` in `topLevelTabs`. Do **not** wrap a real feature in `// region example:` markers: those mark the
    examples `scripts/remove-examples.sh` deletes.

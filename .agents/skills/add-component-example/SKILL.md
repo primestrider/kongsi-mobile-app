@@ -25,13 +25,13 @@ reusable components themselves live in `core:designsystem` (`…core.designsyste
 
 ## A new page
 
-Route in `feature/catalog/api/src/main/java/com/primestrider/kotlinstarter/feature/example/CatalogRoutes.kt`,
+Route in `feature/catalog/api/src/main/java/com/primestrider/kongsi/feature/example/CatalogRoutes.kt`,
 `composable<…>` in `catalogComponentsDestinations` (`CatalogNavigation.kt`), an `ExampleEntry` in `componentEntries`
 (`ExampleCatalog.kt`) with title/subtitle strings, a page built on `ExamplePageScaffold`, and its test.
 
 ## A new reusable component
 
-1. Add it to `core/designsystem/src/main/java/com/primestrider/kotlinstarter/core/designsystem/component/`: stateless,
+1. Add it to `core/designsystem/src/main/java/com/primestrider/kongsi/core/designsystem/component/`: stateless,
    `modifier: Modifier = Modifier` first optional parameter, colours from `LocalAppColors` / `MaterialTheme`
    (control colours: `ControlColors.kt`), strings with the `component_` prefix, 48dp touch targets, semantics for
    TalkBack.

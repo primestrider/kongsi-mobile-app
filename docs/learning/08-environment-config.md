@@ -33,7 +33,7 @@ flowchart LR
 
 ### 1. Resolve the value
 
-`build-logic/convention/src/main/kotlin/com/primestrider/kotlinstarter/buildlogic/AndroidConfig.kt`:
+`build-logic/convention/src/main/kotlin/com/primestrider/kongsi/buildlogic/AndroidConfig.kt`:
 
 ```kotlin
 /** `local.properties` [key], else environment variable [env], else [default]; blank values count as absent. */
@@ -76,7 +76,7 @@ build fails on a stray `"`.
 
 ### 3. Read it in one place
 
-`app/src/main/java/com/primestrider/kotlinstarter/app/di/EnvironmentModule.kt` is the only code that reads
+`app/src/main/java/com/primestrider/kongsi/app/di/EnvironmentModule.kt` is the only code that reads
 `BuildConfig.API_URL`:
 
 ```kotlin
@@ -95,7 +95,7 @@ do not know which environment they run in, and tests can provide their own URL.
 | --- | --- | --- | --- |
 | `api.url` | `API_URL` | `https://dummyjson.com/` | API base URL; keep the trailing slash |
 | `api.pins` | `API_PINS` | empty (no pinning) | certificate pins; see `networking.md` |
-| `app.scheme` | `APP_SCHEME` | `kotlinstarter` | deep-link scheme (`dev` adds `-dev`) |
+| `app.scheme` | `APP_SCHEME` | `kongsi` | deep-link scheme (`dev` adds `-dev`) |
 | `play.integrity.project` | `PLAY_INTEGRITY_PROJECT` | `0` | Play Integrity demo; see `feature/devices/impl/build.gradle.kts` |
 | `android.keystore.path` and friends | `ANDROID_KEYSTORE_PATH` and friends | none (debug-signed) | release signing; see `release.md` |
 

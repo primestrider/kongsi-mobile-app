@@ -49,9 +49,9 @@ flowchart TB
 
 | Module | Owns | Read first |
 | --- | --- | --- |
-| `:app` | `MainActivity`, the tab shell, `AppNavHost.kt` (the only place that connects features), the environment (flavours, API URL) | `app/src/main/java/com/primestrider/kotlinstarter/app/navigation/AppNavHost.kt` |
+| `:app` | `MainActivity`, the tab shell, `AppNavHost.kt` (the only place that connects features), the environment (flavours, API URL) | `app/src/main/java/com/primestrider/kongsi/app/navigation/AppNavHost.kt` |
 | `:core:designsystem` | colours, typography, spacing tokens, reusable components (buttons, fields, dialogs…) | `docs/architecture/design-system.md`, `docs/architecture/components.md` |
-| `:core:ui` | screens shared by features: crash fallback, permission card, picture-in-picture | `core/ui/src/main/java/com/primestrider/kotlinstarter/core/permission/PermissionGate.kt` |
+| `:core:ui` | screens shared by features: crash fallback, permission card, picture-in-picture | `core/ui/src/main/java/com/primestrider/kongsi/core/permission/PermissionGate.kt` |
 | `:core:network` | Retrofit/OkHttp clients, `ApiError`, `safeApiCall` | `docs/architecture/networking.md` |
 | `:core:auth` | the session, bearer token, refresh on 401, the `AuthAdapter` seam | `docs/architecture/auth-session.md` |
 | `:core:datastore` | small key/value preferences (theme, language) | `docs/architecture/storage-database.md` |
@@ -122,11 +122,11 @@ A feature module's whole build file is a few lines, because the shared setup liv
 
 ```kotlin
 plugins {
-    id("kotlinstarter.feature.impl")      // Android library + Compose + Hilt + core:designsystem/ui/common + navigation
+    id("kongsi.feature.impl")      // Android library + Compose + Hilt + core:designsystem/ui/common + navigation
 }
 
 android {
-    namespace = "com.primestrider.kotlinstarter.feature.todos.impl"   // package of this module's R class
+    namespace = "com.primestrider.kongsi.feature.todos.impl"   // package of this module's R class
 }
 
 dependencies {
@@ -137,7 +137,7 @@ dependencies {
 }
 ```
 
-- `id("kotlinstarter.feature.impl")` is defined in `build-logic/convention/src/main/kotlin/FeaturePlugins.kt`. It
+- `id("kongsi.feature.impl")` is defined in `build-logic/convention/src/main/kotlin/FeaturePlugins.kt`. It
   applies the Android library, Compose and Hilt plugins and adds the core modules every screen needs, so every feature
   module gets the same setup.
 - `projects.feature.todos.api` is a type-safe reference to another module; a typo is a build error.
