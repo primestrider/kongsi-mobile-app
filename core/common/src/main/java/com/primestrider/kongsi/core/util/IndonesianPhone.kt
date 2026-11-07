@@ -27,4 +27,10 @@ object IndonesianPhone {
 
     /** The number as written locally (`081234567890`), or null when it is not a mobile number. */
     fun local(raw: String): String? = subscriber(raw)?.let { "0$it" }
+
+    /**
+     * The number in international form without the plus (`6281234567890`), as `wa.me` links and contact matching
+     * need it, or null when it is not a mobile number.
+     */
+    fun international(raw: String): String? = subscriber(raw)?.let { "62$it" }
 }

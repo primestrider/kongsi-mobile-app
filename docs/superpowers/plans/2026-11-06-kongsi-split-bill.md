@@ -283,7 +283,7 @@ feature/bill/impl
       Rules worded per UX Principles and jumping to the item they concern. Tests: validation (empty name, zero
       price), toggling flags updates the warnings, total mismatch warning, tax mismatch warning, blocking error when a
       charge has no eligible item, tapping a warning focuses the item.
-- [ ] **7. Phone numbers.** `PhoneNumbers.normalise` (`08…`, `+62 8…`, `62-8…` → `628…`; strip spaces, `-`, `(`, `)`),
+- [x] **7. Phone numbers.** Done as `IndonesianPhone.international` in `core.util` (next to `local` and `subscriber`, which Profile and e-wallet accounts already used), instead of a separate `PhoneNumbers.normalise` (`08…`, `+62 8…`, `62-8…` → `628…`; strip spaces, `-`, `(`, `)`),
       used by contacts, frequent people and WhatsApp. Tests: normalisation table, invalid input returns null.
 - [ ] **8. ContactsRepository.** `search(query)` and `fromPickerResult(uri)` over `ContactsContract`, mobile numbers
       first, one row per number, WhatsApp badge. Tests: Robolectric `ContentProvider` fixture with several contacts,
@@ -309,7 +309,7 @@ feature/bill/impl
 - [ ] **14. BillMessageBuilder.** Pure, locale-aware (en/id), currency formatting from `core.util`. Tests: golden
       strings for en and id, with zero, one and several accounts (bank and e-wallet), number on its own line,
       shared-item fraction text.
-- [ ] **15. WhatsAppSharer.** `wa.me` link from the number normalised in Task 7, `ACTION_SEND` with WhatsApp →
+- [ ] **15. WhatsAppSharer.** `wa.me` link from `IndonesianPhone.international` (Task 7), `ACTION_SEND` with WhatsApp →
       WhatsApp Business → chooser fallback, `<queries>` in manifest. Tests: intent built for each fallback case
       (Robolectric `ShadowPackageManager`).
 - [ ] **16. Share actions on Summary.** "Send" per person, "Send summary to group". A person without a number gets an

@@ -31,6 +31,25 @@ class IndonesianPhoneTest {
     }
 
     @Test
+    fun international_form_is_what_whatsapp_links_need() {
+        mapOf(
+            "081234567890" to "6281234567890",
+            "0812-3456-7890" to "6281234567890",
+            "+62 812 3456 7890" to "6281234567890",
+            "62-812-3456-7890" to "6281234567890",
+            "(0812) 3456 7890" to "6281234567890",
+            "812.3456.7890" to "6281234567890",
+        ).forEach { (raw, expected) -> assertEquals(raw, expected, IndonesianPhone.international(raw)) }
+    }
+
+    @Test
+    fun international_form_of_a_wrong_number_is_null() {
+        listOf("", "0212345678", "+1 812 345 6789", "08123456", "abc").forEach { raw ->
+            assertNull(raw, IndonesianPhone.international(raw))
+        }
+    }
+
+    @Test
     fun rejects_what_is_not_an_indonesian_mobile_number() {
         listOf(
             "",
