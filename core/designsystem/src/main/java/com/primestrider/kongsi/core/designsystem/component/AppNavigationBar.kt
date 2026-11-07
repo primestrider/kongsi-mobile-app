@@ -1,6 +1,8 @@
 package com.primestrider.kongsi.core.designsystem.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,24 +18,35 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.primestrider.kongsi.core.designsystem.icon.AppIcons
 import com.primestrider.kongsi.core.designsystem.theme.PreviewTheme
@@ -41,14 +54,17 @@ import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 
 private const val BADGE_MAX = 99
 
-/** How far the raised action button rises above the bar's top edge. */
-private val ACTION_RISE: Dp = 20.dp
+/** Diameter of the raised action button, centred on the bar's top edge. */
+private val ACTION_SIZE: Dp = 60.dp
 
 /** Height of a Material 3 navigation bar (without the system navigation bar inset). */
 private val BAR_HEIGHT: Dp = 80.dp
 
-/** Diameter of the raised action button. */
-private val ACTION_SIZE: Dp = 60.dp
+/** Radius of the half-round bites along the bar's torn top edge. */
+private val TEAR_RADIUS: Dp = 6.dp
+
+/** Distance from one bite to the next. */
+private val TEAR_PERIOD: Dp = 16.dp
 
 /** One destination of [AppNavigationBar]; a positive [badgeCount] shows a count badge ("99+" above 99). */
 data class NavBarItem(
@@ -58,8 +74,8 @@ data class NavBarItem(
 )
 
 /**
- * The app's main action, shown as a raised round button in the middle of the bar (like a payment app's scan button)
- * and as a FAB at the top of the navigation rail. It is an action, not a destination: it is never selected.
+ * The app's main action, shown as a round ink button on the middle of the bar's top edge and as a FAB at the top of the
+ * navigation rail. It is an action, not a destination: it is never selected.
  */
 data class NavBarAction(
     val label: String,
@@ -70,8 +86,9 @@ data class NavBarAction(
 const val APP_NAVIGATION_BAR_TAG = "app_navigation_bar"
 
 /**
- * Bottom navigation bar for top-level destinations. Stateless: the caller owns [selectedIndex]. With a [centerAction]
- * the destinations split around a raised button in the middle (the first half of [items] on the start side).
+ * Bottom navigation bar for top-level destinations, cut like a torn-off receipt: a card whose top edge is a row of
+ * half-round bites. Stateless: the caller owns [selectedIndex]. With a [centerAction] the destinations split around a
+ * round ink button sitting on the middle of the edge (the first half of [items] on the start side).
  */
 @Composable
 fun AppNavigationBar(
@@ -82,15 +99,24 @@ fun AppNavigationBar(
     centerAction: NavBarAction? = null,
 ) {
     val split = items.size / 2
-    // The raised button sits in a strip above the bar: drawn outside the bar it would be clipped and, past the
-    // bar's bounds, would not receive touches.
+    // The raised button's upper half sits in a strip above the bar: drawn outside the bar it would be clipped and,
+    // past the bar's bounds, would not receive touches.
     Box(modifier.testTag(APP_NAVIGATION_BAR_TAG)) {
-        Column(Modifier.padding(top = if (centerAction != null) ACTION_RISE else 0.dp)) {
-            // A hairline over the screen's background instead of a tonal slab.
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            NavigationBar(containerColor = MaterialTheme.colorScheme.background, tonalElevation = 0.dp) {
+        Surface(
+            shape = TornEdgeShape,
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            shadowElevation = 6.dp,
+            modifier = Modifier.padding(top = if (centerAction != null) ACTION_SIZE / 2 else 0.dp),
+        ) {
+            // Room for the bites, so the items stay on solid card.
+            NavigationBar(
+                containerColor = Color.Transparent,
+                tonalElevation = 0.dp,
+                modifier = Modifier.padding(top = TEAR_RADIUS),
+            ) {
                 items.forEachIndexed { index, item ->
-                    if (centerAction != null && index == split) CenterActionSlot(centerAction)
+                    if (centerAction != null && index == split) CenterSlot()
                     NavigationBarItem(
                         selected = index == selectedIndex,
                         onClick = { onSelect(index) },
@@ -99,53 +125,33 @@ fun AppNavigationBar(
                         colors = navItemColors(),
                     )
                 }
-                if (centerAction != null && split == items.size) CenterActionSlot(centerAction)
+                if (centerAction != null && split == items.size) CenterSlot()
             }
         }
         if (centerAction != null) RaisedActionButton(centerAction, Modifier.align(Alignment.TopCenter))
     }
 }
 
-/** The slot in the bar under the raised button: holds the label and is the node TalkBack reads and taps. */
+/** The space in the bar under the raised button, so the destinations keep clear of it. */
 @Composable
-private fun RowScope.CenterActionSlot(action: NavBarAction) {
-    Box(
-        Modifier
-            .weight(1f)
-            // The bar's own height; fillMaxHeight would stretch the bar over the whole screen.
-            .height(BAR_HEIGHT)
-            .clickable(role = Role.Button, onClick = action.onClick),
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        Text(
-            action.label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            // Lines the label up with the destinations' labels.
-            modifier = Modifier.padding(bottom = 16.dp),
-        )
-    }
+private fun RowScope.CenterSlot() {
+    Box(Modifier.weight(1f).height(BAR_HEIGHT))
 }
 
+/** The round main action on the bar's top edge. It has no visible label; TalkBack reads [NavBarAction.label]. */
 @Composable
 private fun RaisedActionButton(
     action: NavBarAction,
     modifier: Modifier = Modifier,
 ) {
-    // A ring in the screen colour, so the button looks cut out of the bar's edge. It is a disc of its own rather
-    // than a border: a border over the coloured disc leaves a faint fringe at its outer edge.
     Box(
         modifier
             .size(ACTION_SIZE)
-            .background(MaterialTheme.colorScheme.background, CircleShape)
-            .padding(4.dp)
-            // The slot below already announces the action; this is the same target, made bigger.
-            .clearAndSetSemantics {}
+            .shadow(4.dp, CircleShape)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary)
-            .clickable(onClick = action.onClick),
+            .clickable(role = Role.Button, onClick = action.onClick)
+            .semantics { contentDescription = action.label },
         contentAlignment = Alignment.Center,
     ) {
         Icon(
@@ -168,6 +174,42 @@ private fun navItemColors(): NavigationBarItemColors {
         unselectedIconColor = scheme.onSurfaceVariant,
         unselectedTextColor = scheme.onSurfaceVariant,
     )
+}
+
+/**
+ * A rectangle whose top edge is torn like a receipt: half-round bites of [TEAR_RADIUS] every [TEAR_PERIOD], centred
+ * so both ends of the edge match.
+ */
+private object TornEdgeShape : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density,
+    ): Outline {
+        val radius = with(density) { TEAR_RADIUS.toPx() }
+        val period = with(density) { TEAR_PERIOD.toPx() }
+        val count = (size.width / period).toInt()
+        val offset = (size.width - count * period) / 2
+        val path =
+            Path().apply {
+                moveTo(0f, size.height)
+                lineTo(0f, 0f)
+                repeat(count) { i ->
+                    val center = offset + period / 2 + i * period
+                    lineTo(center - radius, 0f)
+                    arcTo(
+                        rect = Rect(center - radius, -radius, center + radius, radius),
+                        startAngleDegrees = 180f,
+                        sweepAngleDegrees = -180f,
+                        forceMoveTo = false,
+                    )
+                }
+                lineTo(size.width, 0f)
+                lineTo(size.width, size.height)
+                close()
+            }
+        return Outline.Generic(path)
+    }
 }
 
 /** The item's icon with its count badge ("99+" above [BADGE_MAX]); shared by the bar and the rail. */

@@ -10,6 +10,7 @@ import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -58,11 +59,13 @@ class AppNavigationBarTest {
             }
         }
         val home = rule.onNodeWithText("Home").fetchSemanticsNode().boundsInRoot
-        val action = rule.onNodeWithText("New bill").fetchSemanticsNode().boundsInRoot
+        val action = rule.onNodeWithContentDescription("New bill").fetchSemanticsNode().boundsInRoot
         val inbox = rule.onNodeWithText("Inbox").fetchSemanticsNode().boundsInRoot
         assertTrue(home.right <= action.left && action.right <= inbox.left)
-        rule.onNodeWithText("New bill").assertHasClickAction().performClick()
-        // One node for TalkBack: the raised circle adds no second "New bill" button.
+        rule.onNodeWithContentDescription("New bill").assertHasClickAction().performClick()
+        // No text label under the raised button.
+        rule.onNodeWithText("New bill").assertDoesNotExist()
+        // One node for TalkBack per target: two destinations and the raised button.
         rule.onAllNodes(hasClickAction()).assertCountEquals(3)
         assertEquals(1, actions)
         assertEquals(-1, selected)
