@@ -2,6 +2,7 @@ package com.primestrider.kongsi.feature.bill.ui.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -57,6 +59,7 @@ fun BillHomeScreen(
     state: BillHomeUiState,
     onOpenPaymentAccounts: () -> Unit,
     onDeleteBill: (Long) -> Unit,
+    onOpenBill: (Long) -> Unit,
 ) {
     AppScaffold(title = stringResource(R.string.bill_home_title)) { padding ->
         LazyColumn(
@@ -79,7 +82,12 @@ fun BillHomeScreen(
                         )
                     }
                     items(state.bills, key = { it.id }) { bill ->
-                        BillCard(bill, onDelete = { onDeleteBill(bill.id) }, modifier = Modifier.animateItem())
+                        BillCard(
+                            bill,
+                            onOpen = { onOpenBill(bill.id) },
+                            onDelete = { onDeleteBill(bill.id) },
+                            modifier = Modifier.animateItem(),
+                        )
                     }
                 }
             }
@@ -90,6 +98,7 @@ fun BillHomeScreen(
 @Composable
 private fun BillCard(
     bill: BillRow,
+    onOpen: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -102,7 +111,9 @@ private fun BillCard(
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(
-            Modifier.padding(start = Spacing.s4, top = Spacing.s3, bottom = Spacing.s3, end = Spacing.s1),
+            Modifier
+                .clickable(role = Role.Button, onClick = onOpen)
+                .padding(start = Spacing.s4, top = Spacing.s3, bottom = Spacing.s3, end = Spacing.s1),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.s2),
         ) {
@@ -251,6 +262,7 @@ private fun BillHomeScreenPreview() {
                 ),
             onOpenPaymentAccounts = {},
             onDeleteBill = {},
+            onOpenBill = {},
         )
     }
 }
@@ -259,6 +271,7 @@ private fun BillHomeScreenPreview() {
 @Composable
 private fun BillHomeEmptyPreview() {
     PreviewTheme {
-        BillHomeScreen(state = BillHomeUiState(loaded = true, showAccountHint = true), onOpenPaymentAccounts = {}, onDeleteBill = {})
+        BillHomeScreen(state = BillHomeUiState(loaded = true, showAccountHint = true), onOpenPaymentAccounts = {
+        }, onDeleteBill = {}, onOpenBill = {})
     }
 }

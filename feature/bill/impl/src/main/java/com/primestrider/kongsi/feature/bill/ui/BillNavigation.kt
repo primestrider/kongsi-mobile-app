@@ -14,6 +14,7 @@ import com.primestrider.kongsi.core.designsystem.component.LocalMessenger
 import com.primestrider.kongsi.core.designsystem.component.NavBarAction
 import com.primestrider.kongsi.core.designsystem.component.UiText
 import com.primestrider.kongsi.core.designsystem.icon.AppIcons
+import com.primestrider.kongsi.feature.bill.BillEditRoute
 import com.primestrider.kongsi.feature.bill.PaymentAccountEditRoute
 import com.primestrider.kongsi.feature.bill.PaymentAccountsRoute
 import com.primestrider.kongsi.feature.bill.impl.R
@@ -24,6 +25,9 @@ import com.primestrider.kongsi.feature.bill.ui.accounts.PaymentAccountsScreen
 import com.primestrider.kongsi.feature.bill.ui.accounts.PaymentAccountsViewModel
 import com.primestrider.kongsi.feature.bill.ui.home.BillHomeScreen
 import com.primestrider.kongsi.feature.bill.ui.home.BillHomeViewModel
+import com.primestrider.kongsi.feature.bill.ui.review.BillReviewActions
+import com.primestrider.kongsi.feature.bill.ui.review.BillReviewScreen
+import com.primestrider.kongsi.feature.bill.ui.review.BillReviewViewModel
 
 /** The app's Home, rendered by `:app` on its `HomeRoute`; [onOpen] navigates to one of this feature's routes. */
 @Composable
@@ -34,6 +38,7 @@ fun BillHome(onOpen: (Any) -> Unit) {
         state = state,
         onOpenPaymentAccounts = { onOpen(PaymentAccountsRoute) },
         onDeleteBill = viewModel::delete,
+        onOpenBill = { id -> onOpen(BillEditRoute(id)) },
     )
 }
 
@@ -43,16 +48,38 @@ fun BillHome(onOpen: (Any) -> Unit) {
  */
 @Composable
 fun rememberNewBillAction(onOpen: (Any) -> Unit): NavBarAction {
-    val messenger = LocalMessenger.current
     val label = stringResource(R.string.bill_home_new_bill)
-    return remember(label, messenger, onOpen) {
-        // Bill creation arrives with the next tasks of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
-        NavBarAction(label, AppIcons.ListAdd) { messenger.info(UiText.Resource(R.string.bill_home_new_bill_soon)) }
-    }
+    return remember(label, onOpen) { NavBarAction(label, AppIcons.ListAdd) { onOpen(BillEditRoute()) } }
 }
 
 /** Every page of the bill feature except Home. */
 fun NavGraphBuilder.billDestinations(navController: NavController) {
+    composable<BillEditRoute> {
+        val viewModel: BillReviewViewModel = hiltViewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val messenger = LocalMessenger.current
+        BillReviewScreen(
+            // The typed fields come straight from the ViewModel's Compose state (see BillReviewViewModel.title).
+            state = state.copy(title = viewModel.title, charges = viewModel.charges),
+            actions =
+                BillReviewActions(
+                    onBack = { navController.popBackStack() },
+                    onTitleChange = viewModel::onTitleChange,
+                    onChargeChange = viewModel::onChargeChange,
+                    onRateChange = viewModel::onRateChange,
+                    onAddItem = viewModel::startNewItem,
+                    onEditItem = viewModel::editItem,
+                    onEditorChange = viewModel::updateEditor,
+                    onSaveItem = viewModel::saveItem,
+                    onDeleteItem = viewModel::deleteItem,
+                    onDismissEditor = viewModel::dismissEditor,
+                    onWarningClick = viewModel::onWarningClick,
+                    onFocusShown = viewModel::onFocusShown,
+                    // The People step arrives with Task 9 of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
+                    onNext = { messenger.info(UiText.Resource(R.string.bill_review_next_soon)) },
+                ),
+        )
+    }
     composable<PaymentAccountsRoute> {
         val viewModel: PaymentAccountsViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()

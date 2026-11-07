@@ -78,16 +78,7 @@ data class SplitResult(
 object SplitCalculator {
     fun split(bill: Bill): SplitResult {
         val issues = mutableListOf<SplitIssue>()
-        val prices = bill.items.associate { it.id to Fraction.of(it.totalMinor) }
-
-        val serviceBase = bill.items.filter { it.serviceable }.sumFractions { prices.getValue(it.id) }
-        val service =
-            spread(bill.items, bill.service.amountMinor, serviceBase, ChargeType.SERVICE, issues) { item ->
-                if (item.serviceable) prices.getValue(item.id) else null
-            }
-
-        val taxBases = bill.items.associate { it.id to prices.getValue(it.id) + service.getValue(it.id) }
-        val taxBase = bill.items.filter { it.taxable }.sumFractions { taxBases.getValue(it.id) }
+        val (prices, serviceBase, service, taxBases, taxBase) = serviceAndTaxBases(bill, issues)
         val tax =
             spread(bill.items, bill.tax.amountMinor, taxBase, ChargeType.TAX, issues) { item ->
                 if (item.taxable) taxBases.getValue(item.id) else null
@@ -141,6 +132,54 @@ object SplitCalculator {
     }
 
     /**
+     * The charge a [rateBps] rate gives on this bill (10% = 1000), for the "%" helper: service on the serviceable
+     * items, tax on the taxable items plus their service (PB1 order), discount on every item. Rounded to whole units.
+     */
+    fun chargeAmount(
+        bill: Bill,
+        type: ChargeType,
+        rateBps: Int,
+    ): Long {
+        val bases = serviceAndTaxBases(bill, mutableListOf())
+        val base =
+            when (type) {
+                ChargeType.SERVICE -> bases.serviceBase
+                ChargeType.TAX -> bases.taxBase
+                ChargeType.DISCOUNT -> bill.items.sumFractions { bases.prices.getValue(it.id) }
+            }
+        return applyRate(base, rateBps)
+    }
+
+    /** Item prices, the service spread over them and the tax base that follows (price + service per item). */
+    private data class Bases(
+        val prices: Map<Long, Fraction>,
+        val serviceBase: Fraction,
+        val service: Map<Long, Fraction>,
+        val taxBases: Map<Long, Fraction>,
+        val taxBase: Fraction,
+    )
+
+    private fun serviceAndTaxBases(
+        bill: Bill,
+        issues: MutableList<SplitIssue>,
+    ): Bases {
+        val prices = bill.items.associate { it.id to Fraction.of(it.totalMinor) }
+        val serviceBase = bill.items.filter { it.serviceable }.sumFractions { prices.getValue(it.id) }
+        val service =
+            spread(bill.items, bill.service.amountMinor, serviceBase, ChargeType.SERVICE, issues) { item ->
+                if (item.serviceable) prices.getValue(item.id) else null
+            }
+        val taxBases = bill.items.associate { it.id to prices.getValue(it.id) + service.getValue(it.id) }
+        val taxBase = bill.items.filter { it.taxable }.sumFractions { taxBases.getValue(it.id) }
+        return Bases(prices, serviceBase, service, taxBases, taxBase)
+    }
+
+    private fun applyRate(
+        base: Fraction,
+        rateBps: Int,
+    ): Long = (base * Fraction.of(rateBps.toLong()) / Fraction.of(BPS_PER_UNIT)).roundHalfUp()
+
+    /**
      * [amountMinor] spread over the items [weight] returns a weight for, in proportion to it; other items get zero.
      * With nothing to spread over, the charge is reported and spread over no one.
      */
@@ -166,7 +205,7 @@ object SplitCalculator {
         issues: MutableList<SplitIssue>,
     ) {
         val rate = charge.rateBps ?: return
-        val calculated = (base * Fraction.of(rate.toLong()) / Fraction.of(BPS_PER_UNIT)).roundHalfUp()
+        val calculated = applyRate(base, rate)
         // More than 1% of the printed amount apart: |calculated − printed| × 100 > printed.
         if (abs(calculated - charge.amountMinor) * 100 > charge.amountMinor) {
             issues += SplitIssue.RateMismatch(type, charge.amountMinor, calculated)

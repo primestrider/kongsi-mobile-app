@@ -230,6 +230,22 @@ class SplitCalculatorTest {
     }
 
     @Test
+    fun rate_fills_service_from_serviceable_items_and_tax_from_items_plus_service() {
+        val bill = dinner()
+
+        assertEquals(6_600, SplitCalculator.chargeAmount(bill, ChargeType.SERVICE, rateBps = 500))
+        assertEquals(13_860, SplitCalculator.chargeAmount(bill, ChargeType.TAX, rateBps = 1000))
+    }
+
+    @Test
+    fun rate_ignores_items_the_charge_does_not_apply_to() {
+        // Ocha without tax: 10% of Nasi Goreng and Steak plus their service (31.500 + 94.500).
+        assertEquals(12_600, SplitCalculator.chargeAmount(dinner(ochaTaxable = false), ChargeType.TAX, rateBps = 1000))
+        // Ocha without service: 5% of 120.000.
+        assertEquals(6_000, SplitCalculator.chargeAmount(dinner(ochaServiceable = false), ChargeType.SERVICE, rateBps = 500))
+    }
+
+    @Test
     fun shares_always_add_up_to_the_bill_total() {
         val random = Random(seed = 42)
         repeat(2_000) { round ->

@@ -3,7 +3,6 @@
     <!-- Home -->
     <string name="bill_home_title">Kongsi</string>
     <string name="bill_home_new_bill">Bill baru</string>
-    <string name="bill_home_new_bill_soon">Fitur membuat bill segera hadir</string>
     <string name="bill_home_empty_title">Belum ada bill</string>
     <string name="bill_home_empty_body">Bill yang sudah kamu bagi akan muncul di sini.</string>
     <string name="bill_home_steps_title">Cara kerjanya</string>
@@ -33,6 +32,50 @@
     <string name="bill_total_assigned">%1$s dari %2$s sudah dibagi</string>
     <string name="bill_total_shares_add_up">Total semua bagian pas %1$s</string>
     <string name="bill_money_invalid">Ketik nominal, mis. 45.000 atau 45rb</string>
+
+    <!-- Review items -->
+    <string name="bill_review_title_new">Bill baru</string>
+    <string name="bill_review_name">Nama bill</string>
+    <string name="bill_review_name_hint">mis. Makan malam sushi</string>
+    <string name="bill_review_items">Item</string>
+    <string name="bill_review_items_empty">Masukkan isi struk, satu baris per item.</string>
+    <string name="bill_review_add_item">Tambah item</string>
+    <string name="bill_review_charges">Servis, pajak, dan diskon</string>
+    <string name="bill_review_service">Servis</string>
+    <string name="bill_review_tax">Pajak</string>
+    <string name="bill_review_discount">Diskon</string>
+    <string name="bill_review_rate">%</string>
+    <string name="bill_review_receipt_total">Total di struk</string>
+    <string name="bill_review_receipt_total_support">Opsional. Kami cek semuanya pas dengan total ini.</string>
+    <string name="bill_review_next">Lanjut</string>
+    <string name="bill_review_next_soon">Fitur menambahkan orang segera hadir</string>
+    <string name="bill_item_tag_no_tax">tanpa pajak</string>
+    <string name="bill_item_tag_no_service">tanpa servis</string>
+    <string name="bill_item_add_title">Tambah item</string>
+    <string name="bill_item_edit_title">Ubah item</string>
+    <string name="bill_item_name">Nama item</string>
+    <string name="bill_item_name_error">Isi nama item</string>
+    <string name="bill_item_quantity">Jumlah</string>
+    <string name="bill_item_quantity_error">Minimal 1</string>
+    <string name="bill_item_price">Harga total item ini</string>
+    <string name="bill_item_price_error">Isi harga sesuai struk</string>
+    <string name="bill_item_serviceable">Kena servis</string>
+    <string name="bill_item_taxable">Kena pajak</string>
+    <string name="bill_item_save">Simpan</string>
+    <string name="bill_item_delete">Hapus item</string>
+    <string name="bill_item_deleted">%1$s dihapus</string>
+    <string name="bill_save_failed">Gagal menyimpan. Coba lagi.</string>
+    <string name="bill_warning_title_total">Totalnya tidak pas</string>
+    <string name="bill_warning_title_tax">Cek pajaknya</string>
+    <string name="bill_warning_title_service">Cek biaya servisnya</string>
+    <string name="bill_warning_title_discount">Cek diskonnya</string>
+    <string name="bill_item_quantity_name">%1$d× %2$s</string>
+    <string name="bill_warning_receipt_total">Item dan biaya totalnya %1$s, tapi di struk %2$s. Cek lagi harganya.</string>
+    <string name="bill_warning_rate_tax">Pajak di struk %1$s, tapi %2$s dari item jadinya %3$s. Ada item yang bebas pajak?</string>
+    <string name="bill_warning_rate_service">Servis di struk %1$s, tapi %2$s dari item jadinya %3$s. Ada item tanpa servis?</string>
+    <string name="bill_warning_no_taxable">Ada pajak, tapi semua item bebas pajak. Nyalakan pajak di item yang kena.</string>
+    <string name="bill_warning_no_serviceable">Ada biaya servis, tapi tidak ada item yang kena servis. Nyalakan di item yang kena.</string>
+    <string name="bill_warning_no_discountable">Ada diskon, tapi belum ada item untuk dipotong.</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Rekening &amp; e-wallet</string>

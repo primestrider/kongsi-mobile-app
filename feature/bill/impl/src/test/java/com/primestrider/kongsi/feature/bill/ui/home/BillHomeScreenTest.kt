@@ -28,6 +28,7 @@ class BillHomeScreenTest {
                     state = state,
                     onOpenPaymentAccounts = { events += "accounts" },
                     onDeleteBill = { events += "delete $it" },
+                    onOpenBill = { events += "open $it" },
                 )
             }
         }
@@ -65,6 +66,13 @@ class BillHomeScreenTest {
         // A bill without a title still has a name to read.
         rule.onNodeWithText("Untitled bill").assertIsDisplayed()
         rule.onNodeWithText("No bills yet").assertDoesNotExist()
+    }
+
+    @Test
+    fun tapping_a_bill_opens_it() {
+        show(loadedWithBills)
+        rule.onNodeWithText("Makan Malam Sushi").performClick()
+        assertEquals(listOf("open 7"), events)
     }
 
     @Test

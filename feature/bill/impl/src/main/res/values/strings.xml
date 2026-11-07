@@ -3,7 +3,6 @@
     <!-- Home -->
     <string name="bill_home_title">Kongsi</string>
     <string name="bill_home_new_bill">New bill</string>
-    <string name="bill_home_new_bill_soon">Creating a bill is coming soon</string>
     <string name="bill_home_empty_title">No bills yet</string>
     <string name="bill_home_empty_body">Bills you split will show up here.</string>
     <string name="bill_home_steps_title">How it works</string>
@@ -34,6 +33,50 @@
     <string name="bill_total_assigned">%1$s of %2$s assigned</string>
     <string name="bill_total_shares_add_up">Everyone\'s share adds up to %1$s</string>
     <string name="bill_money_invalid">Type an amount like 45.000 or 45rb</string>
+
+    <!-- Review items -->
+    <string name="bill_review_title_new">New bill</string>
+    <string name="bill_review_name">Bill name</string>
+    <string name="bill_review_name_hint">e.g. Sushi dinner</string>
+    <string name="bill_review_items">Items</string>
+    <string name="bill_review_items_empty">Add what is on the receipt, one line at a time.</string>
+    <string name="bill_review_add_item">Add item</string>
+    <string name="bill_review_charges">Service, tax and discount</string>
+    <string name="bill_review_service">Service</string>
+    <string name="bill_review_tax">Tax</string>
+    <string name="bill_review_discount">Discount</string>
+    <string name="bill_review_rate">%</string>
+    <string name="bill_review_receipt_total">Total on the receipt</string>
+    <string name="bill_review_receipt_total_support">Optional. We check that everything adds up to it.</string>
+    <string name="bill_review_next">Next</string>
+    <string name="bill_review_next_soon">Adding people is coming soon</string>
+    <string name="bill_item_tag_no_tax">no tax</string>
+    <string name="bill_item_tag_no_service">no service</string>
+    <string name="bill_item_add_title">Add item</string>
+    <string name="bill_item_edit_title">Edit item</string>
+    <string name="bill_item_name">Item name</string>
+    <string name="bill_item_name_error">Type what the item is</string>
+    <string name="bill_item_quantity">Quantity</string>
+    <string name="bill_item_quantity_error">At least 1</string>
+    <string name="bill_item_price">Price for all of them</string>
+    <string name="bill_item_price_error">Type the price on the receipt</string>
+    <string name="bill_item_serviceable">Service is charged on it</string>
+    <string name="bill_item_taxable">Tax is charged on it</string>
+    <string name="bill_item_save">Save</string>
+    <string name="bill_item_delete">Delete item</string>
+    <string name="bill_item_deleted">%1$s deleted</string>
+    <string name="bill_save_failed">Could not save. Try again.</string>
+    <string name="bill_warning_title_total">The total does not match</string>
+    <string name="bill_warning_title_tax">Check the tax</string>
+    <string name="bill_warning_title_service">Check the service charge</string>
+    <string name="bill_warning_title_discount">Check the discount</string>
+    <string name="bill_item_quantity_name">%1$d× %2$s</string>
+    <string name="bill_warning_receipt_total">Items and charges come to %1$s, but the receipt says %2$s. Check the prices.</string>
+    <string name="bill_warning_rate_tax">Tax on the receipt is %1$s, but %2$s of the items is %3$s. Is an item tax-free?</string>
+    <string name="bill_warning_rate_service">Service on the receipt is %1$s, but %2$s of the items is %3$s. Is an item without service?</string>
+    <string name="bill_warning_no_taxable">There is tax, but every item is tax-free. Turn tax on for the items it is charged on.</string>
+    <string name="bill_warning_no_serviceable">There is a service charge, but no item has service. Turn it on for the items it is charged on.</string>
+    <string name="bill_warning_no_discountable">There is a discount, but no item yet to take it from.</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Bank accounts &amp; e-wallets</string>
