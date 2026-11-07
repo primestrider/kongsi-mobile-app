@@ -33,6 +33,7 @@ fun BillHome(onOpen: (Any) -> Unit) {
     BillHomeScreen(
         state = state,
         onOpenPaymentAccounts = { onOpen(PaymentAccountsRoute) },
+        onDeleteBill = viewModel::delete,
     )
 }
 

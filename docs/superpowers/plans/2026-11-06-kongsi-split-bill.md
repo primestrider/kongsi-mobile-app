@@ -274,7 +274,7 @@ feature/bill/impl
       sum of shares always equals the total (property-style loop over random bills and random flags).
 - [x] **3. Room data layer.** Entities, DAO, DB, mappers, repository, Hilt module. Tests: DAO round-trip incl.
       item shares, cascade delete of a bill.
-- [ ] **4. Bill list screen.** Empty state, list, delete with undo. ViewModel + screen tests.
+- [x] **4. Bill list screen.** Empty state, list, delete with undo. ViewModel + screen tests.
 - [ ] **5. Shared flow chrome.** Step indicator, running-total bottom bar, person colour/initials avatar, money input
       field (`45.000`, `45rb`, `45k`) in `core:designsystem` if reusable. Tests: money input parsing table, bottom bar
       states (matches / doesn't match / partly assigned).

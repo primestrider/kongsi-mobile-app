@@ -10,6 +10,16 @@
     <string name="bill_home_step_capture">Snap the receipt, or type the items in</string>
     <string name="bill_home_step_assign">Tick who had what. Tax and service follow each share</string>
     <string name="bill_home_step_send">Send every friend their total on WhatsApp</string>
+    <string name="bill_home_history_title">Your bills</string>
+    <string name="bill_home_untitled">Untitled bill</string>
+    <string name="bill_home_delete_cd">Delete %1$s</string>
+    <string name="bill_home_deleted">%1$s deleted</string>
+    <string name="bill_home_deleted_untitled">Bill deleted</string>
+    <string name="bill_home_delete_failed">Could not delete. Try again.</string>
+    <plurals name="bill_home_people">
+        <item quantity="one">%d person</item>
+        <item quantity="other">%d people</item>
+    </plurals>
     <string name="bill_home_account_hint_title">Where should friends pay you?</string>
     <string name="bill_home_account_hint_body">Add your bank account or e-wallet and it is included in every bill you send.</string>
     <string name="bill_home_account_hint_action">Add account</string>

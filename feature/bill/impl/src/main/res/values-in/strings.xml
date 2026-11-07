@@ -10,6 +10,15 @@
     <string name="bill_home_step_capture">Foto struknya, atau ketik itemnya sendiri</string>
     <string name="bill_home_step_assign">Tandai siapa pesan apa. Pajak dan servis ikut porsi masing-masing</string>
     <string name="bill_home_step_send">Kirim total tiap teman lewat WhatsApp</string>
+    <string name="bill_home_history_title">Bill kamu</string>
+    <string name="bill_home_untitled">Bill tanpa judul</string>
+    <string name="bill_home_delete_cd">Hapus %1$s</string>
+    <string name="bill_home_deleted">%1$s dihapus</string>
+    <string name="bill_home_deleted_untitled">Bill dihapus</string>
+    <string name="bill_home_delete_failed">Gagal menghapus. Coba lagi.</string>
+    <plurals name="bill_home_people">
+        <item quantity="other">%d orang</item>
+    </plurals>
     <string name="bill_home_account_hint_title">Teman mau transfer ke mana?</string>
     <string name="bill_home_account_hint_body">Tambahkan rekening bank atau e-wallet kamu, nanti otomatis dicantumkan di setiap tagihan.</string>
     <string name="bill_home_account_hint_action">Tambah rekening</string>

@@ -5,28 +5,34 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.primestrider.kongsi.core.designsystem.component.AppButton
 import com.primestrider.kongsi.core.designsystem.component.AppScaffold
@@ -35,39 +41,105 @@ import com.primestrider.kongsi.core.designsystem.theme.PreviewTheme
 import com.primestrider.kongsi.core.designsystem.theme.Radii
 import com.primestrider.kongsi.core.designsystem.theme.Spacing
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
+import com.primestrider.kongsi.core.util.currentLocale
+import com.primestrider.kongsi.core.util.formatDate
+import com.primestrider.kongsi.core.util.formatMoney
 import com.primestrider.kongsi.feature.bill.impl.R
+import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 
 /**
- * Kongsi's Home: the bill history (empty until bills exist; "New bill" lives in the navigation bar). While empty it
- * explains the three steps of a split. Until a payment account is saved, a card suggests adding one (accounts also live in Profile).
+ * Kongsi's Home: the bill history, newest first ("New bill" lives in the navigation bar). While empty it explains the
+ * three steps of a split. Until a payment account is saved, a card suggests adding one (accounts also live in
+ * Profile). Deleting a bill happens at once; the ViewModel offers Undo.
  */
 @Composable
 fun BillHomeScreen(
     state: BillHomeUiState,
     onOpenPaymentAccounts: () -> Unit,
+    onDeleteBill: (Long) -> Unit,
 ) {
     AppScaffold(title = stringResource(R.string.bill_home_title)) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(start = Spacing.s4, end = Spacing.s4, top = Spacing.s2, bottom = Spacing.s6),
-            verticalArrangement = Arrangement.spacedBy(Spacing.s6),
+        LazyColumn(
+            Modifier.fillMaxSize().padding(padding),
+            contentPadding = PaddingValues(start = Spacing.s4, end = Spacing.s4, top = Spacing.s2, bottom = Spacing.s6),
+            verticalArrangement = Arrangement.spacedBy(Spacing.s3),
         ) {
-            if (state.showAccountHint) AccountHintCard(onOpenPaymentAccounts)
-            EmptyHistory()
+            if (state.showAccountHint) {
+                item(key = "hint") { AccountHintCard(onOpenPaymentAccounts, Modifier.padding(bottom = Spacing.s3)) }
+            }
+            when {
+                !state.loaded -> Unit
+                state.bills.isEmpty() -> item(key = "empty") { EmptyHistory() }
+                else -> {
+                    item(key = "header") {
+                        Text(
+                            stringResource(R.string.bill_home_history_title),
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.semantics { heading() },
+                        )
+                    }
+                    items(state.bills, key = { it.id }) { bill ->
+                        BillCard(bill, onDelete = { onDeleteBill(bill.id) }, modifier = Modifier.animateItem())
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun AccountHintCard(onAdd: () -> Unit) {
+private fun BillCard(
+    bill: BillRow,
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val locale = currentLocale()
+    val title = bill.title.ifBlank { stringResource(R.string.bill_home_untitled) }
+    Surface(
+        shape = RoundedCornerShape(Radii.xl),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            Modifier.padding(start = Spacing.s4, top = Spacing.s3, bottom = Spacing.s3, end = Spacing.s1),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.s2),
+        ) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Spacing.s0_5)) {
+                Text(title, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(
+                    formatDate(bill.createdAt, locale) + " · " +
+                        pluralStringResource(R.plurals.bill_home_people, bill.peopleCount, bill.peopleCount),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Text(
+                formatMoney(bill.totalMinor, DEFAULT_CURRENCY, locale),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            IconButton(onClick = onDelete) {
+                Icon(
+                    Icons.Filled.Delete,
+                    contentDescription = stringResource(R.string.bill_home_delete_cd, title),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AccountHintCard(
+    onAdd: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Surface(
         shape = RoundedCornerShape(Radii.xl),
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Column(Modifier.padding(Spacing.s4), verticalArrangement = Arrangement.spacedBy(Spacing.s1)) {
             Text(stringResource(R.string.bill_home_account_hint_title), style = MaterialTheme.typography.titleMedium)
@@ -166,6 +238,27 @@ private fun StepRow(
 @Composable
 private fun BillHomeScreenPreview() {
     PreviewTheme {
-        BillHomeScreen(state = BillHomeUiState(showAccountHint = true), onOpenPaymentAccounts = {})
+        BillHomeScreen(
+            state =
+                BillHomeUiState(
+                    loaded = true,
+                    showAccountHint = true,
+                    bills =
+                        listOf(
+                            BillRow(1, "Makan Malam Sushi", createdAt = 1_793_986_200_000, totalMinor = 152_460, peopleCount = 3),
+                            BillRow(2, "", createdAt = 1_793_900_000_000, totalMinor = 30_000, peopleCount = 1),
+                        ),
+                ),
+            onOpenPaymentAccounts = {},
+            onDeleteBill = {},
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun BillHomeEmptyPreview() {
+    PreviewTheme {
+        BillHomeScreen(state = BillHomeUiState(loaded = true, showAccountHint = true), onOpenPaymentAccounts = {}, onDeleteBill = {})
     }
 }
