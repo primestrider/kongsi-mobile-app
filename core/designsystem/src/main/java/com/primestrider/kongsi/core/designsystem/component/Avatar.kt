@@ -61,7 +61,8 @@ fun initialsOf(name: String): String =
 
 /**
  * Avatar with an optional presence dot; announced as the name (plus status). Shows the initials, or the image at
- * [imageUrl] once it has loaded (initials stay while loading and when loading fails).
+ * [imageUrl] once it has loaded (initials stay while loading and when loading fails). [containerColor] and
+ * [contentColor] colour the initials circle, e.g. a person's tone from `personTone`.
  */
 @Composable
 fun Avatar(
@@ -71,20 +72,22 @@ fun Avatar(
     shape: Shape = CircleShape,
     status: AvatarStatus? = null,
     imageUrl: String? = null,
+    containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
 ) {
     val description = status?.let { "$name, ${stringResource(it.label)}" } ?: name
     Box(modifier.semantics(mergeDescendants = true) { contentDescription = description }) {
         val initials = initialsOf(name)
         if (imageUrl == null) {
-            AvatarCircle(initials, size, shape)
+            AvatarCircle(initials, size, shape, containerColor, contentColor)
         } else {
             SubcomposeAsyncImage(
                 model = imageUrl,
                 contentDescription = null,
                 modifier = Modifier.size(size.dp).clip(shape),
                 contentScale = ContentScale.Crop,
-                loading = { AvatarCircle(initials, size, shape) },
-                error = { AvatarCircle(initials, size, shape) },
+                loading = { AvatarCircle(initials, size, shape, containerColor, contentColor) },
+                error = { AvatarCircle(initials, size, shape, containerColor, contentColor) },
             )
         }
         if (status != null) {
@@ -115,7 +118,14 @@ fun AvatarGroup(
     Row(modifier, horizontalArrangement = Arrangement.spacedBy(-size.dp / 4)) {
         shown.forEach { name -> Avatar(name, ring, size) }
         if (hidden > 0) {
-            AvatarCircle("+$hidden", size, CircleShape, ring.semantics { contentDescription = more })
+            AvatarCircle(
+                "+$hidden",
+                size,
+                CircleShape,
+                MaterialTheme.colorScheme.primaryContainer,
+                MaterialTheme.colorScheme.onPrimaryContainer,
+                ring.semantics { contentDescription = more },
+            )
         }
     }
 }
@@ -125,13 +135,15 @@ private fun AvatarCircle(
     label: String,
     size: AvatarSize,
     shape: Shape,
+    containerColor: Color,
+    contentColor: Color,
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier.size(size.dp).background(MaterialTheme.colorScheme.primaryContainer, shape),
+        modifier.size(size.dp).background(containerColor, shape),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = size.textStyle(), color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text(label, style = size.textStyle(), color = contentColor)
     }
 }
 

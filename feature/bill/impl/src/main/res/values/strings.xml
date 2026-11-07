@@ -24,6 +24,17 @@
     <string name="bill_home_account_hint_body">Add your bank account or e-wallet and it is included in every bill you send.</string>
     <string name="bill_home_account_hint_action">Add account</string>
 
+    <!-- Bill flow -->
+    <string name="bill_step_items">Items</string>
+    <string name="bill_step_people">People</string>
+    <string name="bill_step_assign">Assign</string>
+    <string name="bill_step_summary">Summary</string>
+    <string name="bill_total_matches_receipt">Matches the receipt</string>
+    <string name="bill_total_receipt_says">Receipt says %1$s</string>
+    <string name="bill_total_assigned">%1$s of %2$s assigned</string>
+    <string name="bill_total_shares_add_up">Everyone\'s share adds up to %1$s</string>
+    <string name="bill_money_invalid">Type an amount like 45.000 or 45rb</string>
+
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Bank accounts &amp; e-wallets</string>
     <string name="bill_accounts_intro">Default accounts are added to every bill you send on WhatsApp.</string>
