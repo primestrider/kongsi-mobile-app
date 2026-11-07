@@ -10,6 +10,12 @@ data class BillEditRoute(
     val billId: Long = 0,
 )
 
+/** People, the second step: who was there. */
+@Serializable
+data class BillPeopleRoute(
+    val billId: Long,
+)
+
 /** The bill creator's own bank accounts and e-wallets, shown in the WhatsApp message. */
 @Serializable
 data object PaymentAccountsRoute

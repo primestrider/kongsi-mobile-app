@@ -11,6 +11,7 @@ import androidx.room.RoomDatabase
  *
  * - v1: payment accounts.
  * - v2: bills, their items, people and who had which item.
+ * - v3: people the user split bills with before (suggestions on the People step).
  */
 @Database(
     entities = [
@@ -19,13 +20,16 @@ import androidx.room.RoomDatabase
         ItemEntity::class,
         PersonEntity::class,
         ItemShareEntity::class,
+        FrequentPersonEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2)],
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)],
 )
 abstract class KongsiDatabase : RoomDatabase() {
     abstract fun paymentAccountDao(): PaymentAccountDao
 
     abstract fun billDao(): BillDao
+
+    abstract fun frequentPersonDao(): FrequentPersonDao
 }

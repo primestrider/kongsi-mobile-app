@@ -22,6 +22,9 @@ abstract class BillModule {
     abstract fun bindBillRepository(impl: DefaultBillRepository): BillRepository
 
     @Binds
+    abstract fun bindFrequentPeopleRepository(impl: DefaultFrequentPeopleRepository): FrequentPeopleRepository
+
+    @Binds
     abstract fun bindContactsRepository(impl: DefaultContactsRepository): ContactsRepository
 
     companion object {
@@ -36,5 +39,8 @@ abstract class BillModule {
 
         @Provides
         fun billDao(database: KongsiDatabase): BillDao = database.billDao()
+
+        @Provides
+        fun frequentPersonDao(database: KongsiDatabase): FrequentPersonDao = database.frequentPersonDao()
     }
 }

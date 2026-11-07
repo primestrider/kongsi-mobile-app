@@ -15,6 +15,7 @@ import com.primestrider.kongsi.core.designsystem.component.NavBarAction
 import com.primestrider.kongsi.core.designsystem.component.UiText
 import com.primestrider.kongsi.core.designsystem.icon.AppIcons
 import com.primestrider.kongsi.feature.bill.BillEditRoute
+import com.primestrider.kongsi.feature.bill.BillPeopleRoute
 import com.primestrider.kongsi.feature.bill.PaymentAccountEditRoute
 import com.primestrider.kongsi.feature.bill.PaymentAccountsRoute
 import com.primestrider.kongsi.feature.bill.impl.R
@@ -25,6 +26,9 @@ import com.primestrider.kongsi.feature.bill.ui.accounts.PaymentAccountsScreen
 import com.primestrider.kongsi.feature.bill.ui.accounts.PaymentAccountsViewModel
 import com.primestrider.kongsi.feature.bill.ui.home.BillHomeScreen
 import com.primestrider.kongsi.feature.bill.ui.home.BillHomeViewModel
+import com.primestrider.kongsi.feature.bill.ui.people.BillPeopleActions
+import com.primestrider.kongsi.feature.bill.ui.people.BillPeopleScreen
+import com.primestrider.kongsi.feature.bill.ui.people.BillPeopleViewModel
 import com.primestrider.kongsi.feature.bill.ui.review.BillReviewActions
 import com.primestrider.kongsi.feature.bill.ui.review.BillReviewScreen
 import com.primestrider.kongsi.feature.bill.ui.review.BillReviewViewModel
@@ -75,8 +79,31 @@ fun NavGraphBuilder.billDestinations(navController: NavController) {
                     onDismissEditor = viewModel::dismissEditor,
                     onWarningClick = viewModel::onWarningClick,
                     onFocusShown = viewModel::onFocusShown,
-                    // The People step arrives with Task 9 of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
-                    onNext = { messenger.info(UiText.Resource(R.string.bill_review_next_soon)) },
+                    onNext = { navController.navigate(BillPeopleRoute(viewModel.currentBillId)) },
+                ),
+        )
+    }
+    composable<BillPeopleRoute> {
+        val viewModel: BillPeopleViewModel = hiltViewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val messenger = LocalMessenger.current
+        BillPeopleScreen(
+            state = state,
+            query = viewModel.query,
+            actions =
+                BillPeopleActions(
+                    onBack = { navController.popBackStack() },
+                    onBackToItems = { navController.popBackStack() },
+                    onQueryChange = viewModel::onQueryChange,
+                    onContactsAllowed = viewModel::onContactsAllowed,
+                    onAdd = viewModel::add,
+                    onRemove = viewModel::remove,
+                    onPickerResult = viewModel::onPickerResult,
+                    onNext = {
+                        viewModel.next()
+                        // The Assign step arrives with Task 10 of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
+                        messenger.info(UiText.Resource(R.string.bill_people_next_soon))
+                    },
                 ),
         )
     }

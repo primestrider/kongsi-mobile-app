@@ -48,7 +48,6 @@
     <string name="bill_review_receipt_total">Total di struk</string>
     <string name="bill_review_receipt_total_support">Opsional. Kami cek semuanya pas dengan total ini.</string>
     <string name="bill_review_next">Lanjut</string>
-    <string name="bill_review_next_soon">Fitur menambahkan orang segera hadir</string>
     <string name="bill_item_tag_no_tax">tanpa pajak</string>
     <string name="bill_item_tag_no_service">tanpa servis</string>
     <string name="bill_item_add_title">Tambah item</string>
@@ -76,6 +75,26 @@
     <string name="bill_warning_no_taxable">Ada pajak, tapi semua item bebas pajak. Nyalakan pajak di item yang kena.</string>
     <string name="bill_warning_no_serviceable">Ada biaya servis, tapi tidak ada item yang kena servis. Nyalakan di item yang kena.</string>
     <string name="bill_warning_no_discountable">Ada diskon, tapi belum ada item untuk dipotong.</string>
+
+    <!-- People -->
+    <string name="bill_people_title">Siapa saja yang ikut?</string>
+    <string name="bill_people_search">Cari kontak atau ketik nama</string>
+    <string name="bill_people_contacts_reason">Kongsi membaca kontak hanya untuk mencari nomor WhatsApp teman saat kamu mencari.</string>
+    <string name="bill_people_contacts_blocked">Akses kontak mati. Pilih dari kontak di bawah, atau nyalakan di Pengaturan.</string>
+    <string name="bill_people_open_settings">Pengaturan</string>
+    <string name="bill_people_pick_contact">Pilih dari kontak</string>
+    <string name="bill_people_add_typed">Tambah \"%1$s\" tanpa nomor</string>
+    <string name="bill_people_frequent">Dari bill sebelumnya</string>
+    <string name="bill_people_on_bill">Di bill ini</string>
+    <string name="bill_people_me">Kamu</string>
+    <string name="bill_people_me_named">Kamu (%1$s)</string>
+    <string name="bill_people_me_pays">Yang bayar</string>
+    <string name="bill_people_no_number">Tanpa nomor</string>
+    <string name="bill_people_whatsapp">WhatsApp</string>
+    <string name="bill_people_remove_cd">Hapus %1$s</string>
+    <string name="bill_people_already_added">%1$s sudah ada di bill ini</string>
+    <string name="bill_people_empty">Tambahkan teman yang ikut patungan.</string>
+    <string name="bill_people_next_soon">Fitur membagi item segera hadir</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Rekening &amp; e-wallet</string>

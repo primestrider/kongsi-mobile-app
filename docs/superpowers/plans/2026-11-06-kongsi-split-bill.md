@@ -288,7 +288,7 @@ feature/bill/impl
 - [x] **8. ContactsRepository.** `search(query)` and `fromPickerResult(uri)` over `ContactsContract`, mobile numbers
       first, one row per number, WhatsApp badge. Tests: Robolectric `ContentProvider` fixture with several contacts,
       multiple numbers, no number, Indonesian names.
-- [ ] **9. People screen.** Search field with inline contact results (permission granted), picker button
+- [x] **9. People screen.** (Frequent people are saved on Next from People until Summary exists; move it to Summary in Task 11.) Search field with inline contact results (permission granted), picker button
       (denied), typed name, frequent people first, remove; "Me" fixed. Permission asked on first focus via
       `PermissionGate`. Tests: ViewModel with fake `ContactsRepository` for granted/denied, adding the same number twice
       is blocked, duplicate names allowed but distinguished, frequent people saved after a bill is finished.

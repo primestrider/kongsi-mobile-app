@@ -170,6 +170,9 @@ class BillReviewViewModel
                 )
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BillReviewUiState())
 
+        /** The bill's id, 0 until a new bill has been saved for the first time. */
+        val currentBillId: Long get() = billId.value
+
         fun onTitleChange(text: String) {
             title = text
             change { it.copy(title = text.trim()) }
