@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">Profile</string>
+    <string name="profile_edit">Edit</string>
+    <string name="profile_name_missing">Add your name</string>
+    <string name="profile_phone_missing">No phone number yet</string>
+
+    <string name="profile_payment_accounts">Bank accounts &amp; e-wallets</string>
+
+    <string name="profile_section_permissions">Permissions</string>
+    <string name="profile_permission_contacts">Contacts</string>
+    <string name="profile_permission_contacts_purpose">Find friends’ numbers when you add people to a bill.</string>
+    <string name="profile_permission_camera">Camera</string>
+    <string name="profile_permission_camera_purpose">Receipts are photographed with your phone’s camera app, so Kongsi never needs camera access.</string>
+    <string name="profile_permission_granted">Allowed</string>
+    <string name="profile_permission_not_granted">Not allowed yet</string>
+    <string name="profile_permission_blocked">Blocked. Change it in the system settings</string>
+    <string name="profile_permission_not_needed">No permission needed</string>
+    <string name="profile_permission_allow">Allow</string>
+    <string name="profile_permission_open_settings">Open settings</string>
+    <string name="profile_permission_manage">Manage</string>
+
+    <string name="profile_section_appearance">Appearance</string>
+    <string name="profile_theme">Theme</string>
+    <string name="profile_language">Language</string>
+
+    <string name="profile_section_about">About</string>
+    <string name="profile_version">Version</string>
+
+    <string name="profile_edit_title">Edit profile</string>
+    <string name="profile_name">Your name</string>
+    <string name="profile_name_support">Shown as “you” in bills and messages</string>
+    <string name="profile_phone">Your mobile number</string>
+    <string name="profile_phone_hint">e.g. 0812 3456 7890</string>
+    <string name="profile_phone_support">Optional. Lets you fill in e-wallet accounts with one tap</string>
+    <string name="profile_save">Save</string>
+    <string name="profile_saved">Profile saved</string>
+    <string name="profile_save_failed">Couldn’t save. Please try again.</string>
+    <string name="profile_error_name_long">Keep the name under 50 characters</string>
+    <string name="profile_error_phone">Enter an Indonesian mobile number, e.g. 0812 3456 7890</string>
+    <string name="profile_payment_accounts_subtitle">Where friends transfer their share</string>
+    <string name="profile_permissions_subtitle">Contacts and camera</string>
+    <string name="profile_permissions_intro">Kongsi asks only for what a feature needs, and only when you use it.</string>
+    <string name="profile_version_line">Version %1$s</string>
+    <string name="profile_about_body">Kongsi splits a bill fairly: each person pays for what they ordered, with tax and service split the same way, and gets their share on WhatsApp.</string>
+    <string name="profile_about_privacy">Your bills, accounts and profile are stored only on this phone. Nothing is sent anywhere except the messages you choose to send.</string>
+</resources>

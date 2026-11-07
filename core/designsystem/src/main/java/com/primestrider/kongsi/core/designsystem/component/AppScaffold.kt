@@ -8,9 +8,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,7 +21,7 @@ import com.primestrider.kongsi.core.designsystem.R
 import com.primestrider.kongsi.core.designsystem.theme.PreviewTheme
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 
-/** Top app bar: single-line title, a back arrow only when [onBack] is given, trailing [actions]. */
+/** Top app bar on the screen's own background: single-line title, a back arrow only when [onBack] is given, trailing [actions]. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
@@ -39,6 +41,12 @@ fun AppTopBar(
             }
         },
         actions = actions,
+        // Same colour as the screen: a tonal band under the status bar reads as template chrome.
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
     )
 }
 

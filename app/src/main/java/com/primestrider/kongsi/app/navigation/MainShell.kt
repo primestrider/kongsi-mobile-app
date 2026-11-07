@@ -4,86 +4,92 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.primestrider.kongsi.core.designsystem.component.AppNavigationSuite
 import com.primestrider.kongsi.core.designsystem.component.LocalMessenger
 import com.primestrider.kongsi.core.designsystem.component.MessengerHost
+import com.primestrider.kongsi.core.designsystem.component.NavBarAction
 import com.primestrider.kongsi.core.designsystem.component.NavBarItem
 import com.primestrider.kongsi.core.designsystem.component.NavBarKeyboardMode
+import kotlinx.coroutines.launch
+
+const val TABS_PAGER_TAG = "tabs_pager"
 
 /**
- * App shell: bottom navigation over one nested graph per tab.
- *
- * - Switching tabs saves and restores each tab's back stack.
- * - Re-selecting the current tab pops it back to its root.
- * - Back at the root of a non-Home tab switches to Home, restoring Home's saved stack.
- * - The navigation is a bottom bar on phones and a rail on wider windows (AppNavigationSuite); with a single tab
- *   (no feature adds one) it is hidden.
+ * App shell: one NavHost whose start destination is the tabs. Every other route opens full screen on top of them,
+ * and back returns to the tab it came from.
  */
 @Composable
 fun MainShell(
     navController: NavHostController = rememberNavController(),
     tabs: List<TopLevelTab> = topLevelTabs,
-    homeScreens: List<HomeScreenContent> = com.primestrider.kongsi.app.navigation.homeScreens,
+    action: ShellAction? = shellAction,
+    extraDestinations: NavGraphBuilder.() -> Unit = { featureDestinations(navController) },
 ) {
-    val entry by navController.currentBackStackEntryAsState()
-    val destination = entry?.destination
-    val atTabRoot = destination?.let { it.parent?.startDestinationId == it.id } ?: true
-    val current =
-        tabs.firstOrNull { tab -> destination?.hierarchy?.any { it.hasRoute(tab.graphClass) } == true }
-            ?: HomeTab
-
-    fun open(tab: TopLevelTab) {
-        if (tab == current) {
-            navController.popBackStack(tab.startRoute, inclusive = false)
-            return
-        }
-        navController.navigate(tab.graph) {
-            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
-
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         snackbarHost = { MessengerHost(LocalMessenger.current, snackbarHostState) },
         // The shell only owns the navigation; screens handle the system bars with their own AppScaffold.
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
     ) { inner ->
-        // Bottom bar on phones, navigation rail on wider windows; hidden with a single tab.
-        AppNavigationSuite(
-            items = tabs.map { NavBarItem(stringResource(it.label), it.icon) },
-            selectedIndex = tabs.indexOf(current),
-            onSelect = { open(tabs[it]) },
+        NavHost(
+            navController = navController,
+            startDestination = TabsRoute,
             modifier = Modifier.padding(inner).consumeWindowInsets(inner),
-            // Hide: the bottom bar goes away while the keyboard is up. KeepBehindKeyboard: it stays, covered by the keyboard.
-            keyboardMode = NavBarKeyboardMode.Hide,
         ) {
-            NavHost(navController = navController, startDestination = HomeGraph) {
-                homeGraph(navController, homeScreens)
-                featureGraphs(navController)
+            composable<TabsRoute> {
+                val onOpen: (Any) -> Unit = { route -> navController.navigate(route) }
+                SwipeableTabs(tabs, onOpen = onOpen, centerAction = action?.invoke(onOpen))
             }
+            extraDestinations()
         }
-        // Composed after the NavHost so this callback wins over the NavHost's own back handling: back at
-        // another tab's root switches to Home with Home's saved stack, instead of a plain pop that would
-        // leave that saved stack behind and bring it back on a later tab switch.
-        BackHandler(enabled = current != HomeTab && atTabRoot) {
-            open(HomeTab)
-        }
+    }
+}
+
+/**
+ * The tabs as pages: swipe left or right between neighbours, or tap the navigation bar (a rail on wider windows).
+ * [centerAction] is the raised button in the middle of the bar (a FAB on the rail).
+ * Only the visible tab is composed (an off-screen tab could take initial focus and scroll itself into view); a tab's
+ * saveable state (scroll position, drafts) and its ViewModels survive switching. Back on any tab other than the first
+ * returns to the first.
+ */
+@Composable
+fun SwipeableTabs(
+    tabs: List<TopLevelTab>,
+    onOpen: (Any) -> Unit,
+    centerAction: NavBarAction? = null,
+) {
+    val pagerState = rememberPagerState { tabs.size }
+    val scope = rememberCoroutineScope()
+    AppNavigationSuite(
+        items = tabs.map { NavBarItem(stringResource(it.label), it.icon) },
+        selectedIndex = pagerState.targetPage,
+        onSelect = { index -> scope.launch { pagerState.animateScrollToPage(index) } },
+        // Hide: the bottom bar goes away while the keyboard is up. KeepBehindKeyboard: it stays, covered by the keyboard.
+        keyboardMode = NavBarKeyboardMode.Hide,
+        centerAction = centerAction,
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            key = { it },
+            modifier = Modifier.testTag(TABS_PAGER_TAG),
+        ) { page -> tabs[page].content(onOpen) }
+    }
+    BackHandler(enabled = pagerState.currentPage != 0) {
+        scope.launch { pagerState.animateScrollToPage(0) }
     }
 }

@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
@@ -31,6 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.primestrider.kongsi.core.designsystem.theme.PreviewTheme
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 
@@ -50,6 +55,8 @@ enum class NavBarKeyboardMode {
  * a navigation rail at the start from medium width (tablets, foldables, phones in landscape). With one item there is
  * nothing to switch to, so only [content] shows. The type comes from Material's adaptive defaults
  * (`NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo`); the bar keeps this app's look and badges.
+ * A [centerAction] is a raised button in the middle of the bar, or a FAB at the top of the rail; like the bar, it is
+ * not shown with one item or less.
  */
 @Composable
 fun AppNavigationSuite(
@@ -58,6 +65,7 @@ fun AppNavigationSuite(
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
     keyboardMode: NavBarKeyboardMode = NavBarKeyboardMode.Hide,
+    centerAction: NavBarAction? = null,
     content: @Composable () -> Unit,
 ) {
     val type = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
@@ -68,6 +76,7 @@ fun AppNavigationSuite(
         rail = type != NavigationSuiteType.NavigationBar,
         modifier,
         keyboardMode,
+        centerAction,
         content,
     )
 }
@@ -85,6 +94,7 @@ internal fun AppNavigationSuiteLayout(
     rail: Boolean,
     modifier: Modifier = Modifier,
     keyboardMode: NavBarKeyboardMode = NavBarKeyboardMode.Hide,
+    centerAction: NavBarAction? = null,
     content: @Composable () -> Unit,
 ) {
     if (items.size <= 1) {
@@ -95,7 +105,11 @@ internal fun AppNavigationSuiteLayout(
     // unfolding or resizing the window does not rebuild it and lose the screens' remembered state.
     Row(modifier.fillMaxSize()) {
         if (rail) {
-            NavigationRail(Modifier.fillMaxHeight().testTag(APP_NAVIGATION_RAIL_TAG)) {
+            NavigationRail(
+                Modifier.fillMaxHeight().testTag(APP_NAVIGATION_RAIL_TAG),
+                containerColor = MaterialTheme.colorScheme.background,
+                header = centerAction?.let { action -> { RailActionButton(action) } },
+            ) {
                 items.forEachIndexed { index, item ->
                     NavigationRailItem(
                         selected = index == selectedIndex,
@@ -127,9 +141,22 @@ internal fun AppNavigationSuiteLayout(
                     selectedIndex = selectedIndex,
                     onSelect = onSelect,
                     modifier = Modifier.onSizeChanged { barHeight = it.height },
+                    centerAction = centerAction,
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun RailActionButton(action: NavBarAction) {
+    FloatingActionButton(
+        onClick = action.onClick,
+        modifier = Modifier.semantics { contentDescription = action.label },
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+    ) {
+        Icon(action.icon, contentDescription = null)
     }
 }
 

@@ -6,11 +6,11 @@ Tokens and theme live in `app/src/main/java/com/primestrider/kongsi/core/designs
 
 | File | Contents |
 | --- | --- |
-| `Palette.kt` | Raw colors: `white`, `black`, every scale (`Palette.Gray.c50` ... `c950`, `Primary`, `Taupe`, `Mauve`, `Mist`, `Olive`, semantic `Success`/`Warning`/`Error`/`Info`) and `Palette.scales` for the Colors showcase page. |
+| `Palette.kt` | Raw colors: `white`, `black`, every scale (`Palette.Gray.c50` ... `c950`, `Primary` (Kongsi butter), `Ink` (Kongsi ink, greyed espresso), `Taupe`, `Mauve`, `Mist`, `Olive`, semantic `Success`/`Warning`/`Error`/`Info`) and `Palette.scales` for the Colors showcase page. |
 | `AppColors.kt` | `AppColors` semantic roles, `LightColors`, `DarkColors`, `LocalAppColors`. |
 | `Spacing.kt` | `Spacing.s0` ... `s96` (4dp based, `s0_5` = 2dp). |
 | `Radii.kt` | `Radii.none` ... `full` (`DEFAULT` in RN equals `md`). |
-| `Type.kt` | `PlusJakartaSans`, `FontSize`, `LineHeight`, `LetterSpacing`, `AppTypography`. |
+| `Type.kt` | `Xmind`, `FontSize`, `LineHeight`, `LetterSpacing`, `AppTypography`. |
 | `AppTheme.kt` | `AppTheme(darkTheme)` and `AppThemeTokens`. |
 
 ## Reading colors
@@ -78,7 +78,7 @@ Shapes: small = `Radii.sm`, medium = `Radii.md`, large = `Radii.lg`, extraLarge 
 | labelMedium / labelSmall | | xs | Medium |
 | displayLarge / Medium / Small | | xl6 / xl5 / xl4 | Bold |
 
-All styles use Plus Jakarta Sans (400 to 800).
+All styles use Xmind (400 to 800), an OFL font from Google Fonts, bundled in `core/designsystem/src/main/res/font/`.
 
 ## Theme preference
 

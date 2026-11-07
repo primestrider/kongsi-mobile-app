@@ -1,6 +1,5 @@
 package com.primestrider.kongsi.core.designsystem.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,11 +46,11 @@ fun Banner(
     val (icon, accent) = variant.style()
     Surface(
         shape = RoundedCornerShape(Radii.lg),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        border = BorderStroke(1.dp, accent),
+        // A soft wash of the accent; an outline in a saturated colour shouts louder than the message.
+        color = accent.copy(alpha = 0.10f).compositeOver(MaterialTheme.colorScheme.surface),
         modifier = modifier.fillMaxWidth(),
     ) {
-        Row(Modifier.padding(Spacing.s3), horizontalArrangement = Arrangement.spacedBy(Spacing.s3)) {
+        Row(Modifier.padding(Spacing.s4), horizontalArrangement = Arrangement.spacedBy(Spacing.s3)) {
             Icon(icon, contentDescription = null, tint = accent)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Spacing.s1)) {
                 Text(title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)

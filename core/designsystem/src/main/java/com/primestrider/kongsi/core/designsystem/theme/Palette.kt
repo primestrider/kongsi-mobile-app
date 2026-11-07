@@ -8,17 +8,36 @@ object Palette {
     val black = Color(0xFF000000)
     val transparent = Color(0x00000000)
 
+    /**
+     * Kongsi butter: the one accent, for highlights only (hint card, active tab, step numbers), like a highlighter
+     * on a receipt. Buttons and actions are [Ink]; see docs/brand-guidelines.md.
+     */
     object Primary {
-        val c50 = Color(0xFFE8F4FE)
-        val c100 = Color(0xFFC5E4FC)
-        val c200 = Color(0xFF9ED0FA)
-        val c300 = Color(0xFF6BB8F7)
-        val c400 = Color(0xFF3A9FF2)
-        val c500 = Color(0xFF208AEF)
-        val c600 = Color(0xFF1A73D4)
-        val c700 = Color(0xFF155CB0)
-        val c800 = Color(0xFF10478C)
-        val c900 = Color(0xFF0B3368)
+        val c50 = Color(0xFFFFFBEA)
+        val c100 = Color(0xFFFEF1B8)
+        val c200 = Color(0xFFFDE38A)
+        val c300 = Color(0xFFFAD04F)
+        val c400 = Color(0xFFF5BC1C)
+        val c500 = Color(0xFFE5A800)
+        val c600 = Color(0xFFBF8A00)
+        val c700 = Color(0xFF946A00)
+        val c800 = Color(0xFF6B4D05)
+        val c900 = Color(0xFF47340A)
+    }
+
+    /** Kongsi ink: a greyed espresso (espresso and graphite, half and half) for buttons and actions. Light uses c800, dark c100. */
+    object Ink {
+        val c50 = Color(0xFFF6F4F2)
+        val c100 = Color(0xFFEAE6E4)
+        val c200 = Color(0xFFD3CAC6)
+        val c300 = Color(0xFFB2A6A1)
+        val c400 = Color(0xFF8D7E79)
+        val c500 = Color(0xFF6E605A)
+        val c600 = Color(0xFF574B46)
+        val c700 = Color(0xFF463C38)
+        val c800 = Color(0xFF372E2B)
+        val c900 = Color(0xFF282220)
+        val c950 = Color(0xFF191514)
     }
 
     object Red {
@@ -424,6 +443,20 @@ object Palette {
                     700 to Primary.c700,
                     800 to Primary.c800,
                     900 to Primary.c900,
+                ),
+            "ink" to
+                listOf(
+                    50 to Ink.c50,
+                    100 to Ink.c100,
+                    200 to Ink.c200,
+                    300 to Ink.c300,
+                    400 to Ink.c400,
+                    500 to Ink.c500,
+                    600 to Ink.c600,
+                    700 to Ink.c700,
+                    800 to Ink.c800,
+                    900 to Ink.c900,
+                    950 to Ink.c950,
                 ),
             "red" to
                 listOf(

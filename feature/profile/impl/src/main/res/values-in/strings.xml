@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">Profil</string>
+    <string name="profile_edit">Ubah</string>
+    <string name="profile_name_missing">Tambahkan nama kamu</string>
+    <string name="profile_phone_missing">Nomor HP belum diisi</string>
+
+    <string name="profile_payment_accounts">Rekening &amp; e-wallet</string>
+
+    <string name="profile_section_permissions">Izin akses</string>
+    <string name="profile_permission_contacts">Kontak</string>
+    <string name="profile_permission_contacts_purpose">Untuk mencari nomor teman saat menambahkan orang ke bill.</string>
+    <string name="profile_permission_camera">Kamera</string>
+    <string name="profile_permission_camera_purpose">Struk difoto lewat aplikasi kamera HP kamu, jadi Kongsi tidak perlu akses kamera.</string>
+    <string name="profile_permission_granted">Diizinkan</string>
+    <string name="profile_permission_not_granted">Belum diizinkan</string>
+    <string name="profile_permission_blocked">Diblokir. Ubah lewat pengaturan sistem</string>
+    <string name="profile_permission_not_needed">Tidak perlu izin</string>
+    <string name="profile_permission_allow">Izinkan</string>
+    <string name="profile_permission_open_settings">Buka pengaturan</string>
+    <string name="profile_permission_manage">Kelola</string>
+
+    <string name="profile_section_appearance">Tampilan</string>
+    <string name="profile_theme">Tema</string>
+    <string name="profile_language">Bahasa</string>
+
+    <string name="profile_section_about">Tentang</string>
+    <string name="profile_version">Versi</string>
+
+    <string name="profile_edit_title">Ubah profil</string>
+    <string name="profile_name">Nama kamu</string>
+    <string name="profile_name_support">Ditampilkan sebagai “kamu” di bill dan pesan</string>
+    <string name="profile_phone">Nomor HP kamu</string>
+    <string name="profile_phone_hint">mis. 0812 3456 7890</string>
+    <string name="profile_phone_support">Opsional. Untuk mengisi nomor e-wallet dengan sekali ketuk</string>
+    <string name="profile_save">Simpan</string>
+    <string name="profile_saved">Profil disimpan</string>
+    <string name="profile_save_failed">Gagal menyimpan. Coba lagi.</string>
+    <string name="profile_error_name_long">Nama maksimal 50 karakter</string>
+    <string name="profile_error_phone">Masukkan nomor HP Indonesia, mis. 0812 3456 7890</string>
+    <string name="profile_payment_accounts_subtitle">Tujuan transfer dari teman</string>
+    <string name="profile_permissions_subtitle">Kontak dan kamera</string>
+    <string name="profile_permissions_intro">Kongsi hanya meminta izin yang dibutuhkan sebuah fitur, dan hanya saat kamu memakainya.</string>
+    <string name="profile_version_line">Versi %1$s</string>
+    <string name="profile_about_body">Kongsi membagi tagihan dengan adil: setiap orang membayar yang dipesannya, pajak dan servis ikut dibagi dengan cara yang sama, lalu tagihannya dikirim lewat WhatsApp.</string>
+    <string name="profile_about_privacy">Bill, rekening, dan profil kamu hanya tersimpan di HP ini. Tidak ada yang dikirim ke mana pun selain pesan yang kamu pilih untuk dikirim.</string>
+</resources>

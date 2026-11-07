@@ -1,23 +1,29 @@
 # Navigation
 
-The app uses Navigation Compose with type-safe routes (kotlinx.serialization) inside a bottom-navigation shell.
+The app uses Navigation Compose with type-safe routes (kotlinx.serialization) inside a shell of swipeable tabs.
 
 ## Shell and tabs
 
-`app/navigation/MainShell.kt` is the app's root composable (set by `MainActivity`). It is a `Scaffold` holding `AppNavigationSuite` (`core/designsystem/component/`), which puts the tabs in a bottom `AppNavigationBar` on compact width (phones in portrait) and in a `NavigationRail` at the start from medium width (tablets, foldables, phones in landscape), chosen from `currentWindowAdaptiveInfo()`. Its content is one `NavHost` with a nested graph per tab:
+`app/navigation/MainShell.kt` is the app's root composable (set by `MainActivity`): a `Scaffold` (for the
+`MessengerHost`) around one `NavHost` whose start destination is `TabsRoute`.
 
-| Tab (`TopLevelTab`) | Graph | Start route | Contents |
-| --- | --- | --- | --- |
-| Home | `HomeGraph` | `HomeRoute` | example index, Form, styling pages |
-| Components | `ComponentsGraph` | `ComponentsHomeRoute` | component example pages |
-| Profile | `ProfileGraph` | `ProfileRoute` | Profile hub, Settings, sign-in, protected Account |
+- `TabsRoute` renders `SwipeableTabs`: `AppNavigationSuite` (`core/designsystem/component/`, a bottom
+  `AppNavigationBar` on compact width, a `NavigationRail` from medium width) around a `HorizontalPager` with one page
+  per `TopLevelTab` (`app/navigation/AppNavHost.kt`). Swiping left or right and tapping the bar both move the pager;
+  the bar follows `pagerState.targetPage`.
+- Every other route (registered by `featureDestinations` in `AppNavHost.kt`) opens full screen on top of the tabs,
+  without the bar; back returns to the tab it came from, with that tab's state intact.
+- Back on any tab other than the first scrolls to the first; back on the first leaves the app.
+- Only the visible page is composed (no `beyondViewportPageCount`): an off-screen tab could otherwise take initial
+  focus (keyboard, D-pad, Robolectric) and scroll itself into view. Pages keep their saveable state (scroll
+  position, drafts) when scrolled away, and their ViewModels live on the `TabsRoute` back stack entry.
+- Swiping is a page-level gesture: a horizontal gesture inside a tab (a swipe-to-dismiss row, a carousel) consumes
+  the drag first, so test such screens on a device.
 
-Behavior:
-
-- Switching tabs uses `navigate(graph) { popUpTo(start) { saveState = true }; launchSingleTop = true; restoreState = true }`, so each tab keeps its own back stack.
-- Re-selecting the current tab pops it to its start route.
-- Back at the root of a non-Home tab switches to Home and restores Home's saved stack (a `BackHandler` composed after the `NavHost`, so Home's stale saved state is never resurrected later); back at Home's root leaves the app.
-- The `NavHost` consumes the inset the bar or rail already pads for, so screens use `AppScaffold` normally without a double navigation-bar gap.
+| Tab (`TopLevelTab`) | Content | Feature |
+| --- | --- | --- |
+| Home | `BillHome` (from `homeScreens`; `PlaceholderHomeScreen` when none) | `feature/bill` |
+| Profile | `ProfileTab` | `feature/profile` |
 
 ## Adaptive layouts
 
@@ -29,15 +35,15 @@ Behavior:
 
 Each destination is a `@Serializable` object or data class:
 
-- `HomeRoute` and the graph objects live in `app/navigation/AppNavHost.kt`.
+- `TabsRoute` lives in `app/navigation/AppNavHost.kt`.
 - Feature routes live in the feature's `:api` module (e.g. `feature/products/api/src/main/java/com/primestrider/kongsi/feature/example/ProductsRoutes.kt`). They keep the package `com.primestrider.kongsi.feature.example`, because a route's serial name is its qualified class name and the saved back stack and deep links store it (`RouteNamesTest`); R8 keeps the names too (`verifyReleaseKeeps`).
 
 ## Registering a destination
 
 1. Add a `@Serializable` route object to the feature's `:api` module.
-2. Register `composable<MyRoute> { ... }` in the feature's `NavGraphBuilder.<feature>Destinations(navController)` function. `:app` calls that function inside the graph of the tab the feature belongs to (`homeGraph` or `featureGraphs` in `AppNavHost.kt`, inside a `// region example:<feature>` block for the examples). Navigate only to destinations of the current tab (or switch tabs first): navigating into another tab's graph pushes the page onto the current stack and the selected tab flips to the declaring tab.
+2. Register `composable<MyRoute> { ... }` in the feature's `NavGraphBuilder.<feature>Destinations(navController)` function. `:app` calls that function from `featureDestinations` in `AppNavHost.kt`. A tab page opens a route through the `onOpen` callback it receives; other pages call `navController.navigate(route)`.
 3. To list it on Home, contribute a `CatalogEntry(title, subtitle, route, sectionId, order)` with `@Provides @IntoSet` from the feature's Hilt module; a feature that owns a Home section also contributes its `CatalogSection`. `catalog:impl` renders whatever the wired features contribute, so removing a feature removes its rows.
-4. A new top-level tab means a `TopLevelTab` added to `topLevelTabs`, a graph object and its nested graph in `featureGraphs`. With only one tab the bottom bar hides; without a feature providing Home, `PlaceholderHomeScreen` shows.
+4. A new top-level tab means a `TopLevelTab(label, icon) { onOpen -> MyTab(onOpen) }` added to `topLevelTabs`. With only one tab the bottom bar hides; without a feature providing Home, `PlaceholderHomeScreen` shows.
 
 ## Screen / Route split
 
