@@ -4,6 +4,14 @@ plugins {
 
 android {
     namespace = "com.primestrider.kongsi.feature.bill.impl"
+    buildFeatures {
+        buildConfig = true
+    }
+    sourceSets {
+        // MigrationTestHelper reads the exported schemas as assets; Robolectric only sees the variant's merged
+        // assets, so they are added to debug (never release).
+        getByName("debug").assets.directories.add("$projectDir/schemas")
+    }
 }
 
 // Room writes each database version's schema here; commit it so migrations can be tested against it.
@@ -18,4 +26,5 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    testImplementation(libs.androidx.room.testing)
 }

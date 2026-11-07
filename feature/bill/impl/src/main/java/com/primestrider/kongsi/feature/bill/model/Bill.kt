@@ -29,9 +29,10 @@ data class BillCharge(
 )
 
 /**
- * What [SplitCalculator] needs to split a bill. Money is in minor units of the bill's currency (IDR has none, so
- * Rp45.000 is 45000). [discountMinor] is a bill-level discount; a discount on one item is its lower price instead.
+ * A bill: its people, its items in receipt order and its charges. Money is in minor units of [currency] (IDR has none,
+ * so Rp45.000 is 45000). [discountMinor] is a bill-level discount; a discount on one item is its lower price instead.
  * [receiptTotalMinor] is the total printed on the receipt, when known, to warn when the lines do not add up to it.
+ * [payerPersonId] is the person who paid; their share is shown but not requested. [id] 0 means not saved yet.
  */
 data class Bill(
     val people: List<Person>,
@@ -40,4 +41,12 @@ data class Bill(
     val tax: BillCharge = BillCharge(),
     val discountMinor: Long = 0,
     val receiptTotalMinor: Long? = null,
+    val id: Long = 0,
+    val title: String = "",
+    val createdAt: Long = 0,
+    val currency: String = DEFAULT_CURRENCY,
+    val payerPersonId: Long? = null,
 )
+
+/** Kongsi v1 is IDR only; the code is stored with every bill for later. */
+const val DEFAULT_CURRENCY = "IDR"

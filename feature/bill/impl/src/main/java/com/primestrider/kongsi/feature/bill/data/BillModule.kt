@@ -16,6 +16,9 @@ abstract class BillModule {
     @Binds
     abstract fun bindPaymentAccountRepository(impl: DefaultPaymentAccountRepository): PaymentAccountRepository
 
+    @Binds
+    abstract fun bindBillRepository(impl: DefaultBillRepository): BillRepository
+
     companion object {
         @Provides
         @Singleton
@@ -25,5 +28,8 @@ abstract class BillModule {
 
         @Provides
         fun paymentAccountDao(database: KongsiDatabase): PaymentAccountDao = database.paymentAccountDao()
+
+        @Provides
+        fun billDao(database: KongsiDatabase): BillDao = database.billDao()
     }
 }

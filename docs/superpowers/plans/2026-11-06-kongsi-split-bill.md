@@ -272,7 +272,7 @@ feature/bill/impl
       service is not taxed); all items tax-free with tax 0; tax above zero with no taxable item (blocking error);
       rate vs. printed amount mismatch warning; bill-level discount; payer included; unassigned item reported; the
       sum of shares always equals the total (property-style loop over random bills and random flags).
-- [ ] **3. Room data layer.** Entities, DAO, DB, mappers, repository, Hilt module. Tests: DAO round-trip incl.
+- [x] **3. Room data layer.** Entities, DAO, DB, mappers, repository, Hilt module. Tests: DAO round-trip incl.
       item shares, cascade delete of a bill.
 - [ ] **4. Bill list screen.** Empty state, list, delete with undo. ViewModel + screen tests.
 - [ ] **5. Shared flow chrome.** Step indicator, running-total bottom bar, person colour/initials avatar, money input
