@@ -2,6 +2,8 @@ package com.primestrider.kongsi.feature.bill.data
 
 import android.content.Context
 import androidx.room.Room
+import com.primestrider.kongsi.feature.bill.contacts.ContactsRepository
+import com.primestrider.kongsi.feature.bill.contacts.DefaultContactsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -18,6 +20,9 @@ abstract class BillModule {
 
     @Binds
     abstract fun bindBillRepository(impl: DefaultBillRepository): BillRepository
+
+    @Binds
+    abstract fun bindContactsRepository(impl: DefaultContactsRepository): ContactsRepository
 
     companion object {
         @Provides

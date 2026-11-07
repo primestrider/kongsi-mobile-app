@@ -285,7 +285,7 @@ feature/bill/impl
       charge has no eligible item, tapping a warning focuses the item.
 - [x] **7. Phone numbers.** Done as `IndonesianPhone.international` in `core.util` (next to `local` and `subscriber`, which Profile and e-wallet accounts already used), instead of a separate `PhoneNumbers.normalise` (`08…`, `+62 8…`, `62-8…` → `628…`; strip spaces, `-`, `(`, `)`),
       used by contacts, frequent people and WhatsApp. Tests: normalisation table, invalid input returns null.
-- [ ] **8. ContactsRepository.** `search(query)` and `fromPickerResult(uri)` over `ContactsContract`, mobile numbers
+- [x] **8. ContactsRepository.** `search(query)` and `fromPickerResult(uri)` over `ContactsContract`, mobile numbers
       first, one row per number, WhatsApp badge. Tests: Robolectric `ContentProvider` fixture with several contacts,
       multiple numbers, no number, Indonesian names.
 - [ ] **9. People screen.** Search field with inline contact results (permission granted), picker button
