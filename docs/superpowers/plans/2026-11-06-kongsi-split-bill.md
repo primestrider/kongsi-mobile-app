@@ -266,7 +266,7 @@ feature/bill/impl
 - [x] **1. Module skeleton + Home.** `:feature:bill:{api,impl}`, `kongsi.db`, `BillHome` wired into `:app`: empty
       bill history, "New bill" FAB (shows "coming soon" until Task 6), overflow menu → payment accounts, banner
       suggesting an account while none is saved.
-- [ ] **2. SplitCalculator.** Pure function `split(bill): SplitResult` (per-person shares with item, service, tax and
+- [x] **2. SplitCalculator.** Pure function `split(bill): SplitResult` (per-person shares with item, service, tax and
       discount parts, plus warnings), following Split Rules. Tests: the Budi/Ani worked example; equal split; shared
       item among 3 with remainder; item not serviceable; item not taxable; item serviceable but not taxable (its
       service is not taxed); all items tax-free with tax 0; tax above zero with no taxable item (blocking error);
