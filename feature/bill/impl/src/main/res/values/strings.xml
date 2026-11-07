@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home -->
+    <string name="bill_home_title">Kongsi</string>
+    <string name="bill_home_new_bill">New bill</string>
+    <string name="bill_home_new_bill_soon">Creating a bill is coming soon</string>
+    <string name="bill_home_empty_title">No bills yet</string>
+    <string name="bill_home_empty_body">Bills you split will show up here.</string>
+    <string name="bill_home_steps_title">How it works</string>
+    <string name="bill_home_step_capture">Snap the receipt, or type the items in</string>
+    <string name="bill_home_step_assign">Tick who had what. Tax and service follow each share</string>
+    <string name="bill_home_step_send">Send every friend their total on WhatsApp</string>
+    <string name="bill_home_account_hint_title">Where should friends pay you?</string>
+    <string name="bill_home_account_hint_body">Add your bank account or e-wallet and it is included in every bill you send.</string>
+    <string name="bill_home_account_hint_action">Add account</string>
+
+    <!-- Payment accounts list -->
+    <string name="bill_accounts_title">Bank accounts &amp; e-wallets</string>
+    <string name="bill_accounts_intro">Default accounts are added to every bill you send on WhatsApp.</string>
+    <string name="bill_accounts_add">Add account</string>
+    <string name="bill_accounts_edit">Edit</string>
+    <string name="bill_accounts_empty_title">No accounts yet</string>
+    <string name="bill_accounts_empty_body">Save the bank accounts and e-wallets friends can pay you with. They appear in the WhatsApp message.</string>
+    <string name="bill_accounts_delete_cd">Delete %1$s %2$s</string>
+    <string name="bill_account_default_badge">Default</string>
+    <string name="bill_account_holder_line">(%1$s)</string>
+    <string name="bill_account_deleted">%1$s deleted</string>
+    <string name="bill_undo">Undo</string>
+
+    <!-- Payment account form -->
+    <string name="bill_account_add_title">Add account</string>
+    <string name="bill_account_edit_title">Edit account</string>
+    <string name="bill_account_type_bank">Bank</string>
+    <string name="bill_account_type_ewallet">E-wallet</string>
+    <string name="bill_account_bank">Bank</string>
+    <string name="bill_account_ewallet">E-wallet</string>
+    <string name="bill_account_provider_placeholder">Choose one</string>
+    <string name="bill_account_provider_other">Other</string>
+    <string name="bill_account_other_bank_name">Bank name</string>
+    <string name="bill_account_other_ewallet_name">E-wallet name</string>
+    <string name="bill_account_number">Account number</string>
+    <string name="bill_account_number_hint">e.g. 1234567890</string>
+    <string name="bill_account_phone">Registered phone number</string>
+    <string name="bill_account_phone_hint">e.g. 0812 3456 7890</string>
+    <string name="bill_account_use_my_number">Use my number (%1$s)</string>
+    <string name="bill_account_holder">Account holder</string>
+    <string name="bill_account_holder_support">As written on the account, so friends can check before they transfer</string>
+    <string name="bill_account_default">Add to every bill</string>
+    <string name="bill_account_default_support">You can still choose other accounts for a single bill.</string>
+    <string name="bill_account_preview_title">In the WhatsApp message</string>
+    <string name="bill_account_preview_provider">Bank</string>
+    <string name="bill_account_preview_holder">Name</string>
+    <string name="bill_account_preview_number">Number</string>
+    <string name="bill_account_save">Save</string>
+    <string name="bill_account_saved">Account saved</string>
+    <string name="bill_account_save_failed">Couldn’t save. Please try again.</string>
+    <string name="bill_account_error_provider">Choose or type the bank or e-wallet</string>
+    <string name="bill_account_error_provider_long">Keep the name under 30 characters</string>
+    <string name="bill_account_error_bank_number">Enter the account number: 5 to 20 digits</string>
+    <string name="bill_account_error_ewallet_number">Enter an Indonesian mobile number, e.g. 0812 3456 7890</string>
+    <string name="bill_account_error_holder">Enter the account holder’s name</string>
+    <string name="bill_account_error_holder_long">Keep the name under 50 characters</string>
+</resources>

@@ -20,10 +20,10 @@ Navigation is type-safe Navigation Compose inside a bottom-navigation shell. Rea
    state from a `@HiltViewModel` with one `StateFlow`. Arguments: `savedStateHandle.toRoute<<Name>Route>()` in the
    ViewModel, or `entry.toRoute<…>()` in the destination.
 3. **Destination**: add `composable<<Name>Route> { … }` to the feature's `<feature>Destinations(navController)`
-   function (e.g. `productsDestinations` in `ProductsNavigation.kt`). `:app` already calls it inside the right tab.
-4. **Navigate** with `navController.navigate(<Name>Route(id))`, only to destinations of the current tab: a route of
-   another tab's graph would be pushed onto the current stack. Another feature's page: depend on its `:api` and
-   navigate to its route (the account feature opens `SettingsRoute` this way).
+   function (e.g. `productsDestinations` in `ProductsNavigation.kt`). `:app` already calls it from `featureDestinations`.
+4. **Navigate** with `navController.navigate(<Name>Route(id))`; a tab page uses the `onOpen` callback it receives.
+   Every route opens full screen over the swipeable tabs. Another feature's page: depend on its `:api` and navigate
+   to its route (Profile opens `PaymentAccountsRoute` this way).
 5. **Protected page** (signed in only): copy the guard of `AccountRoute` in `accountDestinations`
    (`feature/account/impl/src/main/java/com/primestrider/kongsi/feature/example/auth/AccountNavigation.kt`): wait
    for the stored session to load, then replace the page with sign-in when the session is gone without the user

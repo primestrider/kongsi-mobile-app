@@ -9,13 +9,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.primestrider.kongsi.core.designsystem.R
 
-val PlusJakartaSans =
+/** Xmind (OFL, Google Fonts) for every style, 400 to 800. */
+val Xmind =
     FontFamily(
-        Font(R.font.plus_jakarta_sans_regular, FontWeight.Normal),
-        Font(R.font.plus_jakarta_sans_medium, FontWeight.Medium),
-        Font(R.font.plus_jakarta_sans_semibold, FontWeight.SemiBold),
-        Font(R.font.plus_jakarta_sans_bold, FontWeight.Bold),
-        Font(R.font.plus_jakarta_sans_extrabold, FontWeight.ExtraBold),
+        Font(R.font.xmind_regular, FontWeight.Normal),
+        Font(R.font.xmind_medium, FontWeight.Medium),
+        Font(R.font.xmind_semibold, FontWeight.SemiBold),
+        Font(R.font.xmind_bold, FontWeight.Bold),
+        Font(R.font.xmind_extrabold, FontWeight.ExtraBold),
     )
 
 object FontSize {
@@ -58,20 +59,21 @@ private fun style(
     lineHeight: TextUnit,
     weight: FontWeight,
     letterSpacing: TextUnit = LetterSpacing.normal,
+    family: FontFamily = Xmind,
 ) = TextStyle(
-    fontFamily = PlusJakartaSans,
+    fontFamily = family,
     fontSize = size,
     lineHeight = lineHeight,
     fontWeight = weight,
     letterSpacing = letterSpacing,
 )
 
-/** Material 3 typography mapped from the React Native AppText variants. */
+/** Material 3 typography, all in [Xmind]. */
 val AppTypography =
     Typography(
-        displayLarge = style(FontSize.xl6, LineHeight.xl6, FontWeight.Bold),
-        displayMedium = style(FontSize.xl5, LineHeight.xl5, FontWeight.Bold),
-        displaySmall = style(FontSize.xl4, LineHeight.xl4, FontWeight.Bold),
+        displayLarge = style(FontSize.xl6, LineHeight.xl6, FontWeight.Bold, LetterSpacing.tight),
+        displayMedium = style(FontSize.xl5, LineHeight.xl5, FontWeight.Bold, LetterSpacing.tight),
+        displaySmall = style(FontSize.xl4, LineHeight.xl4, FontWeight.Bold, LetterSpacing.tight),
         headlineLarge = style(FontSize.xl3, LineHeight.xl3, FontWeight.ExtraBold, LetterSpacing.tight),
         headlineMedium = style(FontSize.xl2, LineHeight.xl2, FontWeight.Bold, LetterSpacing.tight),
         headlineSmall = style(FontSize.xl, LineHeight.xl, FontWeight.SemiBold),

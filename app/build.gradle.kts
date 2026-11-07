@@ -120,6 +120,11 @@ dependencies {
     implementation(projects.core.auth)
     implementation(projects.core.ui)
 
+    implementation(projects.feature.bill.api)
+    implementation(projects.feature.bill.impl)
+    implementation(projects.feature.profile.api)
+    implementation(projects.feature.profile.impl)
+
     testImplementation(projects.core.testing)
 
     implementation(libs.androidx.core.ktx)

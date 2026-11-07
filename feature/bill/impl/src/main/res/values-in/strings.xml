@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home -->
+    <string name="bill_home_title">Kongsi</string>
+    <string name="bill_home_new_bill">Bill baru</string>
+    <string name="bill_home_new_bill_soon">Fitur membuat bill segera hadir</string>
+    <string name="bill_home_empty_title">Belum ada bill</string>
+    <string name="bill_home_empty_body">Bill yang sudah kamu bagi akan muncul di sini.</string>
+    <string name="bill_home_steps_title">Cara kerjanya</string>
+    <string name="bill_home_step_capture">Foto struknya, atau ketik itemnya sendiri</string>
+    <string name="bill_home_step_assign">Tandai siapa pesan apa. Pajak dan servis ikut porsi masing-masing</string>
+    <string name="bill_home_step_send">Kirim total tiap teman lewat WhatsApp</string>
+    <string name="bill_home_account_hint_title">Teman mau transfer ke mana?</string>
+    <string name="bill_home_account_hint_body">Tambahkan rekening bank atau e-wallet kamu, nanti otomatis dicantumkan di setiap tagihan.</string>
+    <string name="bill_home_account_hint_action">Tambah rekening</string>
+
+    <!-- Payment accounts list -->
+    <string name="bill_accounts_title">Rekening &amp; e-wallet</string>
+    <string name="bill_accounts_intro">Rekening utama otomatis dicantumkan di setiap tagihan yang kamu kirim lewat WhatsApp.</string>
+    <string name="bill_accounts_add">Tambah rekening</string>
+    <string name="bill_accounts_edit">Ubah</string>
+    <string name="bill_accounts_empty_title">Belum ada rekening</string>
+    <string name="bill_accounts_empty_body">Simpan rekening bank dan e-wallet untuk menerima transfer dari teman. Semuanya akan muncul di pesan WhatsApp.</string>
+    <string name="bill_accounts_delete_cd">Hapus %1$s %2$s</string>
+    <string name="bill_account_default_badge">Utama</string>
+    <string name="bill_account_holder_line">a.n. %1$s</string>
+    <string name="bill_account_deleted">%1$s dihapus</string>
+    <string name="bill_undo">Batalkan</string>
+
+    <!-- Payment account form -->
+    <string name="bill_account_add_title">Tambah rekening</string>
+    <string name="bill_account_edit_title">Ubah rekening</string>
+    <string name="bill_account_type_bank">Bank</string>
+    <string name="bill_account_type_ewallet">E-wallet</string>
+    <string name="bill_account_bank">Bank</string>
+    <string name="bill_account_ewallet">E-wallet</string>
+    <string name="bill_account_provider_placeholder">Pilih salah satu</string>
+    <string name="bill_account_provider_other">Lainnya</string>
+    <string name="bill_account_other_bank_name">Nama bank</string>
+    <string name="bill_account_other_ewallet_name">Nama e-wallet</string>
+    <string name="bill_account_number">Nomor rekening</string>
+    <string name="bill_account_number_hint">mis. 1234567890</string>
+    <string name="bill_account_phone">Nomor HP terdaftar</string>
+    <string name="bill_account_phone_hint">mis. 0812 3456 7890</string>
+    <string name="bill_account_use_my_number">Pakai nomor saya (%1$s)</string>
+    <string name="bill_account_holder">Nama pemilik</string>
+    <string name="bill_account_holder_support">Sesuai nama di rekening, supaya teman bisa mengecek sebelum transfer</string>
+    <string name="bill_account_default">Cantumkan di setiap tagihan</string>
+    <string name="bill_account_default_support">Untuk satu bill tertentu, kamu tetap bisa memilih rekening lain.</string>
+    <string name="bill_account_preview_title">Tampilan di pesan WhatsApp</string>
+    <string name="bill_account_preview_provider">Bank</string>
+    <string name="bill_account_preview_holder">Nama</string>
+    <string name="bill_account_preview_number">Nomor</string>
+    <string name="bill_account_save">Simpan</string>
+    <string name="bill_account_saved">Rekening disimpan</string>
+    <string name="bill_account_save_failed">Gagal menyimpan. Coba lagi.</string>
+    <string name="bill_account_error_provider">Pilih atau ketik nama bank/e-wallet</string>
+    <string name="bill_account_error_provider_long">Nama maksimal 30 karakter</string>
+    <string name="bill_account_error_bank_number">Masukkan nomor rekening: 5 sampai 20 digit</string>
+    <string name="bill_account_error_ewallet_number">Masukkan nomor HP Indonesia, mis. 0812 3456 7890</string>
+    <string name="bill_account_error_holder">Masukkan nama pemilik rekening</string>
+    <string name="bill_account_error_holder_long">Nama maksimal 50 karakter</string>
+</resources>

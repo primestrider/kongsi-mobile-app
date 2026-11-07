@@ -89,7 +89,7 @@ class AppThemeTest {
         val scheme = captureScheme(dark = false)
         assertNoBaselineRole(scheme, lightColorScheme())
         assertEquals(LightColors.info, scheme.tertiary)
-        assertEquals(Palette.Gray.c200, scheme.surfaceContainerHigh)
+        assertEquals(Palette.Stone.c200, scheme.surfaceContainerHigh)
     }
 
     @Test

@@ -34,9 +34,8 @@ A feature is two Gradle modules: `:feature:<name>:api` (routes other modules may
    `src/main/AndroidManifest.xml` (see `add-permission-feature`).
 6. **Wire in `:app`.** In `app/build.gradle.kts` add `implementation(projects.feature.<name>.api)` and `.impl`. In
    `app/src/main/java/com/primestrider/kongsi/app/navigation/AppNavHost.kt` call `<name>Destinations(navController)`
-   inside the tab graph it belongs to (`homeGraph`, or a `navigation<…Graph>` in `featureGraphs`); a new tab is a
-   `TopLevelTab` in `topLevelTabs`. Do **not** wrap a real feature in `// region example:` markers: those mark the
-   examples `scripts/remove-examples.sh` deletes.
+   inside `featureDestinations`; a new swipeable tab is a `TopLevelTab` in `topLevelTabs`. Do **not** wrap a real
+   feature in `// region example:` markers: those mark the examples `scripts/remove-examples.sh` deletes.
 7. **Optional Home row:** contribute `@Provides @IntoSet fun homeEntry(): CatalogEntry` (and a `CatalogSection` if the
    feature owns a section) from the feature's Hilt module; needs `implementation(projects.feature.catalog.api)`.
    **Caution:** `catalog` is one of the examples `scripts/remove-examples.sh` deletes. A real feature that depends on

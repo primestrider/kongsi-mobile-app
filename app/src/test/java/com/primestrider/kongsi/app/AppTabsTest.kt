@@ -6,8 +6,8 @@ import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.primestrider.kongsi.app.navigation.HomeTab
 import com.primestrider.kongsi.app.navigation.MainShell
+import com.primestrider.kongsi.app.navigation.homeTab
 import com.primestrider.kongsi.core.designsystem.component.APP_NAVIGATION_BAR_TAG
 import com.primestrider.kongsi.core.designsystem.component.LocalMessenger
 import com.primestrider.kongsi.core.designsystem.component.Messenger
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 
-/** What is left when every example feature is removed: Home is the placeholder and the bar hides. */
+/** What is left without any feature: Home is the placeholder and, with a single tab, the bar hides. */
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 @Config(application = HiltTestApplication::class, sdk = [36])
@@ -42,7 +42,7 @@ class AppTabsTest {
         hiltRule.inject()
         composeRule.activity.setContent {
             CompositionLocalProvider(LocalMessenger provides messenger) {
-                AppTheme(darkTheme = false) { MainShell(tabs = listOf(HomeTab), homeScreens = emptyList()) }
+                AppTheme(darkTheme = false) { MainShell(tabs = listOf(homeTab(screens = emptyList()))) }
             }
         }
         composeRule.waitForIdle()

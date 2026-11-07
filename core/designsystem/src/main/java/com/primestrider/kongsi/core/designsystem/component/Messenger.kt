@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
@@ -27,11 +28,13 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
-import com.primestrider.kongsi.core.designsystem.theme.AppThemeTokens
+import com.primestrider.kongsi.core.designsystem.theme.Palette
 import com.primestrider.kongsi.core.designsystem.theme.PreviewTheme
+import com.primestrider.kongsi.core.designsystem.theme.Radii
 import com.primestrider.kongsi.core.designsystem.theme.Spacing
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 import kotlinx.coroutines.channels.Channel
@@ -146,6 +149,7 @@ private fun VariantSnackbar(data: SnackbarData) {
     val (icon, accent) = variant.style()
     Snackbar(
         modifier = Modifier.padding(Spacing.s3),
+        shape = RoundedCornerShape(Radii.lg),
         action =
             data.visuals.actionLabel?.let { label ->
                 { TextButton(onClick = { data.performAction() }) { Text(label, color = MaterialTheme.colorScheme.inversePrimary) } }
@@ -158,14 +162,20 @@ private fun VariantSnackbar(data: SnackbarData) {
     }
 }
 
+/**
+ * Icon and its tint on the snackbar's inverse surface (dark ink in light theme, pale ink in dark theme). Info takes
+ * the brand accent; the status colours use the shade that keeps 3:1 or more on that surface.
+ */
 @Composable
-private fun MessageVariant.style(): Pair<ImageVector, Color> =
-    when (this) {
-        MessageVariant.INFO -> Icons.Filled.Info to AppThemeTokens.colors.info
-        MessageVariant.SUCCESS -> Icons.Filled.CheckCircle to AppThemeTokens.colors.success
-        MessageVariant.WARNING -> Icons.Filled.Warning to AppThemeTokens.colors.warning
-        MessageVariant.ERROR -> Icons.Filled.Warning to MaterialTheme.colorScheme.error
+private fun MessageVariant.style(): Pair<ImageVector, Color> {
+    val onLight = MaterialTheme.colorScheme.inverseSurface.luminance() >= 0.5f
+    return when (this) {
+        MessageVariant.INFO -> Icons.Filled.Info to MaterialTheme.colorScheme.inversePrimary
+        MessageVariant.SUCCESS -> Icons.Filled.CheckCircle to if (onLight) Palette.Success.c700 else Palette.Success.c500
+        MessageVariant.WARNING -> Icons.Filled.Warning to if (onLight) Palette.Warning.c700 else Palette.Warning.c500
+        MessageVariant.ERROR -> Icons.Filled.Warning to if (onLight) Palette.Error.c700 else Palette.Red.c400
     }
+}
 
 @ThemePreviews
 @Composable

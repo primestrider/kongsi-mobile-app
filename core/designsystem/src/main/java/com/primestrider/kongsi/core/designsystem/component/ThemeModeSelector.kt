@@ -21,8 +21,9 @@ fun ThemeModeSelector(
     SegmentedChoice(ThemeMode.entries, selected, onSelect, label = { labels.getValue(it) }, modifier = modifier)
 }
 
+/** The label of a theme mode, as [ThemeModeSelector] shows it. */
 @StringRes
-private fun ThemeMode.labelRes(): Int =
+fun ThemeMode.labelRes(): Int =
     when (this) {
         ThemeMode.SYSTEM -> R.string.component_theme_system
         ThemeMode.LIGHT -> R.string.component_theme_light

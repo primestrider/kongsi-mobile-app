@@ -14,7 +14,7 @@ class ControlColorsTest {
         val green = LightColors.copy(primary = Palette.Success.c500)
         assertNotEquals(LightColors.controlFocusFill, green.controlFocusFill)
         assertEquals(
-            Palette.Primary.c500
+            LightColors.primary
                 .copy(alpha = 0.12f)
                 .compositeOver(LightColors.controlFill),
             LightColors.controlFocusFill,

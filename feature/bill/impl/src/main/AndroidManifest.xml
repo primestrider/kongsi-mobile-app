@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Merged into the app manifest. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Finding friends' numbers when adding people to a bill (People step). Asked only when the user starts searching
+         contacts, or from Profile > Permissions; the system contact picker works without it. -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+</manifest>
