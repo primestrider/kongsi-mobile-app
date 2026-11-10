@@ -159,7 +159,6 @@
     <string name="bill_summary_number_search">Cari kontak atau ketik nomor</string>
     <string name="bill_summary_use_number">Pakai %1$s</string>
     <string name="bill_summary_number_taken">Nomor ini sudah dipakai %1$s</string>
-    <string name="bill_money_spoken">%1$s rupiah</string>
     <string name="bill_breakdown_title">Gimana hitungannya?</string>
     <string name="bill_breakdown_shared">%1$s (bareng %2$s, %3$s)</string>
     <string name="bill_breakdown_service_rate">Servis %1$s dari pesananmu</string>

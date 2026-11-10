@@ -57,11 +57,11 @@ class BillMessageBuilderTest {
         assertEquals(
             """
             Halo Budi, ini bagianmu dari tagihan "Makan Malam Sushi" (6 Nov 2026):
-            - Nasi Goreng: Rp30.000
-            - Ocha (bareng Ani, ½): Rp6.000
-            - Servis 5% dari pesananmu: Rp1.800
-            - Pajak 10% dari pesananmu + servis: Rp3.780
-            *Total: Rp41.580*
+            - Nasi Goreng: 30.000
+            - Ocha (bareng Ani, ½): 6.000
+            - Servis 5% dari pesananmu: 1.800
+            - Pajak 10% dari pesananmu + servis: 3.780
+            *Total: 41.580*
 
             Bisa transfer ke:
             BCA a.n. Ricky
@@ -80,11 +80,11 @@ class BillMessageBuilderTest {
         assertEquals(
             """
             Hi Budi, here's your part of the bill "Makan Malam Sushi" (Nov 6, 2026):
-            - Nasi Goreng: Rp30,000
-            - Ocha (shared with Ani, ½): Rp6,000
-            - Service 5% of your order: Rp1,800
-            - Tax 10% of your order + service: Rp3,780
-            *Total: Rp41,580*
+            - Nasi Goreng: 30,000
+            - Ocha (shared with Ani, ½): 6,000
+            - Service 5% of your order: 1,800
+            - Tax 10% of your order + service: 3,780
+            *Total: 41,580*
 
             You can transfer to:
             BCA (Ricky)
@@ -111,11 +111,11 @@ class BillMessageBuilderTest {
         assertEquals(
             """
             Hi Budi, here's your part of the bill "Makan Malam Sushi" (Nov 6, 2026):
-            - Nasi Goreng: Rp30,000
-            - Ocha (shared with Ani, ½): Rp6,000
-            - Service 5% of your order: Rp1,800
-            - Tax 10% of your order + service: Rp3,780
-            *Total: Rp41,580*
+            - Nasi Goreng: 30,000
+            - Ocha (shared with Ani, ½): 6,000
+            - Service 5% of your order: 1,800
+            - Tax 10% of your order + service: 3,780
+            *Total: 41,580*
 
             Sent from Kongsi
             """.trimIndent(),
@@ -141,7 +141,7 @@ class BillMessageBuilderTest {
 
         val text = message(indonesian, bill = bill)
 
-        assertTrue(text, text.contains("- 3× Ocha (bareng Ricky, Citra, ⅓): Rp4.000"))
+        assertTrue(text, text.contains("- 3× Ocha (bareng Ricky, Citra, ⅓): 4.000"))
     }
 
     @Test
@@ -149,9 +149,9 @@ class BillMessageBuilderTest {
         assertEquals(
             """
             Ini pembagian tagihan "Makan Malam Sushi" (6 Nov 2026):
-            - Budi: Rp41.580
-            - Ani: Rp110.880
-            *Total: Rp152.460*
+            - Budi: 41.580
+            - Ani: 110.880
+            *Total: 152.460*
 
             Bisa transfer ke:
             BCA a.n. Ricky
@@ -170,10 +170,10 @@ class BillMessageBuilderTest {
         assertEquals(
             """
             Here's the split for the bill (Nov 6, 2026):
-            - Budi: Rp6,930
-            - Ani: Rp110,880
-            - Ricky (paid the bill): Rp34,650
-            *Total: Rp152,460*
+            - Budi: 6,930
+            - Ani: 110,880
+            - Ricky (paid the bill): 34,650
+            *Total: 152,460*
 
             Sent from Kongsi
             """.trimIndent(),
@@ -183,12 +183,12 @@ class BillMessageBuilderTest {
 
     @Test
     fun charges_without_a_rate_a_discount_and_no_title_are_worded_plainly() {
-        // Budi's items are Rp36.000 of Rp132.000, so his part of each charge is 36/132.
+        // Budi's items are 36.000 of 132.000, so his part of each charge is 36/132.
         val bill = dinner.copy(title = "", service = BillCharge(), tax = BillCharge(13_200), discountMinor = 6_600)
 
         val text = message(english, bill = bill)
 
         assertTrue(text, text.startsWith("Hi Budi, here's your part of the bill (Nov 6, 2026):\n"))
-        assertTrue(text, text.contains("- Tax on your order: Rp3,600\n- Discount, by what you ordered: −Rp1,800\n*Total: Rp37,800*"))
+        assertTrue(text, text.contains("- Tax on your order: 3,600\n- Discount, by what you ordered: −1,800\n*Total: 37,800*"))
     }
 }

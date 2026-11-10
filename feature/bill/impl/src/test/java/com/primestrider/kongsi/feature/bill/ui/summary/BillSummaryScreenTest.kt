@@ -82,7 +82,7 @@ class BillSummaryScreenTest {
     fun totals_add_up_and_done_finishes_the_bill() {
         show(state)
 
-        rule.onNodeWithText("Everyone's share adds up to Rp152,460").assertIsDisplayed()
+        rule.onNodeWithText("Everyone's share adds up to 152,460").assertIsDisplayed()
         rule.onNodeWithText("Done").assertIsEnabled().performClick()
         assertEquals(listOf("done"), events)
     }
@@ -91,7 +91,7 @@ class BillSummaryScreenTest {
     fun an_incomplete_bill_cannot_be_finished() {
         show(state.copy(complete = false, assignedMinor = 100_000))
 
-        rule.onNodeWithText("Rp100,000 of Rp152,460 assigned").assertIsDisplayed()
+        rule.onNodeWithText("100,000 of 152,460 assigned").assertIsDisplayed()
         rule.onNodeWithText("Done").assertIsNotEnabled()
     }
 
@@ -99,8 +99,8 @@ class BillSummaryScreenTest {
     fun talkback_reads_what_each_person_owes_and_marks_the_payer() {
         show(state)
 
-        rule.onNodeWithContentDescription("You paid the bill. Your share is 0 rupiah").assertIsDisplayed()
-        rule.onNodeWithContentDescription("Budi owes 41,580 rupiah").performClick()
+        rule.onNodeWithContentDescription("You paid the bill. Your share is 0").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Budi owes 41,580").performClick()
         assertEquals(listOf("open 2"), events)
     }
 
@@ -113,7 +113,7 @@ class BillSummaryScreenTest {
         rule.onNodeWithText("Ocha (shared with Ani, ½)").assertIsDisplayed()
         rule.onNodeWithText("Service 5% of your order").assertIsDisplayed()
         rule.onNodeWithText("Tax 10% of your order + service").assertIsDisplayed()
-        rule.onNodeWithText("Rp3,780").assertIsDisplayed()
+        rule.onNodeWithText("3,780").assertIsDisplayed()
     }
 
     @Test
@@ -212,7 +212,7 @@ class BillSummaryScreenTest {
         show(state.copy(people = listOf(SummaryPerson(budi, 38_578, lines)), openPersonId = 2))
 
         rule.onNodeWithText("Discount, by what you ordered").assertIsDisplayed()
-        rule.onNodeWithText("−Rp3,000").assertIsDisplayed()
-        rule.onNodeWithText("Rp2 rounding taken off").assertIsDisplayed()
+        rule.onNodeWithText("−3,000").assertIsDisplayed()
+        rule.onNodeWithText("2 rounding taken off").assertIsDisplayed()
     }
 }

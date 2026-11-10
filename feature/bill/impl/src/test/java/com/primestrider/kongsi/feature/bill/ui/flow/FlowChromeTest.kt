@@ -35,28 +35,28 @@ class FlowChromeTest {
     @Test
     fun total_that_matches_the_receipt_says_so() {
         show { RunningTotalBar(RunningTotal.Receipt(totalMinor = 152_460, receiptMinor = 152_460)) }
-        rule.onNodeWithText("Rp152,460").assertIsDisplayed()
+        rule.onNodeWithText("152,460").assertIsDisplayed()
         rule.onNodeWithText("Matches the receipt").assertIsDisplayed()
     }
 
     @Test
     fun total_that_does_not_match_the_receipt_names_both_amounts() {
         show { RunningTotalBar(RunningTotal.Receipt(totalMinor = 150_000, receiptMinor = 152_460)) }
-        rule.onNodeWithText("Rp150,000").assertIsDisplayed()
-        rule.onNodeWithText("Receipt says Rp152,460").assertIsDisplayed()
+        rule.onNodeWithText("150,000").assertIsDisplayed()
+        rule.onNodeWithText("Receipt says 152,460").assertIsDisplayed()
     }
 
     @Test
     fun total_without_a_receipt_total_is_just_the_total() {
         show { RunningTotalBar(RunningTotal.Receipt(totalMinor = 30_000, receiptMinor = null)) }
-        rule.onNodeWithText("Rp30,000").assertIsDisplayed()
+        rule.onNodeWithText("30,000").assertIsDisplayed()
         rule.onNodeWithText("Matches the receipt").assertDoesNotExist()
     }
 
     @Test
     fun partly_assigned_shows_progress() {
         show { RunningTotalBar(RunningTotal.Assigned(assignedMinor = 96_000, totalMinor = 152_460)) }
-        rule.onNodeWithText("Rp96,000 of Rp152,460 assigned").assertIsDisplayed()
+        rule.onNodeWithText("96,000 of 152,460 assigned").assertIsDisplayed()
         rule
             .onNode(SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo))
             .assert(
@@ -67,7 +67,7 @@ class FlowChromeTest {
     @Test
     fun fully_assigned_says_everything_adds_up() {
         show { RunningTotalBar(RunningTotal.Shares(totalMinor = 152_460)) }
-        rule.onNodeWithText("Everyone's share adds up to Rp152,460").assertIsDisplayed()
+        rule.onNodeWithText("Everyone's share adds up to 152,460").assertIsDisplayed()
     }
 
     @Test
@@ -96,7 +96,7 @@ class FlowChromeTest {
 
         rule.onNodeWithText("Price").performTextInput("45rb")
 
-        rule.onNodeWithText("= Rp45,000").assertIsDisplayed()
+        rule.onNodeWithText("= 45,000").assertIsDisplayed()
     }
 
     @Test

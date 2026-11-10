@@ -73,7 +73,7 @@ class BillAssignScreenTest {
     fun unassigned_items_block_next_with_a_message_that_leads_to_them() {
         show(state)
 
-        rule.onNodeWithText("Rp34,650 of Rp152,460 assigned").assertIsDisplayed()
+        rule.onNodeWithText("34,650 of 152,460 assigned").assertIsDisplayed()
         rule.onNodeWithText("Next").assertIsNotEnabled()
         rule.onNodeWithText("1 item not assigned yet").performClick()
         assertEquals(listOf("unassigned"), events)

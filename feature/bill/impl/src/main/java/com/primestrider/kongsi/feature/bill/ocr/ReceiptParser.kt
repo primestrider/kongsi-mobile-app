@@ -63,13 +63,14 @@ object ReceiptParser {
 
         for (row in rowsOf(lines)) {
             if (total != null) break
-            val tokens = row.split(WHITESPACE).filter { it.isNotEmpty() }
+            // A currency printed after the amount ("45.000 IDR") is not part of it.
+            val tokens = row.split(WHITESPACE).filter { it.isNotEmpty() }.dropLastWhile(::isCurrency)
             val price = tokens.lastOrNull()?.let(::priceOf)
             if (price == null) {
                 if (row.any(Char::isLetter)) pendingName = row.trim()
                 continue
             }
-            val labelTokens = tokens.dropLast(1).dropLastWhile { it.lowercase() in CURRENCY_OR_PUNCTUATION }
+            val labelTokens = tokens.dropLast(1).dropLastWhile { isCurrency(it) || it in PUNCTUATION }
             val label = labelTokens.joinToString(" ").lowercase()
             val amount = abs(price)
             val isItem = lastWasItem
@@ -103,13 +104,14 @@ object ReceiptParser {
     }
 
     /**
-     * A price as printed: `45.000`, `45,000`, `45000`, `Rp45.000`, `45.000,00` or `45,000.00`, negative with a leading
-     * minus or in brackets. Null for anything else, and for amounts under Rp100 (quantities, table numbers).
+     * A price as printed: `45.000`, `45,000`, `45000`, `45.000,00` or `45,000.00`, with or without a currency stuck to
+     * it (`Rp45.000`, `IDR45.000`, `$45,000`), negative with a leading minus or in brackets. The currency is ignored.
+     * Null for anything else, and for amounts under 100 (quantities, table numbers).
      */
     fun priceOf(token: String): Long? {
         val trimmed = token.trim()
         val negative = trimmed.startsWith("-") || (trimmed.startsWith("(") && trimmed.endsWith(")"))
-        val text = trimmed.trim('-', '(', ')').replace(RUPIAH_PREFIX, "")
+        val text = trimmed.trim('-', '(', ')').replace(CURRENCY_PREFIX, "")
         val value =
             when {
                 GROUPED.matches(text) -> text.replace(DECIMALS, "").filter(Char::isDigit).toLong()
@@ -223,7 +225,13 @@ object ReceiptParser {
         )
 
     private val WHITESPACE = Regex("""\s+""")
-    private val RUPIAH_PREFIX = Regex("""^[Rr][Pp]\.?\s*""")
+
+    /** Currencies receipts print, as a word of their own or stuck to an amount; never part of the amount. */
+    private const val CURRENCIES = """rp|idr|rm|myr|sgd|s\$|usd|us\$|php|thb|vnd|eur|\p{Sc}"""
+    private val CURRENCY_PREFIX = Regex("""^(?:$CURRENCIES)\.?\s*""", RegexOption.IGNORE_CASE)
+    private val CURRENCY_WORD = Regex("""(?:$CURRENCIES)\.?""", RegexOption.IGNORE_CASE)
+
+    private fun isCurrency(token: String): Boolean = CURRENCY_WORD.matches(token)
 
     /** Thousands grouped by `.` or `,`, with optional two decimals: `45.000`, `1.250.000`, `45.000,00`. */
     private val GROUPED = Regex("""\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{2})?""")
@@ -237,7 +245,7 @@ object ReceiptParser {
     private val LEADING_QUANTITY = Regex("""(\d{1,2})[xX×]?""")
     private val TIMES = setOf("x", "×")
     private val RATE = Regex("""(\d{1,2}(?:[.,]\d{1,2})?)\s*%""")
-    private val CURRENCY_OR_PUNCTUATION = setOf("rp", "rp.", ":", "=", "idr")
+    private val PUNCTUATION = setOf(":", "=")
 
     private const val MIN_PRICE = 100L
     private const val BPS_PER_PERCENT = 100

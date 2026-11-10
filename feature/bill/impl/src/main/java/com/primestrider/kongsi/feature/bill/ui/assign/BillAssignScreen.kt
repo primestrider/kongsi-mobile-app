@@ -51,10 +51,9 @@ import com.primestrider.kongsi.core.designsystem.theme.Radii
 import com.primestrider.kongsi.core.designsystem.theme.Spacing
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 import com.primestrider.kongsi.core.util.currentLocale
-import com.primestrider.kongsi.core.util.formatMoney
+import com.primestrider.kongsi.core.util.formatAmount
 import com.primestrider.kongsi.feature.bill.impl.R
 import com.primestrider.kongsi.feature.bill.model.BillItem
-import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 import com.primestrider.kongsi.feature.bill.model.Person
 import com.primestrider.kongsi.feature.bill.ui.flow.CheckChip
 import com.primestrider.kongsi.feature.bill.ui.flow.FlowStep
@@ -218,7 +217,7 @@ private fun ItemTitle(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
-        Text(formatMoney(item.totalMinor, DEFAULT_CURRENCY, locale), style = MaterialTheme.typography.titleSmall)
+        Text(formatAmount(item.totalMinor, locale), style = MaterialTheme.typography.titleSmall)
     }
 }
 

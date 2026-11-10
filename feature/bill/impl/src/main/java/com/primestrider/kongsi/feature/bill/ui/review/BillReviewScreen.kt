@@ -49,11 +49,10 @@ import com.primestrider.kongsi.core.designsystem.theme.Radii
 import com.primestrider.kongsi.core.designsystem.theme.Spacing
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 import com.primestrider.kongsi.core.util.currentLocale
-import com.primestrider.kongsi.core.util.formatMoney
+import com.primestrider.kongsi.core.util.formatAmount
 import com.primestrider.kongsi.feature.bill.impl.R
 import com.primestrider.kongsi.feature.bill.model.BillItem
 import com.primestrider.kongsi.feature.bill.model.ChargeType
-import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 import com.primestrider.kongsi.feature.bill.model.SplitIssue
 import com.primestrider.kongsi.feature.bill.ui.flow.FlowStep
 import com.primestrider.kongsi.feature.bill.ui.flow.MoneyField
@@ -247,7 +246,7 @@ private fun ItemRow(
                     }
                 }
             }
-            Text(formatMoney(item.totalMinor, DEFAULT_CURRENCY, locale), style = MaterialTheme.typography.titleSmall)
+            Text(formatAmount(item.totalMinor, locale), style = MaterialTheme.typography.titleSmall)
         }
     }
 }
@@ -315,7 +314,7 @@ private fun WarningCard(
     onClick: () -> Unit,
 ) {
     val locale = currentLocale()
-    val money = { minor: Long -> formatMoney(minor, DEFAULT_CURRENCY, locale) }
+    val money = { minor: Long -> formatAmount(minor, locale) }
     val (title, message) =
         when (val issue = warning.issue) {
             is SplitIssue.ReceiptTotalMismatch ->
