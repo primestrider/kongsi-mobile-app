@@ -3,14 +3,19 @@ package com.primestrider.kongsi.feature.bill.ui.capture
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.primestrider.kongsi.feature.bill.ocr.ParsedItem
+import com.primestrider.kongsi.core.designsystem.component.Messenger
+import com.primestrider.kongsi.core.designsystem.component.UiText
+import com.primestrider.kongsi.feature.bill.impl.R
+import com.primestrider.kongsi.feature.bill.model.BillCharge
 import com.primestrider.kongsi.feature.bill.ocr.ReceiptLine
 import com.primestrider.kongsi.feature.bill.ocr.ReceiptScanException
 import com.primestrider.kongsi.feature.bill.ocr.ReceiptScanner
+import com.primestrider.kongsi.feature.bill.ui.FakeBillRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -45,12 +50,14 @@ class BillCaptureViewModelTest {
     }
 
     private val scanner = FakeScanner()
+    private val bills = FakeBillRepository()
+    private val messenger = Messenger()
     private lateinit var viewModel: BillCaptureViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(main)
-        viewModel = BillCaptureViewModel(scanner)
+        viewModel = BillCaptureViewModel(scanner, bills, messenger)
     }
 
     @After
@@ -65,17 +72,32 @@ class BillCaptureViewModelTest {
     ) = ReceiptLine(text, left = 0, top = index * 40, right = 300, bottom = index * 40 + 30)
 
     @Test
-    fun a_photo_is_read_into_a_receipt() =
+    fun a_photo_read_becomes_a_saved_draft_to_review() =
         runTest(main) {
-            scanner.lines = listOf(row(0, "Nasi Goreng 30.000"), row(1, "Total 30.000"))
+            scanner.lines = listOf(row(0, "Nasi Goreng 30.000"), row(1, "PB1 10% 3.000"), row(2, "Total 33.000"))
 
             viewModel.onPhoto(photo)
             advanceUntilIdle()
 
             val status = viewModel.state.value.status as ReadStatus.Read
-            assertEquals(listOf(ParsedItem("Nasi Goreng", 1, 30_000)), status.receipt.items)
-            assertEquals(30_000L, status.receipt.totalMinor)
+            val draft = requireNotNull(bills.get(status.billId))
+            assertEquals(listOf("Nasi Goreng"), draft.items.map { it.name })
+            assertEquals(BillCharge(3_000, 1_000), draft.tax)
+            assertEquals(33_000L, draft.receiptTotalMinor)
             assertEquals(listOf(photo), scanner.scanned)
+        }
+
+    @Test
+    fun a_draft_that_cannot_be_saved_says_so_and_goes_back_to_the_choices() =
+        runTest(main) {
+            scanner.lines = listOf(row(0, "Nasi Goreng 30.000"))
+            bills.failWrites = true
+
+            viewModel.onPhoto(photo)
+            advanceUntilIdle()
+
+            assertEquals(ReadStatus.Idle, viewModel.state.value.status)
+            assertEquals(UiText.Resource(R.string.bill_save_failed), messenger.messages.first().text)
         }
 
     @Test
@@ -89,7 +111,7 @@ class BillCaptureViewModelTest {
                         return emptyList()
                     }
                 }
-            val viewModel = BillCaptureViewModel(scanner)
+            val viewModel = BillCaptureViewModel(scanner, bills, messenger)
 
             viewModel.onPhoto(photo)
             advanceUntilIdle()

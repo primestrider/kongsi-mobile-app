@@ -322,7 +322,7 @@ feature/bill/impl
       service, coffee shop, minimarket, receipt with discount, qty-prefixed lines, `45.000,00` format).
 - [x] **19. ReceiptScanner.** (`com.google.mlkit:text-recognition` 16.0.1, bundled Latin model. `BillCaptureViewModel` reads the photo with a "Reading the receipt…" state; a photo that cannot be read, or has no item, says so above the choices.) ML Kit wrapper, add the dependency to `gradle/libs.versions.toml`, loading/error
       states ("Couldn't read the receipt, enter it manually"), delete the image after scanning.
-- [ ] **20. Wire capture → OCR → Review.** Prefill the Review screen; a manual test on a device with real receipts.
+- [ ] **20. Wire capture → OCR → Review.** (Code done: a read receipt is saved as a draft (`ParsedReceipt.toDraftBill`) and opened on Review. Still open: the manual test on a device with real receipts.) Prefill the Review screen; a manual test on a device with real receipts.
 
 ### Phase 4: Polish
 

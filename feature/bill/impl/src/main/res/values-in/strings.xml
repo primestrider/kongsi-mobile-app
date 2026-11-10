@@ -86,7 +86,6 @@
     <string name="bill_capture_manual">Ketik sendiri</string>
     <string name="bill_capture_no_camera">Tidak ada aplikasi kamera. Pilih foto atau ketik tagihannya.</string>
     <string name="bill_capture_no_gallery">Tidak ada pemilih foto. Foto struknya atau ketik tagihannya.</string>
-    <string name="bill_capture_scan_soon">Baca struk otomatis segera hadir. Ketik itemnya dulu, ya.</string>
     <string name="bill_capture_reading">Membaca struk…</string>
     <string name="bill_capture_reading_body">Cuma beberapa detik, langsung di HP-mu.</string>
     <string name="bill_capture_failed_unreadable">Struk tidak terbaca</string>

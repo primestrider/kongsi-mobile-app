@@ -87,7 +87,6 @@
     <string name="bill_capture_manual">Type it in myself</string>
     <string name="bill_capture_no_camera">No camera app found. Choose a photo or type the bill in.</string>
     <string name="bill_capture_no_gallery">No photo picker found. Take a photo or type the bill in.</string>
-    <string name="bill_capture_scan_soon">Reading receipts is coming soon. Type the items in for now.</string>
     <string name="bill_capture_reading">Reading the receipt…</string>
     <string name="bill_capture_reading_body">This takes a few seconds, right on your phone.</string>
     <string name="bill_capture_failed_unreadable">Couldn\'t read the receipt</string>

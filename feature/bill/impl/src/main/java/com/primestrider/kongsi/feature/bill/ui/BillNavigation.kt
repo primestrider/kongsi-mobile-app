@@ -14,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.primestrider.kongsi.core.designsystem.component.LocalMessenger
 import com.primestrider.kongsi.core.designsystem.component.NavBarAction
-import com.primestrider.kongsi.core.designsystem.component.UiText
 import com.primestrider.kongsi.core.designsystem.icon.AppIcons
 import com.primestrider.kongsi.core.util.currentLocale
 import com.primestrider.kongsi.feature.bill.BillAssignRoute
@@ -78,22 +77,18 @@ fun NavGraphBuilder.billDestinations(navController: NavController) {
     composable<BillCaptureRoute> {
         val viewModel: BillCaptureViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
-        val messenger = LocalMessenger.current
         // Capture is only the way in: Back from Review goes Home, not to here.
-        val toReview = { navController.navigate(BillEditRoute()) { popUpTo<BillCaptureRoute> { inclusive = true } } }
+        val toReview = { billId: Long -> navController.navigate(BillEditRoute(billId)) { popUpTo<BillCaptureRoute> { inclusive = true } } }
         LaunchedEffect(state.status) {
-            if (state.status is ReadStatus.Read) {
-                // Prefilling the Review step arrives with Task 20 of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
-                viewModel.onReadHandled()
-                messenger.info(UiText.Resource(R.string.bill_capture_scan_soon))
-                toReview()
-            }
+            val read = state.status as? ReadStatus.Read ?: return@LaunchedEffect
+            viewModel.onReadHandled()
+            toReview(read.billId)
         }
         BillCaptureScreen(
             status = state.status,
             onBack = { navController.popBackStack() },
             onPhoto = viewModel::onPhoto,
-            onManual = toReview,
+            onManual = { toReview(0) },
             onDismissFailure = viewModel::onDismissFailure,
         )
     }
