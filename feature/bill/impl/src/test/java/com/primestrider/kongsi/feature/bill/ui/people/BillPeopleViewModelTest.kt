@@ -10,13 +10,13 @@ import com.primestrider.kongsi.core.designsystem.component.Messenger
 import com.primestrider.kongsi.core.designsystem.component.UiText
 import com.primestrider.kongsi.feature.bill.contacts.ContactMatch
 import com.primestrider.kongsi.feature.bill.contacts.ContactsRepository
-import com.primestrider.kongsi.feature.bill.data.FrequentPeopleRepository
 import com.primestrider.kongsi.feature.bill.data.FrequentPerson
 import com.primestrider.kongsi.feature.bill.impl.R
 import com.primestrider.kongsi.feature.bill.model.Bill
 import com.primestrider.kongsi.feature.bill.model.BillItem
 import com.primestrider.kongsi.feature.bill.model.Person
 import com.primestrider.kongsi.feature.bill.ui.FakeBillRepository
+import com.primestrider.kongsi.feature.bill.ui.FakeFrequentPeopleRepository
 import com.primestrider.kongsi.testing.InMemoryPreferencesDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -82,24 +82,9 @@ class BillPeopleViewModelTest {
         override suspend fun fromPickerResult(uri: Uri): ContactMatch? = matches.firstOrNull()
     }
 
-    private class FakeFrequent(
-        var stored: List<FrequentPerson> = emptyList(),
-    ) : FrequentPeopleRepository {
-        val remembered = mutableListOf<List<Person>>()
-
-        override suspend fun suggestions(
-            query: String,
-            limit: Int,
-        ) = stored.filter { query.isBlank() || it.name.contains(query, ignoreCase = true) }
-
-        override suspend fun remember(people: List<Person>) {
-            remembered += people
-        }
-    }
-
     private val bills = FakeBillRepository(listOf(draft))
     private val contacts = FakeContacts(listOf(budiContact))
-    private val frequent = FakeFrequent()
+    private val frequent = FakeFrequentPeopleRepository()
 
     private suspend fun TestScope.viewModel(profile: UserProfile = UserProfile("Ricky", "081111222233")): BillPeopleViewModel {
         val profiles = UserProfileRepository(InMemoryPreferencesDataStore()).apply { save(profile) }
@@ -110,8 +95,6 @@ class BillPeopleViewModelTest {
             frequent,
             profiles,
             messenger,
-            // Work that outlives the screen runs in the test itself, so the test waits for it.
-            this,
         ).also {
             created += it
             backgroundScope.launch { it.state.collect {} }
@@ -298,20 +281,6 @@ class BillPeopleViewModelTest {
             advanceUntilIdle()
 
             assertEquals("Budi Santoso", stored().people[1].name)
-        }
-
-    @Test
-    fun continuing_remembers_everyone_but_the_payer() =
-        runTest(main) {
-            val viewModel = viewModel()
-            advanceUntilIdle()
-            viewModel.add(Suggestion.Contact(budiContact))
-            advanceUntilIdle()
-
-            viewModel.next()
-            advanceUntilIdle()
-
-            assertEquals(listOf(listOf("Budi Santoso")), frequent.remembered.map { people -> people.map { it.name } })
         }
 
     private fun Suggestion.describe() =

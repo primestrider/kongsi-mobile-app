@@ -288,14 +288,14 @@ feature/bill/impl
 - [x] **8. ContactsRepository.** `search(query)` and `fromPickerResult(uri)` over `ContactsContract`, mobile numbers
       first, one row per number, WhatsApp badge. Tests: Robolectric `ContentProvider` fixture with several contacts,
       multiple numbers, no number, Indonesian names.
-- [x] **9. People screen.** (Frequent people are saved on Next from People until Summary exists; move it to Summary in Task 11.) Search field with inline contact results (permission granted), picker button
+- [x] **9. People screen.** (Frequent people are saved by "Done" on Summary since Task 11.) Search field with inline contact results (permission granted), picker button
       (denied), typed name, frequent people first, remove; "Me" fixed. Permission asked on first focus via
       `PermissionGate`. Tests: ViewModel with fake `ContactsRepository` for granted/denied, adding the same number twice
       is blocked, duplicate names allowed but distinguished, frequent people saved after a bill is finished.
-- [x] **10. Assign screen.** (Next shows "coming soon" until Summary exists; Task 11 points it at `BillSummaryRoute`.) Item-first and person-first modes, person chips with avatars, "Everyone", "Split
+- [x] **10. Assign screen.** Item-first and person-first modes, person chips with avatars, "Everyone", "Split
       equally", progress in the bottom bar. Blocks next step while items are unassigned, with a tap-to-fix message.
       Tests: toggling shares in both modes gives the same result, blocking state, progress amount.
-- [ ] **11. Summary screen.** Per-person totals and the "How was this calculated?" breakdown sheet in plain language
+- [x] **11. Summary screen.** (Item lines are each rounded on their own; the difference from the total is a line only above Rp1. "Done" remembers the people and returns Home; Task 16 adds the share actions.) Per-person totals and the "How was this calculated?" breakdown sheet in plain language
       (UX Principles point 3), payer marked, "adds up to the receipt ✓". Tests: breakdown lines for the Budi/Ani
       example, shared-item fraction text, rounding line only when above Rp1, TalkBack content descriptions.
 

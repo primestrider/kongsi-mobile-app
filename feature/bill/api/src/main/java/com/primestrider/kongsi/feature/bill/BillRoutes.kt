@@ -22,6 +22,12 @@ data class BillAssignRoute(
     val billId: Long,
 )
 
+/** Summary, the last step: what each person owes and how it was worked out. */
+@Serializable
+data class BillSummaryRoute(
+    val billId: Long,
+)
+
 /** The bill creator's own bank accounts and e-wallets, shown in the WhatsApp message. */
 @Serializable
 data object PaymentAccountsRoute

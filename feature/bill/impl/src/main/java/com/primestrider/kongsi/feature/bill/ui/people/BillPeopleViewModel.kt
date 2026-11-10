@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.primestrider.kongsi.core.common.ApplicationScope
 import com.primestrider.kongsi.core.datastore.UserProfileRepository
 import com.primestrider.kongsi.core.designsystem.component.Messenger
 import com.primestrider.kongsi.core.designsystem.component.UiText
@@ -24,7 +23,6 @@ import com.primestrider.kongsi.feature.bill.model.Person
 import com.primestrider.kongsi.feature.bill.model.SplitCalculator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -93,7 +91,6 @@ class BillPeopleViewModel
         private val frequent: FrequentPeopleRepository,
         private val profiles: UserProfileRepository,
         private val messenger: Messenger,
-        @ApplicationScope private val appScope: CoroutineScope,
     ) : ViewModel() {
         private val billId = savedStateHandle.get<Long>(BILL_ID) ?: 0L
 
@@ -175,14 +172,6 @@ class BillPeopleViewModel
                     people = stored.people.filterNot { it.id == personId },
                     items = stored.items.map { it.copy(sharedBy = it.sharedBy - personId) },
                 )
-            }
-        }
-
-        /** Leaving for the next step: remembers everyone but the payer for next time (also after the screen is gone). */
-        fun next() {
-            appScope.launch {
-                val stored = bills.get(billId) ?: return@launch
-                frequent.remember(stored.people.filterNot { it.id == stored.payerPersonId })
             }
         }
 

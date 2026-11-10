@@ -112,7 +112,25 @@
     <string name="bill_assign_me_question">What did you have?</string>
     <string name="bill_assign_shared_with">With %1$s</string>
     <string name="bill_assign_nobody">Nobody yet</string>
-    <string name="bill_assign_next_soon">The summary is coming soon</string>
+    <!-- Summary -->
+    <string name="bill_summary_title">Who pays what</string>
+    <string name="bill_summary_hint">Tap a name to see how their share was worked out.</string>
+    <string name="bill_summary_nothing">Had nothing</string>
+    <string name="bill_summary_owes_cd">%1$s owes %2$s</string>
+    <string name="bill_summary_my_share_cd">You paid the bill. Your share is %1$s</string>
+    <string name="bill_summary_done">Done</string>
+    <string name="bill_money_spoken">%1$s rupiah</string>
+    <string name="bill_breakdown_title">How was this calculated?</string>
+    <string name="bill_breakdown_shared">%1$s (shared with %2$s, %3$s)</string>
+    <string name="bill_breakdown_service_rate">Service %1$s of your order</string>
+    <string name="bill_breakdown_service">Service on your order</string>
+    <string name="bill_breakdown_tax_rate_service">Tax %1$s of your order + service</string>
+    <string name="bill_breakdown_tax_rate">Tax %1$s of your order</string>
+    <string name="bill_breakdown_tax_service">Tax on your order + service</string>
+    <string name="bill_breakdown_tax">Tax on your order</string>
+    <string name="bill_breakdown_discount">Discount, by what you ordered</string>
+    <string name="bill_breakdown_rounding_added">%1$s rounding added</string>
+    <string name="bill_breakdown_rounding_taken">%1$s rounding taken off</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Bank accounts &amp; e-wallets</string>

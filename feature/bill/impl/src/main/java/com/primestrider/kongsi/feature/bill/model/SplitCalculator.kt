@@ -3,7 +3,17 @@ package com.primestrider.kongsi.feature.bill.model
 import java.math.BigInteger
 import kotlin.math.abs
 
-/** What one person owes, in minor units. The parts always add up: items + service + tax − discount = total. */
+/** A person's part of one item they had: its price divided by its [sharers], rounded on its own. */
+data class ItemPart(
+    val itemId: Long,
+    val sharers: Int,
+    val amountMinor: Long,
+)
+
+/**
+ * What one person owes, in minor units. The parts always add up: items + service + tax − discount = total. [items]
+ * lists their part of each item, in receipt order, for the "How was this calculated?" breakdown.
+ */
 data class PersonShare(
     val personId: Long,
     val itemsMinor: Long,
@@ -11,7 +21,11 @@ data class PersonShare(
     val taxMinor: Long,
     val discountMinor: Long,
     val totalMinor: Long,
-)
+    val items: List<ItemPart> = emptyList(),
+) {
+    /** What [itemsMinor] differs from the [items] parts, each rounded on its own; the breakdown mentions it above Rp1. */
+    val roundingMinor: Long get() = itemsMinor - items.sumOf { it.amountMinor }
+}
 
 enum class ChargeType { SERVICE, TAX, DISCOUNT }
 
@@ -110,6 +124,7 @@ object SplitCalculator {
             val n = sharers.size.toLong()
             sharers.forEach { personId ->
                 parts.getValue(personId).add(
+                    item = ItemPart(item.id, sharers.size, (prices.getValue(item.id) / n).roundHalfUp()),
                     items = prices.getValue(item.id) / n,
                     service = service.getValue(item.id) / n,
                     tax = tax.getValue(item.id) / n,
@@ -126,7 +141,7 @@ object SplitCalculator {
                 // Discount enters negatively, so all four parts round together towards the person's total.
                 val (items, serviceMinor, taxMinor, minusDiscount) =
                     largestRemainder(listOf(p.items, p.service, p.tax, -p.discount), target = totals[index])
-                PersonShare(person.id, items, serviceMinor, taxMinor, -minusDiscount, totals[index])
+                PersonShare(person.id, items, serviceMinor, taxMinor, -minusDiscount, totals[index], p.itemParts.toList())
             }
         return SplitResult(shares, totalMinor, assignedMinor = totals.sum(), issues = issues)
     }
@@ -239,14 +254,17 @@ private class Parts {
     var service = Fraction.ZERO
     var tax = Fraction.ZERO
     var discount = Fraction.ZERO
+    val itemParts = mutableListOf<ItemPart>()
     val total: Fraction get() = items + service + tax - discount
 
     fun add(
+        item: ItemPart,
         items: Fraction,
         service: Fraction,
         tax: Fraction,
         discount: Fraction,
     ) {
+        itemParts += item
         this.items += items
         this.service += service
         this.tax += tax

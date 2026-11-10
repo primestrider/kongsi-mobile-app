@@ -13,11 +13,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.primestrider.kongsi.core.designsystem.component.LocalMessenger
 import com.primestrider.kongsi.core.designsystem.component.NavBarAction
-import com.primestrider.kongsi.core.designsystem.component.UiText
 import com.primestrider.kongsi.core.designsystem.icon.AppIcons
 import com.primestrider.kongsi.feature.bill.BillAssignRoute
 import com.primestrider.kongsi.feature.bill.BillEditRoute
 import com.primestrider.kongsi.feature.bill.BillPeopleRoute
+import com.primestrider.kongsi.feature.bill.BillSummaryRoute
 import com.primestrider.kongsi.feature.bill.PaymentAccountEditRoute
 import com.primestrider.kongsi.feature.bill.PaymentAccountsRoute
 import com.primestrider.kongsi.feature.bill.impl.R
@@ -38,6 +38,9 @@ import com.primestrider.kongsi.feature.bill.ui.people.BillPeopleViewModel
 import com.primestrider.kongsi.feature.bill.ui.review.BillReviewActions
 import com.primestrider.kongsi.feature.bill.ui.review.BillReviewScreen
 import com.primestrider.kongsi.feature.bill.ui.review.BillReviewViewModel
+import com.primestrider.kongsi.feature.bill.ui.summary.BillSummaryActions
+import com.primestrider.kongsi.feature.bill.ui.summary.BillSummaryScreen
+import com.primestrider.kongsi.feature.bill.ui.summary.BillSummaryViewModel
 
 /** The app's Home, rendered by `:app` on its `HomeRoute`; [onOpen] navigates to one of this feature's routes. */
 @Composable
@@ -105,17 +108,14 @@ fun NavGraphBuilder.billDestinations(navController: NavController) {
                     onAdd = viewModel::add,
                     onRemove = viewModel::remove,
                     onPickerResult = viewModel::onPickerResult,
-                    onNext = {
-                        viewModel.next()
-                        navController.navigate(BillAssignRoute(billId))
-                    },
+                    onNext = { navController.navigate(BillAssignRoute(billId)) },
                 ),
         )
     }
-    composable<BillAssignRoute> {
+    composable<BillAssignRoute> { entry ->
+        val billId = entry.toRoute<BillAssignRoute>().billId
         val viewModel: BillAssignViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
-        val messenger = LocalMessenger.current
         BillAssignScreen(
             state = state,
             actions =
@@ -135,8 +135,33 @@ fun NavGraphBuilder.billDestinations(navController: NavController) {
                     onSplitEqually = viewModel::splitEqually,
                     onUnassignedClick = viewModel::onUnassignedClick,
                     onFocusShown = viewModel::onFocusShown,
-                    // The Summary step arrives with Task 11 of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
-                    onNext = { messenger.info(UiText.Resource(R.string.bill_assign_next_soon)) },
+                    onNext = { navController.navigate(BillSummaryRoute(billId)) },
+                ),
+        )
+    }
+    composable<BillSummaryRoute> {
+        val viewModel: BillSummaryViewModel = hiltViewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        BillSummaryScreen(
+            state = state,
+            actions =
+                BillSummaryActions(
+                    onBack = { navController.popBackStack() },
+                    onStepClick = { step ->
+                        when (step) {
+                            FlowStep.ITEMS -> navController.popBackStack<BillEditRoute>(inclusive = false)
+                            FlowStep.PEOPLE -> navController.popBackStack<BillPeopleRoute>(inclusive = false)
+                            FlowStep.ASSIGN -> navController.popBackStack()
+                            FlowStep.SUMMARY -> Unit
+                        }
+                    },
+                    onOpenBreakdown = viewModel::onOpenBreakdown,
+                    onCloseBreakdown = viewModel::onCloseBreakdown,
+                    onDone = {
+                        viewModel.finish()
+                        // Back to Home: the whole flow of this bill leaves the back stack.
+                        navController.popBackStack<BillEditRoute>(inclusive = true)
+                    },
                 ),
         )
     }

@@ -52,6 +52,29 @@ class SplitCalculatorTest {
     }
 
     @Test
+    fun each_share_lists_the_persons_part_of_every_item_they_had() {
+        val result = SplitCalculator.split(dinner())
+
+        assertEquals(
+            listOf(ItemPart(itemId = 10, sharers = 1, amountMinor = 30_000), ItemPart(itemId = 12, sharers = 2, amountMinor = 6_000)),
+            result.share(budi).items,
+        )
+        assertEquals(0, result.share(budi).roundingMinor)
+    }
+
+    @Test
+    fun item_parts_round_on_their_own_and_the_difference_is_reported() {
+        // Five items of Rp10.001 shared by two: each part is Rp5.000,5 and shows as Rp5.001.
+        val items = (1L..5L).map { BillItem(it, "Item $it", 10_001, sharedBy = setOf(budi.id, ani.id)) }
+        val result = SplitCalculator.split(Bill(people = listOf(budi, ani), items = items))
+
+        val share = result.share(budi)
+        assertEquals(List(5) { 5_001L }, share.items.map { it.amountMinor })
+        assertEquals(share.itemsMinor - 25_005, share.roundingMinor)
+        assertEquals(-2, share.roundingMinor)
+    }
+
+    @Test
     fun shared_item_splits_equally() {
         val people = (1L..4L).map { Person(it, "P$it") }
         val bill = Bill(people = people, items = listOf(BillItem(1, "Pizza", 100_000, sharedBy = people.map { it.id }.toSet())))

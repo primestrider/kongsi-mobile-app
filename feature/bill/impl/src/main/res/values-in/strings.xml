@@ -110,7 +110,25 @@
     <string name="bill_assign_me_question">Kamu pesan apa saja?</string>
     <string name="bill_assign_shared_with">Bareng %1$s</string>
     <string name="bill_assign_nobody">Belum ada</string>
-    <string name="bill_assign_next_soon">Ringkasan segera hadir</string>
+    <!-- Summary -->
+    <string name="bill_summary_title">Siapa bayar berapa</string>
+    <string name="bill_summary_hint">Ketuk nama untuk lihat cara hitung bagiannya.</string>
+    <string name="bill_summary_nothing">Tidak pesan apa-apa</string>
+    <string name="bill_summary_owes_cd">%1$s harus bayar %2$s</string>
+    <string name="bill_summary_my_share_cd">Kamu yang bayar tagihan. Bagianmu %1$s</string>
+    <string name="bill_summary_done">Selesai</string>
+    <string name="bill_money_spoken">%1$s rupiah</string>
+    <string name="bill_breakdown_title">Gimana hitungannya?</string>
+    <string name="bill_breakdown_shared">%1$s (bareng %2$s, %3$s)</string>
+    <string name="bill_breakdown_service_rate">Servis %1$s dari pesananmu</string>
+    <string name="bill_breakdown_service">Servis untuk pesananmu</string>
+    <string name="bill_breakdown_tax_rate_service">Pajak %1$s dari pesananmu + servis</string>
+    <string name="bill_breakdown_tax_rate">Pajak %1$s dari pesananmu</string>
+    <string name="bill_breakdown_tax_service">Pajak untuk pesananmu + servis</string>
+    <string name="bill_breakdown_tax">Pajak untuk pesananmu</string>
+    <string name="bill_breakdown_discount">Diskon, sesuai pesananmu</string>
+    <string name="bill_breakdown_rounding_added">Pembulatan %1$s ditambahkan</string>
+    <string name="bill_breakdown_rounding_taken">Pembulatan %1$s dikurangi</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Rekening &amp; e-wallet</string>
