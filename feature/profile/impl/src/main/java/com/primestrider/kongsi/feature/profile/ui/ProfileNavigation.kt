@@ -64,23 +64,14 @@ fun NavGraphBuilder.profileDestinations(navController: NavController) {
     }
     composable<PermissionsRoute> {
         val context = LocalContext.current
-        val contacts = rememberPermissionRequest(requireNotNull(AppPermission.CONTACTS.permission)) {}
+        val requests = AppPermission.entries.associateWith { rememberPermissionRequest(it.permission) {} }
         PermissionsScreen(
             permissions =
-                AppPermission.entries.map { permission ->
-                    PermissionRow(
-                        permission = permission,
-                        status =
-                            when (permission) {
-                                AppPermission.CONTACTS -> contacts.status
-                                AppPermission.CAMERA -> null
-                            },
-                    )
-                },
+                AppPermission.entries.map { permission -> PermissionRow(permission, requests.getValue(permission).status) },
             onAction = { permission, status ->
                 // Android cannot revoke or re-ask from inside the app: granted and blocked go to the system settings.
-                if (status == PermissionStatus.ASKABLE && permission == AppPermission.CONTACTS) {
-                    contacts.launch()
+                if (status == PermissionStatus.ASKABLE) {
+                    requests.getValue(permission).launch()
                 } else {
                     openAppSettings(context)
                 }

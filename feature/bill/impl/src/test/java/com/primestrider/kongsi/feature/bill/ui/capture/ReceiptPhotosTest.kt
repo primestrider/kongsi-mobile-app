@@ -18,31 +18,40 @@ class ReceiptPhotosTest {
     private val app: Application = ApplicationProvider.getApplicationContext()
     private val folder = File(app.cacheDir, "receipts")
 
-    @Test
-    fun a_new_photo_goes_to_the_receipts_cache_folder_through_the_apps_own_provider() {
-        val uri = ReceiptPhotos.newPhotoUri(app)
+    private fun newPhoto(): File = ReceiptPhotos.newPhotoFile(app).apply { writeText("jpeg") }
 
-        assertEquals("${app.packageName}.receipts", uri.authority)
+    @Test
+    fun a_new_photo_goes_to_the_receipts_cache_folder() {
+        val file = ReceiptPhotos.newPhotoFile(app)
+
+        assertEquals(folder.canonicalFile, file.parentFile!!.canonicalFile)
         assertTrue(folder.isDirectory)
-        assertTrue(File(folder, uri.lastPathSegment!!).exists())
     }
 
     @Test
     fun discarding_deletes_our_own_photo() {
-        val uri = ReceiptPhotos.newPhotoUri(app)
-        val file = File(folder, uri.lastPathSegment!!)
+        val file = newPhoto()
 
-        ReceiptPhotos.discard(app, uri)
+        ReceiptPhotos.discard(app, Uri.fromFile(file))
 
         assertFalse(file.exists())
     }
 
     @Test
     fun discarding_leaves_a_photo_from_the_gallery_alone() {
-        val mine = ReceiptPhotos.newPhotoUri(app)
+        val mine = newPhoto()
 
         ReceiptPhotos.discard(app, Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1"))
 
-        assertTrue(File(folder, mine.lastPathSegment!!).exists())
+        assertTrue(mine.exists())
+    }
+
+    @Test
+    fun discarding_leaves_a_file_outside_the_receipts_folder_alone() {
+        val other = File(app.cacheDir, "other.jpg").apply { writeText("jpeg") }
+
+        ReceiptPhotos.discard(app, Uri.fromFile(other))
+
+        assertTrue(other.exists())
     }
 }

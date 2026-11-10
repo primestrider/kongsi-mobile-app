@@ -92,7 +92,12 @@
     <string name="bill_capture_choose_photo_body">Foto struk yang sudah ada.</string>
     <string name="bill_capture_tips">Biar terbaca jelas, taruh struk di tempat datar dan terang, dan pastikan seluruh struk masuk foto.</string>
     <string name="bill_capture_manual">Ketik sendiri</string>
-    <string name="bill_capture_no_camera">Tidak ada aplikasi kamera. Pilih foto atau ketik tagihannya.</string>
+    <string name="bill_camera_reason">Kongsi perlu akses kamera untuk memfoto struk. Fotonya tetap di HP-mu dan dihapus setelah dibaca.</string>
+    <string name="bill_camera_hint">Masukkan seluruh struk ke dalam bingkai, rata dan di tempat terang.</string>
+    <string name="bill_camera_shutter">Ambil foto</string>
+    <string name="bill_camera_preview">Kamera</string>
+    <string name="bill_camera_unavailable">Kamera tidak bisa dibuka. Pilih foto dari galeri atau ketik tagihannya.</string>
+    <string name="bill_camera_capture_failed">Foto gagal diambil. Coba lagi.</string>
     <string name="bill_capture_no_gallery">Tidak ada pemilih foto. Foto struknya atau ketik tagihannya.</string>
     <string name="bill_capture_reading">Membaca struk…</string>
     <string name="bill_capture_reading_body">Cuma beberapa detik, langsung di HP-mu.</string>

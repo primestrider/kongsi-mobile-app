@@ -34,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -42,7 +41,6 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import com.primestrider.kongsi.core.designsystem.component.AppButton
 import com.primestrider.kongsi.core.designsystem.component.AppScaffold
 import com.primestrider.kongsi.core.designsystem.component.Banner
@@ -58,9 +56,9 @@ import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 import com.primestrider.kongsi.feature.bill.impl.R
 
 /**
- * How a new bill starts: a photo of the receipt taken with the phone's camera app (no camera permission needed), one
- * from the gallery through the system photo picker (no permission either), or typing it in. [onPhoto] gets the photo
- * to read; while it is read the screen says so, and when nothing came of it, it says why above the choices.
+ * How a new bill starts: a photo of the receipt taken with the camera inside the app ([ReceiptCamera]), one from the
+ * gallery through the system photo picker (no permission needed), or typing it in. [onPhoto] gets the photo to read;
+ * while it is read the screen says so, and when nothing came of it, it says why above the choices.
  */
 @Composable
 fun BillCaptureScreen(
@@ -70,32 +68,26 @@ fun BillCaptureScreen(
     onManual: () -> Unit,
     onDismissFailure: () -> Unit,
 ) {
-    val context = LocalContext.current
     val messenger = LocalMessenger.current
-    // The file the camera app writes to; kept across process death, since the camera app may run for a while.
-    var pending by rememberSaveable { mutableStateOf<String?>(null) }
-    val camera =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { saved ->
-            val uri = pending?.toUri() ?: return@rememberLauncherForActivityResult
-            pending = null
-            if (saved) onPhoto(uri) else ReceiptPhotos.discard(context, uri)
-        }
+    var cameraOpen by rememberSaveable { mutableStateOf(false) }
     val gallery = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> uri?.let(onPhoto) }
 
+    if (cameraOpen) {
+        ReceiptCamera(
+            onPhoto = { uri ->
+                cameraOpen = false
+                onPhoto(uri)
+            },
+            onClose = { cameraOpen = false },
+        )
+        return
+    }
     CaptureContent(
         status = status,
         onBack = onBack,
         onTakePhoto = {
             onDismissFailure()
-            val uri = ReceiptPhotos.newPhotoUri(context)
-            pending = uri.toString()
-            try {
-                camera.launch(uri)
-            } catch (e: ActivityNotFoundException) {
-                pending = null
-                ReceiptPhotos.discard(context, uri)
-                messenger.error(UiText.Resource(R.string.bill_capture_no_camera))
-            }
+            cameraOpen = true
         },
         onChoosePhoto = {
             onDismissFailure()
