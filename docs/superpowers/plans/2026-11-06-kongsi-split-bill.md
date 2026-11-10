@@ -318,7 +318,7 @@ feature/bill/impl
 ### Phase 3: Receipt scanning
 
 - [x] **17. Capture screen.** ("New bill" opens `BillCaptureRoute`. Until Task 20 a photo is deleted and the user goes on to type the items, with a "coming soon" note. Photos go to `cache/receipts/` through `ReceiptFileProvider`; Task 19 deletes them after reading.) Take photo (FileProvider + `TakePicture`), pick photo (`PickVisualMedia`), manual entry.
-- [ ] **18. ReceiptParser.** Pure parser + fixture tests for at least 8 real receipt layouts (restaurant with PB1 +
+- [x] **18. ReceiptParser.** (`ocr/ReceiptParser`, with 8 made-up layouts in common Indonesian formats; replace or add real, anonymised receipts as they come.) Pure parser + fixture tests for at least 8 real receipt layouts (restaurant with PB1 +
       service, coffee shop, minimarket, receipt with discount, qty-prefixed lines, `45.000,00` format).
 - [ ] **19. ReceiptScanner.** ML Kit wrapper, add the dependency to `gradle/libs.versions.toml`, loading/error
       states ("Couldn't read the receipt, enter it manually"), delete the image after scanning.

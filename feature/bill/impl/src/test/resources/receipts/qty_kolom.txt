@@ -1,0 +1,9 @@
+SATE KHAS SENAYAN
+Item               Qty     Harga      Jumlah
+Sate Ayam           2     35.000      70.000
+Nasi Putih          3      7.000      21.000
+Es Teh Manis        3      8.000      24.000
+Sub Total                            115.000
+Service Charge 5%                      5.750
+Pajak Resto 10%                       12.075
+Grand Total                          132.825

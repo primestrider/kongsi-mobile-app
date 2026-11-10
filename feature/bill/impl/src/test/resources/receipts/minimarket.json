@@ -1,0 +1,13 @@
+{
+  "items": [
+    { "name": "Indomie Goreng", "quantity": 5, "totalMinor": 17500 },
+    { "name": "Aqua 600ml", "quantity": 1, "totalMinor": 4000 },
+    { "name": "Roti Tawar Gandum", "quantity": 1, "totalMinor": 18900 },
+    { "name": "Teh Botol Kotak", "quantity": 3, "totalMinor": 12600 }
+  ],
+  "subtotalMinor": 53000,
+  "service": null,
+  "tax": null,
+  "discountMinor": 0,
+  "totalMinor": 53000
+}

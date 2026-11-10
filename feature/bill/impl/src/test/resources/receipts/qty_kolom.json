@@ -1,0 +1,12 @@
+{
+  "items": [
+    { "name": "Sate Ayam", "quantity": 2, "totalMinor": 70000 },
+    { "name": "Nasi Putih", "quantity": 3, "totalMinor": 21000 },
+    { "name": "Es Teh Manis", "quantity": 3, "totalMinor": 24000 }
+  ],
+  "subtotalMinor": 115000,
+  "service": { "amountMinor": 5750, "rateBps": 500 },
+  "tax": { "amountMinor": 12075, "rateBps": 1000 },
+  "discountMinor": 0,
+  "totalMinor": 132825
+}

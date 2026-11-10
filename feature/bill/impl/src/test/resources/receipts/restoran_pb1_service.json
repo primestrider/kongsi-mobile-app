@@ -1,0 +1,12 @@
+{
+  "items": [
+    { "name": "Nasi Goreng", "quantity": 1, "totalMinor": 30000 },
+    { "name": "Steak Sirloin", "quantity": 1, "totalMinor": 90000 },
+    { "name": "Ocha", "quantity": 2, "totalMinor": 12000 }
+  ],
+  "subtotalMinor": 132000,
+  "service": { "amountMinor": 6600, "rateBps": 500 },
+  "tax": { "amountMinor": 13860, "rateBps": 1000 },
+  "discountMinor": 0,
+  "totalMinor": 152460
+}

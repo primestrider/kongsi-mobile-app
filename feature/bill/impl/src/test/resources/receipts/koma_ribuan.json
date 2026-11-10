@@ -1,0 +1,12 @@
+{
+  "items": [
+    { "name": "Caesar Salad", "quantity": 1, "totalMinor": 65000 },
+    { "name": "Ribeye Steak 200g", "quantity": 1, "totalMinor": 245000 },
+    { "name": "Lemon Tea", "quantity": 2, "totalMinor": 56000 }
+  ],
+  "subtotalMinor": 366000,
+  "service": { "amountMinor": 25620, "rateBps": 700 },
+  "tax": { "amountMinor": 39162, "rateBps": 1000 },
+  "discountMinor": 0,
+  "totalMinor": 430782
+}

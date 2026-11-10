@@ -1,0 +1,13 @@
+{
+  "items": [
+    { "name": "Rendang", "quantity": 1, "totalMinor": 45000 },
+    { "name": "Ayam Pop", "quantity": 1, "totalMinor": 38000 },
+    { "name": "Gulai Nangka", "quantity": 1, "totalMinor": 15000 },
+    { "name": "Teh Talua", "quantity": 1, "totalMinor": 22000 }
+  ],
+  "subtotalMinor": null,
+  "service": null,
+  "tax": null,
+  "discountMinor": 0,
+  "totalMinor": 120000
+}

@@ -1,0 +1,6 @@
+RESTORAN PADANG SEDERHANA
+Rendang              Rp 45.000,00
+Ayam Pop             Rp 38.000,00
+Gulai Nangka         Rp 15.000,00
+Teh Talua            Rp 22.000,00
+Total                Rp120.000,00

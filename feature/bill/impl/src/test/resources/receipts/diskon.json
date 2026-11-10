@@ -1,0 +1,12 @@
+{
+  "items": [
+    { "name": "Bakmi Ayam Jamur", "quantity": 1, "totalMinor": 32000 },
+    { "name": "Pangsit Goreng", "quantity": 1, "totalMinor": 16200 },
+    { "name": "Es Jeruk", "quantity": 1, "totalMinor": 12000 }
+  ],
+  "subtotalMinor": 60200,
+  "service": null,
+  "tax": { "amountMinor": 5418, "rateBps": 1000 },
+  "discountMinor": 6020,
+  "totalMinor": 59598
+}
