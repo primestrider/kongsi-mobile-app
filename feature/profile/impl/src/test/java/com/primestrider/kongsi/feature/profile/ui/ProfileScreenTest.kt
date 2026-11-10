@@ -71,7 +71,11 @@ class ProfileScreenTest {
                     permissions =
                         listOf(
                             PermissionRow(AppPermission.CONTACTS, contacts),
-                            PermissionRow(AppPermission.CAMERA, null),
+                            // Never the same status as contacts, so each label below is on one row only.
+                            PermissionRow(
+                                AppPermission.CAMERA,
+                                if (contacts == PermissionStatus.GRANTED) PermissionStatus.ASKABLE else PermissionStatus.GRANTED,
+                            ),
                         ),
                     onAction = { permission, status -> events += "$permission $status" },
                     onBack = {},
@@ -80,12 +84,19 @@ class ProfileScreenTest {
         }
 
     @Test
-    fun contacts_permission_can_be_asked_for_and_camera_needs_none() {
+    fun contacts_permission_can_be_asked_for() {
         showPermissions(PermissionStatus.ASKABLE)
         rule.onNodeWithText("Not allowed yet").assertIsDisplayed()
-        rule.onNodeWithText("No permission needed").assertIsDisplayed()
+        rule.onNodeWithText("Camera").assertIsDisplayed()
         rule.onNodeWithText("Allow").performClick()
         assertEquals(listOf("CONTACTS ASKABLE"), events)
+    }
+
+    @Test
+    fun camera_permission_can_be_asked_for() {
+        showPermissions(PermissionStatus.GRANTED)
+        rule.onNodeWithText("Allow").performClick()
+        assertEquals(listOf("CAMERA ASKABLE"), events)
     }
 
     @Test

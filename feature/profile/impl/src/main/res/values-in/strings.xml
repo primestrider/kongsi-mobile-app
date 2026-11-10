@@ -11,11 +11,10 @@
     <string name="profile_permission_contacts">Kontak</string>
     <string name="profile_permission_contacts_purpose">Untuk mencari nomor teman saat menambahkan orang ke bill.</string>
     <string name="profile_permission_camera">Kamera</string>
-    <string name="profile_permission_camera_purpose">Struk difoto lewat aplikasi kamera HP kamu, jadi Kongsi tidak perlu akses kamera.</string>
+    <string name="profile_permission_camera_purpose">Untuk memfoto struk langsung di Kongsi. Fotonya tetap di HP kamu.</string>
     <string name="profile_permission_granted">Diizinkan</string>
     <string name="profile_permission_not_granted">Belum diizinkan</string>
     <string name="profile_permission_blocked">Diblokir. Ubah lewat pengaturan sistem</string>
-    <string name="profile_permission_not_needed">Tidak perlu izin</string>
     <string name="profile_permission_allow">Izinkan</string>
     <string name="profile_permission_open_settings">Buka pengaturan</string>
     <string name="profile_permission_manage">Kelola</string>

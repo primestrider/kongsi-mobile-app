@@ -76,7 +76,6 @@ private fun PermissionItem(
             Text(
                 stringResource(
                     when (row.status) {
-                        null -> R.string.profile_permission_not_needed
                         PermissionStatus.GRANTED -> R.string.profile_permission_granted
                         PermissionStatus.ASKABLE -> R.string.profile_permission_not_granted
                         PermissionStatus.BLOCKED -> R.string.profile_permission_blocked
@@ -84,14 +83,14 @@ private fun PermissionItem(
                 ),
                 style = MaterialTheme.typography.labelLarge,
                 color =
-                    if (row.status == PermissionStatus.GRANTED || row.status == null) {
+                    if (row.status == PermissionStatus.GRANTED) {
                         MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     },
             )
         }
-        val status = row.status ?: return@Row
+        val status = row.status
         AppButton(
             text =
                 stringResource(
@@ -115,7 +114,7 @@ private fun PermissionsScreenPreview() {
             permissions =
                 listOf(
                     PermissionRow(AppPermission.CONTACTS, PermissionStatus.ASKABLE),
-                    PermissionRow(AppPermission.CAMERA, null),
+                    PermissionRow(AppPermission.CAMERA, PermissionStatus.GRANTED),
                 ),
             onAction = { _, _ -> },
             onBack = {},

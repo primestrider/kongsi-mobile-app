@@ -93,7 +93,12 @@
     <string name="bill_capture_choose_photo_body">A receipt photo you already have.</string>
     <string name="bill_capture_tips">For a good read, lay the receipt flat in good light, with all of it in the photo.</string>
     <string name="bill_capture_manual">Type it in myself</string>
-    <string name="bill_capture_no_camera">No camera app found. Choose a photo or type the bill in.</string>
+    <string name="bill_camera_reason">Kongsi needs the camera to photograph the receipt. The photo stays on your phone and is deleted once it is read.</string>
+    <string name="bill_camera_hint">Fit the whole receipt inside the frame, flat and in good light.</string>
+    <string name="bill_camera_shutter">Take the photo</string>
+    <string name="bill_camera_preview">Camera</string>
+    <string name="bill_camera_unavailable">The camera couldn\'t be opened. Choose a photo from the gallery or type the bill in.</string>
+    <string name="bill_camera_capture_failed">Couldn\'t take the photo. Try again.</string>
     <string name="bill_capture_no_gallery">No photo picker found. Take a photo or type the bill in.</string>
     <string name="bill_capture_reading">Reading the receipt…</string>
     <string name="bill_capture_reading_body">This takes a few seconds, right on your phone.</string>

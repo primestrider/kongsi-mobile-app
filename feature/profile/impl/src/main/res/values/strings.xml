@@ -11,11 +11,10 @@
     <string name="profile_permission_contacts">Contacts</string>
     <string name="profile_permission_contacts_purpose">Find friends’ numbers when you add people to a bill.</string>
     <string name="profile_permission_camera">Camera</string>
-    <string name="profile_permission_camera_purpose">Receipts are photographed with your phone’s camera app, so Kongsi never needs camera access.</string>
+    <string name="profile_permission_camera_purpose">Photograph receipts right inside Kongsi. Photos stay on your phone.</string>
     <string name="profile_permission_granted">Allowed</string>
     <string name="profile_permission_not_granted">Not allowed yet</string>
     <string name="profile_permission_blocked">Blocked. Change it in the system settings</string>
-    <string name="profile_permission_not_needed">No permission needed</string>
     <string name="profile_permission_allow">Allow</string>
     <string name="profile_permission_open_settings">Open settings</string>
     <string name="profile_permission_manage">Manage</string>

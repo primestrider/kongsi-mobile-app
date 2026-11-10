@@ -28,5 +28,9 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     // Reading receipt photos on the device (ReceiptScanner).
     implementation(libs.mlkit.text.recognition)
+    // Taking the receipt photo inside the app (ReceiptCamera).
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
     testImplementation(libs.androidx.room.testing)
 }
