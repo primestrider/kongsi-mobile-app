@@ -55,10 +55,9 @@ import com.primestrider.kongsi.core.designsystem.theme.Radii
 import com.primestrider.kongsi.core.designsystem.theme.Spacing
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 import com.primestrider.kongsi.core.util.currentLocale
+import com.primestrider.kongsi.core.util.formatAmount
 import com.primestrider.kongsi.core.util.formatDate
-import com.primestrider.kongsi.core.util.formatMoney
 import com.primestrider.kongsi.feature.bill.impl.R
-import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 
 /**
  * Kongsi's Home: the bill history, newest first ("New bill" lives in the navigation bar). While empty it explains the
@@ -189,7 +188,7 @@ private fun BillCard(
                 )
             }
             Text(
-                formatMoney(bill.totalMinor, DEFAULT_CURRENCY, locale),
+                formatAmount(bill.totalMinor, locale),
                 style = MaterialTheme.typography.titleMedium,
             )
             BillMenu(title, onRename, onDuplicate, onDelete)

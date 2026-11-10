@@ -46,11 +46,10 @@ import com.primestrider.kongsi.core.designsystem.theme.Radii
 import com.primestrider.kongsi.core.designsystem.theme.Spacing
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 import com.primestrider.kongsi.core.util.currentLocale
-import com.primestrider.kongsi.core.util.formatMoney
+import com.primestrider.kongsi.core.util.formatAmount
 import com.primestrider.kongsi.core.util.formatPercent
 import com.primestrider.kongsi.feature.bill.impl.R
 import com.primestrider.kongsi.feature.bill.model.BreakdownLine
-import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 import com.primestrider.kongsi.feature.bill.model.PaymentAccount
 import com.primestrider.kongsi.feature.bill.model.PaymentAccountType
 import com.primestrider.kongsi.feature.bill.model.Person
@@ -67,7 +66,6 @@ import com.primestrider.kongsi.feature.bill.ui.people.NameAndNumber
 import com.primestrider.kongsi.feature.bill.ui.people.PersonRow
 import com.primestrider.kongsi.feature.bill.ui.people.PickPhoneNumber
 import com.primestrider.kongsi.feature.bill.ui.people.shownNumber
-import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.abs
 
@@ -224,13 +222,6 @@ private fun PersonRow.title(): String =
 @Composable
 private fun PersonRow.otherName(): String = if (isMe && person.name.isBlank()) stringResource(R.string.bill_people_me) else label
 
-/** "41,580 rupiah", so TalkBack reads the amount as a number instead of spelling out "R p". */
-@Composable
-private fun spokenMoney(
-    minor: Long,
-    locale: Locale,
-): String = stringResource(R.string.bill_money_spoken, NumberFormat.getIntegerInstance(locale).format(minor))
-
 /**
  * A person and what they owe; tapping it opens their breakdown. Everyone but the payer can be sent their part, and
  * someone without a number can be given one.
@@ -248,9 +239,9 @@ private fun PersonCard(
     val row = person.row
     val description =
         if (row.isMe) {
-            stringResource(R.string.bill_summary_my_share_cd, spokenMoney(person.totalMinor, locale))
+            stringResource(R.string.bill_summary_my_share_cd, formatAmount(person.totalMinor, locale))
         } else {
-            stringResource(R.string.bill_summary_owes_cd, row.label, spokenMoney(person.totalMinor, locale))
+            stringResource(R.string.bill_summary_owes_cd, row.label, formatAmount(person.totalMinor, locale))
         }
     val sheetLabel = stringResource(R.string.bill_breakdown_title)
     Surface(
@@ -263,7 +254,7 @@ private fun PersonCard(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    // One sentence for TalkBack ("Budi owes 41,580 rupiah") instead of the name, items and amount apart.
+                    // One sentence for TalkBack ("Budi owes 41,580") instead of the name, items and amount apart.
                     .clearAndSetSemantics {
                         contentDescription = description
                         role = Role.Button
@@ -296,7 +287,7 @@ private fun PersonCard(
                     )
                 }
                 // Never truncated, also at large font sizes: the amount is the point of this screen.
-                Text(formatMoney(person.totalMinor, DEFAULT_CURRENCY, locale), style = MaterialTheme.typography.titleMedium)
+                Text(formatAmount(person.totalMinor, locale), style = MaterialTheme.typography.titleMedium)
             }
             if (!row.isMe) SendActions(row, canSend, onSend, onAddNumber, onTogglePaid)
         }
@@ -396,7 +387,7 @@ private fun Breakdown(
     rows: Map<Long, PersonRow>,
 ) {
     val locale = currentLocale()
-    val money = { minor: Long -> formatMoney(minor, DEFAULT_CURRENCY, locale) }
+    val money = { minor: Long -> formatAmount(minor, locale) }
     Row(
         Modifier.fillMaxWidth().semantics(mergeDescendants = true) {},
         verticalAlignment = Alignment.CenterVertically,
@@ -462,7 +453,7 @@ private fun lineText(
             }
         is BreakdownLine.Discount -> stringResource(R.string.bill_breakdown_discount)
         is BreakdownLine.Rounding -> {
-            val amount = formatMoney(abs(line.amountMinor), DEFAULT_CURRENCY, locale)
+            val amount = formatAmount(abs(line.amountMinor), locale)
             if (line.amountMinor > 0) {
                 stringResource(R.string.bill_breakdown_rounding_added, amount)
             } else {

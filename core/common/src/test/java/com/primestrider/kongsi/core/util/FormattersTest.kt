@@ -41,17 +41,13 @@ class FormattersTest {
     }
 
     @Test
-    fun rupiah_from_minor_units_has_no_decimals_and_the_rp_symbol() {
-        assertEquals("Rp152.460", formatMoney(152_460, "IDR", Locale.forLanguageTag("id-ID")))
-        assertEquals("Rp152,460", formatMoney(152_460, "IDR", Locale.US))
-        assertEquals("Rp0", formatMoney(0, "IDR", Locale.forLanguageTag("id-ID")))
-    }
-
-    @Test
-    fun money_with_decimals_moves_the_point_exactly() {
-        assertEquals("$1,234.05", formatMoney(123_405, "USD", Locale.US))
+    fun amounts_are_grouped_numbers_without_a_currency() {
+        assertEquals("152.460", formatAmount(152_460, Locale.forLanguageTag("id-ID")))
+        assertEquals("152,460", formatAmount(152_460, Locale.US))
+        assertEquals("0", formatAmount(0, Locale.forLanguageTag("id-ID")))
+        assertEquals("-8.525", formatAmount(-8_525, Locale.forLanguageTag("id-ID")))
         // Far beyond what a Double holds exactly.
-        assertEquals("Rp9.007.199.254.740.993", formatMoney(9_007_199_254_740_993, "IDR", Locale.forLanguageTag("id-ID")))
+        assertEquals("9.007.199.254.740.993", formatAmount(9_007_199_254_740_993, Locale.forLanguageTag("id-ID")))
     }
 
     @Test

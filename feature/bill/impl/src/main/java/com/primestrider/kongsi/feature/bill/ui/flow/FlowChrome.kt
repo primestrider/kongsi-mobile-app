@@ -47,9 +47,8 @@ import com.primestrider.kongsi.core.designsystem.theme.Spacing
 import com.primestrider.kongsi.core.designsystem.theme.ThemePreviews
 import com.primestrider.kongsi.core.designsystem.theme.personTone
 import com.primestrider.kongsi.core.util.currentLocale
-import com.primestrider.kongsi.core.util.formatMoney
+import com.primestrider.kongsi.core.util.formatAmount
 import com.primestrider.kongsi.feature.bill.impl.R
-import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 import java.text.DecimalFormatSymbols
 
 /** The steps of making a bill, in order. */
@@ -167,7 +166,7 @@ fun RunningTotalBar(
     onAction: () -> Unit = {},
 ) {
     val locale = currentLocale()
-    val money = { minor: Long -> formatMoney(minor, DEFAULT_CURRENCY, locale) }
+    val money = { minor: Long -> formatAmount(minor, locale) }
     Surface(color = MaterialTheme.colorScheme.surface, shadowElevation = 8.dp, modifier = modifier.fillMaxWidth()) {
         Column(Modifier.windowInsetsPadding(WindowInsets.navigationBars)) {
             if (total is RunningTotal.Assigned) {
@@ -273,8 +272,9 @@ fun CheckChip(
 }
 
 /**
- * A rupiah amount field. [value] is the text as typed: digits are shown grouped ("45.000") while typing, shorthand
- * such as "45rb" or "1,5jt" is accepted and explained below the field ("= Rp45.000"), and text that is not an amount
+ * An amount field, without a currency (the app shows plain amounts). [value] is the text as typed: digits are shown
+ * grouped ("45.000") while typing, shorthand such as "45rb" or "1,5jt" is accepted and explained below the field
+ * ("= 45.000"), and text that is not an amount
  * says how to type one. Read the amount with [parseMoneyInput].
  */
 @Composable
@@ -293,12 +293,11 @@ fun MoneyField(
         onValueChange = onValueChange,
         label = label,
         modifier = modifier,
-        prefix = "Rp",
         keyboardType = KeyboardType.Number,
         visualTransformation = ThousandsTransformation(separator),
         supportingText =
             if (amount != null && needsExplanation(value)) {
-                "= " + formatMoney(amount, DEFAULT_CURRENCY, locale)
+                "= " + formatAmount(amount, locale)
             } else {
                 supportingText
             },

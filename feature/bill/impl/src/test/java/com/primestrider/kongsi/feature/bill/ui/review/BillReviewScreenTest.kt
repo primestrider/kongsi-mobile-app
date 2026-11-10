@@ -77,7 +77,7 @@ class BillReviewScreenTest {
         )
 
         rule
-            .onNodeWithText("Tax on the receipt is Rp13,860, but 10% of the items is Rp12,600. Is an item tax-free?")
+            .onNodeWithText("Tax on the receipt is 13,860, but 10% of the items is 12,600. Is an item tax-free?")
             .performClick()
         rule.waitForIdle()
         assertEquals("warning Item(id=12)", events.first())

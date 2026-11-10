@@ -1,7 +1,7 @@
 package com.primestrider.kongsi.feature.bill.share
 
+import com.primestrider.kongsi.core.util.formatAmount
 import com.primestrider.kongsi.core.util.formatDate
-import com.primestrider.kongsi.core.util.formatMoney
 import com.primestrider.kongsi.core.util.formatPercent
 import com.primestrider.kongsi.feature.bill.model.Bill
 import com.primestrider.kongsi.feature.bill.model.BreakdownLine
@@ -32,7 +32,7 @@ object BillMessageBuilder {
         timeZone: TimeZone = TimeZone.getDefault(),
     ): String {
         val words = Words.of(locale)
-        val money = { minor: Long -> formatMoney(minor, bill.currency, locale) }
+        val money = { minor: Long -> formatAmount(minor, locale) }
         val share = SplitCalculator.split(bill).shares.first { it.personId == personId }
         val person = bill.people.first { it.id == personId }
         val names =
@@ -64,7 +64,7 @@ object BillMessageBuilder {
         timeZone: TimeZone = TimeZone.getDefault(),
     ): String {
         val words = Words.of(locale)
-        val money = { minor: Long -> formatMoney(minor, bill.currency, locale) }
+        val money = { minor: Long -> formatAmount(minor, locale) }
         val result = SplitCalculator.split(bill)
         val totals = result.shares.associate { it.personId to it.totalMinor }
         val (payers, others) = bill.people.partition { it.id == bill.payerPersonId }

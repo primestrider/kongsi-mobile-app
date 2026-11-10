@@ -123,6 +123,66 @@ class ReceiptParserTest {
     }
 
     @Test
+    fun a_currency_stuck_to_a_price_is_ignored() {
+        val read = { text: String -> ReceiptParser.priceOf(text) }
+
+        assertEquals(45_000L, read("Rp.45.000"))
+        assertEquals(45_000L, read("IDR45.000"))
+        assertEquals(45_000L, read("$45,000"))
+        assertEquals(45_000L, read("S$45,000"))
+        assertEquals(45_000L, read("RM45,000"))
+        assertEquals(-1_800L, read("-Rp1.800"))
+    }
+
+    @Test
+    fun a_currency_as_a_word_of_its_own_is_ignored_before_or_after_the_price() {
+        val receipt =
+            ReceiptParser.parse(
+                linesOf(
+                    listOf(
+                        "Nasi Goreng      Rp   30.000",
+                        "Es Teh      5.000 IDR",
+                        "Kerupuk      $ 2.000",
+                        "Total      IDR 37.000",
+                    ).joinToString("\n"),
+                ),
+            )
+
+        assertEquals(
+            listOf(ParsedItem("Nasi Goreng", 1, 30_000), ParsedItem("Es Teh", 1, 5_000), ParsedItem("Kerupuk", 1, 2_000)),
+            receipt.items,
+        )
+        assertEquals(37_000L, receipt.totalMinor)
+    }
+
+    @Test
+    fun a_receipt_without_any_currency_is_read() {
+        val receipt =
+            ReceiptParser.parse(
+                linesOf(
+                    listOf(
+                        "Bakso",
+                        "2 x 12,000      24,000",
+                        "Cumi Goreng Tepung Gurih",
+                        "3 x 25,000      75,000",
+                        "Subtotal      99,000",
+                        "Pajak      9,900",
+                        "Total      108,900",
+                        "TUNAI      200,000",
+                    ).joinToString("\n"),
+                ),
+            )
+
+        assertEquals(
+            listOf(ParsedItem("Bakso", 2, 24_000), ParsedItem("Cumi Goreng Tepung Gurih", 3, 75_000)),
+            receipt.items,
+        )
+        assertEquals(99_000L, receipt.subtotalMinor)
+        assertEquals(ParsedCharge(9_900), receipt.tax)
+        assertEquals(108_900L, receipt.totalMinor)
+    }
+
+    @Test
     fun total_bayar_is_the_total_not_a_payment() {
         val receipt =
             ReceiptParser.parse(
