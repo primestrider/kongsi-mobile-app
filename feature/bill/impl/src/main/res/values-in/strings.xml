@@ -76,6 +76,17 @@
     <string name="bill_warning_no_serviceable">Ada biaya servis, tapi tidak ada item yang kena servis. Nyalakan di item yang kena.</string>
     <string name="bill_warning_no_discountable">Ada diskon, tapi belum ada item untuk dipotong.</string>
 
+    <!-- Capture -->
+    <string name="bill_capture_title">Tagihan baru</string>
+    <string name="bill_capture_take_photo">Foto struk</string>
+    <string name="bill_capture_take_photo_body">Kongsi baca itemnya, kamu tinggal cek.</string>
+    <string name="bill_capture_choose_photo">Pilih dari galeri</string>
+    <string name="bill_capture_choose_photo_body">Foto struk yang sudah ada.</string>
+    <string name="bill_capture_tips">Biar terbaca jelas, taruh struk di tempat datar dan terang, dan pastikan seluruh struk masuk foto.</string>
+    <string name="bill_capture_manual">Ketik sendiri</string>
+    <string name="bill_capture_no_camera">Tidak ada aplikasi kamera. Pilih foto atau ketik tagihannya.</string>
+    <string name="bill_capture_no_gallery">Tidak ada pemilih foto. Foto struknya atau ketik tagihannya.</string>
+    <string name="bill_capture_scan_soon">Baca struk otomatis segera hadir. Ketik itemnya dulu, ya.</string>
     <!-- People -->
     <string name="bill_people_title">Siapa saja yang ikut?</string>
     <string name="bill_people_search">Cari kontak atau ketik nama</string>

@@ -77,6 +77,17 @@
     <string name="bill_warning_no_serviceable">There is a service charge, but no item has service. Turn it on for the items it is charged on.</string>
     <string name="bill_warning_no_discountable">There is a discount, but no item yet to take it from.</string>
 
+    <!-- Capture -->
+    <string name="bill_capture_title">New bill</string>
+    <string name="bill_capture_take_photo">Take a photo</string>
+    <string name="bill_capture_take_photo_body">Kongsi reads the items, you check them.</string>
+    <string name="bill_capture_choose_photo">Choose from gallery</string>
+    <string name="bill_capture_choose_photo_body">A receipt photo you already have.</string>
+    <string name="bill_capture_tips">For a good read, lay the receipt flat in good light, with all of it in the photo.</string>
+    <string name="bill_capture_manual">Type it in myself</string>
+    <string name="bill_capture_no_camera">No camera app found. Choose a photo or type the bill in.</string>
+    <string name="bill_capture_no_gallery">No photo picker found. Take a photo or type the bill in.</string>
+    <string name="bill_capture_scan_soon">Reading receipts is coming soon. Type the items in for now.</string>
     <!-- People -->
     <string name="bill_people_title">Who was there?</string>
     <string name="bill_people_search">Search contacts or type a name</string>

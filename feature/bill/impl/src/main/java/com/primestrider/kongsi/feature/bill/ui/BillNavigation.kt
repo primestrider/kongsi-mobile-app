@@ -14,9 +14,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.primestrider.kongsi.core.designsystem.component.LocalMessenger
 import com.primestrider.kongsi.core.designsystem.component.NavBarAction
+import com.primestrider.kongsi.core.designsystem.component.UiText
 import com.primestrider.kongsi.core.designsystem.icon.AppIcons
 import com.primestrider.kongsi.core.util.currentLocale
 import com.primestrider.kongsi.feature.bill.BillAssignRoute
+import com.primestrider.kongsi.feature.bill.BillCaptureRoute
 import com.primestrider.kongsi.feature.bill.BillEditRoute
 import com.primestrider.kongsi.feature.bill.BillPeopleRoute
 import com.primestrider.kongsi.feature.bill.BillSummaryRoute
@@ -32,6 +34,8 @@ import com.primestrider.kongsi.feature.bill.ui.accounts.PaymentAccountsViewModel
 import com.primestrider.kongsi.feature.bill.ui.assign.BillAssignActions
 import com.primestrider.kongsi.feature.bill.ui.assign.BillAssignScreen
 import com.primestrider.kongsi.feature.bill.ui.assign.BillAssignViewModel
+import com.primestrider.kongsi.feature.bill.ui.capture.BillCaptureScreen
+import com.primestrider.kongsi.feature.bill.ui.capture.ReceiptPhotos
 import com.primestrider.kongsi.feature.bill.ui.flow.FlowStep
 import com.primestrider.kongsi.feature.bill.ui.home.BillHomeScreen
 import com.primestrider.kongsi.feature.bill.ui.home.BillHomeViewModel
@@ -65,11 +69,27 @@ fun BillHome(onOpen: (Any) -> Unit) {
 @Composable
 fun rememberNewBillAction(onOpen: (Any) -> Unit): NavBarAction {
     val label = stringResource(R.string.bill_home_new_bill)
-    return remember(label, onOpen) { NavBarAction(label, AppIcons.ListAdd) { onOpen(BillEditRoute()) } }
+    return remember(label, onOpen) { NavBarAction(label, AppIcons.ListAdd) { onOpen(BillCaptureRoute) } }
 }
 
 /** Every page of the bill feature except Home. */
 fun NavGraphBuilder.billDestinations(navController: NavController) {
+    composable<BillCaptureRoute> {
+        val context = LocalContext.current
+        val messenger = LocalMessenger.current
+        // Capture is only the way in: Back from Review goes Home, not to here.
+        val toReview = { navController.navigate(BillEditRoute()) { popUpTo<BillCaptureRoute> { inclusive = true } } }
+        BillCaptureScreen(
+            onBack = { navController.popBackStack() },
+            onPhoto = { uri ->
+                // Reading the photo arrives with Tasks 19 and 20 of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
+                ReceiptPhotos.discard(context, uri)
+                messenger.info(UiText.Resource(R.string.bill_capture_scan_soon))
+                toReview()
+            },
+            onManual = toReview,
+        )
+    }
     composable<BillEditRoute> {
         val viewModel: BillReviewViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
