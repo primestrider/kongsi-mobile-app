@@ -35,7 +35,8 @@ import com.primestrider.kongsi.feature.bill.ui.assign.BillAssignActions
 import com.primestrider.kongsi.feature.bill.ui.assign.BillAssignScreen
 import com.primestrider.kongsi.feature.bill.ui.assign.BillAssignViewModel
 import com.primestrider.kongsi.feature.bill.ui.capture.BillCaptureScreen
-import com.primestrider.kongsi.feature.bill.ui.capture.ReceiptPhotos
+import com.primestrider.kongsi.feature.bill.ui.capture.BillCaptureViewModel
+import com.primestrider.kongsi.feature.bill.ui.capture.ReadStatus
 import com.primestrider.kongsi.feature.bill.ui.flow.FlowStep
 import com.primestrider.kongsi.feature.bill.ui.home.BillHomeScreen
 import com.primestrider.kongsi.feature.bill.ui.home.BillHomeViewModel
@@ -75,19 +76,25 @@ fun rememberNewBillAction(onOpen: (Any) -> Unit): NavBarAction {
 /** Every page of the bill feature except Home. */
 fun NavGraphBuilder.billDestinations(navController: NavController) {
     composable<BillCaptureRoute> {
-        val context = LocalContext.current
+        val viewModel: BillCaptureViewModel = hiltViewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
         val messenger = LocalMessenger.current
         // Capture is only the way in: Back from Review goes Home, not to here.
         val toReview = { navController.navigate(BillEditRoute()) { popUpTo<BillCaptureRoute> { inclusive = true } } }
-        BillCaptureScreen(
-            onBack = { navController.popBackStack() },
-            onPhoto = { uri ->
-                // Reading the photo arrives with Tasks 19 and 20 of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
-                ReceiptPhotos.discard(context, uri)
+        LaunchedEffect(state.status) {
+            if (state.status is ReadStatus.Read) {
+                // Prefilling the Review step arrives with Task 20 of the plan (docs/superpowers/plans/2026-11-06-kongsi-split-bill.md).
+                viewModel.onReadHandled()
                 messenger.info(UiText.Resource(R.string.bill_capture_scan_soon))
                 toReview()
-            },
+            }
+        }
+        BillCaptureScreen(
+            status = state.status,
+            onBack = { navController.popBackStack() },
+            onPhoto = viewModel::onPhoto,
             onManual = toReview,
+            onDismissFailure = viewModel::onDismissFailure,
         )
     }
     composable<BillEditRoute> {

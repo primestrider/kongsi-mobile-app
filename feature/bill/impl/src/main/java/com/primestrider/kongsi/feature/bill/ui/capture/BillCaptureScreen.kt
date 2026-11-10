@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,11 +36,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.primestrider.kongsi.core.designsystem.component.AppButton
 import com.primestrider.kongsi.core.designsystem.component.AppScaffold
+import com.primestrider.kongsi.core.designsystem.component.Banner
+import com.primestrider.kongsi.core.designsystem.component.BannerVariant
 import com.primestrider.kongsi.core.designsystem.component.ButtonVariant
 import com.primestrider.kongsi.core.designsystem.component.LocalMessenger
 import com.primestrider.kongsi.core.designsystem.component.UiText
@@ -52,14 +59,16 @@ import com.primestrider.kongsi.feature.bill.impl.R
 
 /**
  * How a new bill starts: a photo of the receipt taken with the phone's camera app (no camera permission needed), one
- * from the gallery through the system photo picker (no permission either), or typing it in. [onPhoto] gets the photo;
- * one taken here is ours to delete once read, see [ReceiptPhotos.discard].
+ * from the gallery through the system photo picker (no permission either), or typing it in. [onPhoto] gets the photo
+ * to read; while it is read the screen says so, and when nothing came of it, it says why above the choices.
  */
 @Composable
 fun BillCaptureScreen(
+    status: ReadStatus,
     onBack: () -> Unit,
     onPhoto: (Uri) -> Unit,
     onManual: () -> Unit,
+    onDismissFailure: () -> Unit,
 ) {
     val context = LocalContext.current
     val messenger = LocalMessenger.current
@@ -74,8 +83,10 @@ fun BillCaptureScreen(
     val gallery = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> uri?.let(onPhoto) }
 
     CaptureContent(
+        status = status,
         onBack = onBack,
         onTakePhoto = {
+            onDismissFailure()
             val uri = ReceiptPhotos.newPhotoUri(context)
             pending = uri.toString()
             try {
@@ -87,6 +98,7 @@ fun BillCaptureScreen(
             }
         },
         onChoosePhoto = {
+            onDismissFailure()
             try {
                 gallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             } catch (e: ActivityNotFoundException) {
@@ -99,12 +111,17 @@ fun BillCaptureScreen(
 
 @Composable
 private fun CaptureContent(
+    status: ReadStatus,
     onBack: () -> Unit,
     onTakePhoto: () -> Unit,
     onChoosePhoto: () -> Unit,
     onManual: () -> Unit,
 ) {
     AppScaffold(title = stringResource(R.string.bill_capture_title), onBack = onBack) { padding ->
+        if (status == ReadStatus.Reading) {
+            Reading(Modifier.padding(padding))
+            return@AppScaffold
+        }
         Column(
             Modifier
                 .fillMaxSize()
@@ -113,6 +130,19 @@ private fun CaptureContent(
                 .padding(horizontal = Spacing.s4, vertical = Spacing.s4),
             verticalArrangement = Arrangement.spacedBy(Spacing.s3),
         ) {
+            if (status is ReadStatus.Failed) {
+                Banner(
+                    title =
+                        stringResource(
+                            when (status.reason) {
+                                ReadFailure.UNREADABLE -> R.string.bill_capture_failed_unreadable
+                                ReadFailure.NOTHING_FOUND -> R.string.bill_capture_failed_nothing
+                            },
+                        ),
+                    message = stringResource(R.string.bill_capture_failed_action),
+                    variant = BannerVariant.WARNING,
+                )
+            }
             SourceCard(
                 icon = AppIcons.Camera,
                 title = stringResource(R.string.bill_capture_take_photo),
@@ -140,6 +170,25 @@ private fun CaptureContent(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
         }
+    }
+}
+
+/** While the photo is read: a few seconds on the device, so the user knows it is working. */
+@Composable
+private fun Reading(modifier: Modifier = Modifier) {
+    Column(
+        modifier.fillMaxSize().padding(Spacing.s6).semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
+        verticalArrangement = Arrangement.spacedBy(Spacing.s4, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        CircularProgressIndicator()
+        Text(stringResource(R.string.bill_capture_reading), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+        Text(
+            stringResource(R.string.bill_capture_reading_body),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -195,5 +244,19 @@ private const val BODY_ALPHA = 0.8f
 @ThemePreviews
 @Composable
 private fun BillCaptureScreenPreview() {
-    PreviewTheme { CaptureContent(onBack = {}, onTakePhoto = {}, onChoosePhoto = {}, onManual = {}) }
+    PreviewTheme { CaptureContent(ReadStatus.Idle, onBack = {}, onTakePhoto = {}, onChoosePhoto = {}, onManual = {}) }
+}
+
+@ThemePreviews
+@Composable
+private fun BillCaptureReadingPreview() {
+    PreviewTheme { CaptureContent(ReadStatus.Reading, onBack = {}, onTakePhoto = {}, onChoosePhoto = {}, onManual = {}) }
+}
+
+@ThemePreviews
+@Composable
+private fun BillCaptureFailedPreview() {
+    PreviewTheme {
+        CaptureContent(ReadStatus.Failed(ReadFailure.NOTHING_FOUND), onBack = {}, onTakePhoto = {}, onChoosePhoto = {}, onManual = {})
+    }
 }

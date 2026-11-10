@@ -26,5 +26,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    // Reading receipt photos on the device (ReceiptScanner).
+    implementation(libs.mlkit.text.recognition)
     testImplementation(libs.androidx.room.testing)
 }

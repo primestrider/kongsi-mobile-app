@@ -320,7 +320,7 @@ feature/bill/impl
 - [x] **17. Capture screen.** ("New bill" opens `BillCaptureRoute`. Until Task 20 a photo is deleted and the user goes on to type the items, with a "coming soon" note. Photos go to `cache/receipts/` through `ReceiptFileProvider`; Task 19 deletes them after reading.) Take photo (FileProvider + `TakePicture`), pick photo (`PickVisualMedia`), manual entry.
 - [x] **18. ReceiptParser.** (`ocr/ReceiptParser`, with 8 made-up layouts in common Indonesian formats; replace or add real, anonymised receipts as they come.) Pure parser + fixture tests for at least 8 real receipt layouts (restaurant with PB1 +
       service, coffee shop, minimarket, receipt with discount, qty-prefixed lines, `45.000,00` format).
-- [ ] **19. ReceiptScanner.** ML Kit wrapper, add the dependency to `gradle/libs.versions.toml`, loading/error
+- [x] **19. ReceiptScanner.** (`com.google.mlkit:text-recognition` 16.0.1, bundled Latin model. `BillCaptureViewModel` reads the photo with a "Reading the receipt…" state; a photo that cannot be read, or has no item, says so above the choices.) ML Kit wrapper, add the dependency to `gradle/libs.versions.toml`, loading/error
       states ("Couldn't read the receipt, enter it manually"), delete the image after scanning.
 - [ ] **20. Wire capture → OCR → Review.** Prefill the Review screen; a manual test on a device with real receipts.
 

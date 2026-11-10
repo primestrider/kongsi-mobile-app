@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -32,14 +33,16 @@ class BillCaptureScreenTest {
     private val events = mutableListOf<String>()
     private val messenger = Messenger()
 
-    private fun show() =
+    private fun show(status: ReadStatus = ReadStatus.Idle) =
         rule.setContent {
             AppTheme(false) {
                 CompositionLocalProvider(LocalMessenger provides messenger) {
                     BillCaptureScreen(
+                        status = status,
                         onBack = { events += "back" },
                         onPhoto = { events += "photo $it" },
                         onManual = { events += "manual" },
+                        onDismissFailure = { events += "dismiss" },
                     )
                 }
             }
@@ -72,7 +75,7 @@ class BillCaptureScreenTest {
         shadowOf(rule.activity).receiveResult(intent, Activity.RESULT_OK, Intent())
         rule.waitForIdle()
 
-        assertEquals(listOf("photo $output"), events)
+        assertEquals(listOf("dismiss", "photo $output"), events)
     }
 
     @Test
@@ -90,7 +93,7 @@ class BillCaptureScreenTest {
         rule.waitForIdle()
 
         assertFalse(file.exists())
-        assertTrue(events.isEmpty())
+        assertEquals(listOf("dismiss"), events)
     }
 
     @Test
@@ -100,6 +103,23 @@ class BillCaptureScreenTest {
         rule.onNodeWithText("Choose from gallery").performClick()
 
         assertEquals(MediaStore.ACTION_PICK_IMAGES, lastLaunched().action)
+    }
+
+    @Test
+    fun while_reading_the_screen_says_so_instead_of_the_choices() {
+        show(ReadStatus.Reading)
+
+        rule.onNodeWithText("Reading the receipt…").assertIsDisplayed()
+        rule.onNodeWithText("Take a photo").assertDoesNotExist()
+    }
+
+    @Test
+    fun a_failed_read_says_why_above_the_choices() {
+        show(ReadStatus.Failed(ReadFailure.NOTHING_FOUND))
+
+        rule.onNodeWithText("No items found on the photo").assertIsDisplayed()
+        rule.onNodeWithText("Try a sharper photo in good light, or type the items in.").assertIsDisplayed()
+        rule.onNodeWithText("Type it in myself").assertIsDisplayed()
     }
 
     @Test

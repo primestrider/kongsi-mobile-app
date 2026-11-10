@@ -87,6 +87,11 @@
     <string name="bill_capture_no_camera">Tidak ada aplikasi kamera. Pilih foto atau ketik tagihannya.</string>
     <string name="bill_capture_no_gallery">Tidak ada pemilih foto. Foto struknya atau ketik tagihannya.</string>
     <string name="bill_capture_scan_soon">Baca struk otomatis segera hadir. Ketik itemnya dulu, ya.</string>
+    <string name="bill_capture_reading">Membaca struk…</string>
+    <string name="bill_capture_reading_body">Cuma beberapa detik, langsung di HP-mu.</string>
+    <string name="bill_capture_failed_unreadable">Struk tidak terbaca</string>
+    <string name="bill_capture_failed_nothing">Tidak ada item di foto</string>
+    <string name="bill_capture_failed_action">Coba foto yang lebih jelas di tempat terang, atau ketik itemnya sendiri.</string>
     <!-- People -->
     <string name="bill_people_title">Siapa saja yang ikut?</string>
     <string name="bill_people_search">Cari kontak atau ketik nama</string>

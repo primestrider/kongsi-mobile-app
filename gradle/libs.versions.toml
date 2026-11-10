@@ -14,6 +14,7 @@ navigationCompose = "2.10.2"
 hiltNavigationCompose = "1.4.0"
 datastore = "1.3.0"
 kotlinxSerialization = "1.12.0"
+mlkitTextRecognition = "16.0.1"
 coroutines = "1.11.0"
 junit = "4.13.2"
 robolectric = "4.17"
@@ -70,6 +71,8 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+# On-device text recognition with the Latin model bundled in the app (works offline, no download on first use).
+mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkitTextRecognition" }
 kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
