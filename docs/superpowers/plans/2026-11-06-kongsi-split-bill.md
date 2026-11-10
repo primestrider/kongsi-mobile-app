@@ -309,7 +309,7 @@ feature/bill/impl
 - [x] **14. BillMessageBuilder.** (`share/BillMessageBuilder.forPerson`; the breakdown moved to `model/Breakdown.kt` so Summary and the message share it. The group summary comes with Task 16.) Pure, locale-aware (en/id), currency formatting from `core.util`. Tests: golden
       strings for en and id, with zero, one and several accounts (bank and e-wallet), number on its own line,
       shared-item fraction text.
-- [ ] **15. WhatsAppSharer.** `wa.me` link from `IndonesianPhone.international` (Task 7), `ACTION_SEND` with WhatsApp →
+- [x] **15. WhatsAppSharer.** (A number that is not an Indonesian mobile is sent through WhatsApp's own chat picker instead of `wa.me`.) `wa.me` link from `IndonesianPhone.international` (Task 7), `ACTION_SEND` with WhatsApp →
       WhatsApp Business → chooser fallback, `<queries>` in manifest. Tests: intent built for each fallback case
       (Robolectric `ShadowPackageManager`).
 - [ ] **16. Share actions on Summary.** "Send" per person, "Send summary to group". A person without a number gets an

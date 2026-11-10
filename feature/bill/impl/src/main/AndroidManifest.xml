@@ -6,4 +6,11 @@
          contacts, or from Profile > Permissions; the system contact picker works without it. -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- Sending a bill: WhatsApp, then WhatsApp Business, must be visible to check which one is installed
+         (WhatsAppSharer). -->
+    <queries>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+    </queries>
+
 </manifest>
