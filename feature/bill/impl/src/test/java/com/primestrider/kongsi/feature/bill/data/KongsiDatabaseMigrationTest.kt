@@ -67,6 +67,24 @@ class KongsiDatabaseMigrationTest {
         assertEquals("0", upgraded.single("SELECT COUNT(*) FROM frequent_people"))
     }
 
+    @Test
+    fun bills_survive_the_upgrade_that_adds_their_payment_accounts() {
+        assumeTrue("Room schemas are debug-only assets", BuildConfig.DEBUG)
+        helper.createDatabase(3).apply {
+            execSQL(
+                "INSERT INTO bills (id, title, createdAt, currency, payerPersonId, serviceMinor, serviceRateBps, taxMinor, " +
+                    "taxRateBps, discountMinor, receiptTotalMinor) VALUES (3, 'Sushi', 1, 'IDR', NULL, 0, NULL, 0, NULL, 0, NULL)",
+            )
+            close()
+        }
+
+        val upgraded = helper.runMigrationsAndValidate(4)
+
+        // Existing bills have not chosen yet, so the default accounts apply to them.
+        assertEquals("0", upgraded.single("SELECT accountsChosen FROM bills"))
+        assertEquals("0", upgraded.single("SELECT COUNT(*) FROM bill_payment_accounts"))
+    }
+
     private fun SQLiteConnection.single(sql: String): String =
         prepare(sql).use {
             check(it.step()) { "No row for $sql" }

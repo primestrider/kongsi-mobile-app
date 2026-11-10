@@ -1,5 +1,6 @@
 package com.primestrider.kongsi.feature.bill.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -22,6 +23,8 @@ data class BillEntity(
     val taxRateBps: Int?,
     val discountMinor: Long,
     val receiptTotalMinor: Long?,
+    /** Whether the payment accounts for this bill were chosen; until then the default accounts apply. */
+    @ColumnInfo(defaultValue = "0") val accountsChosen: Boolean,
 )
 
 /** One receipt line; [position] keeps the receipt's order. */
@@ -89,10 +92,34 @@ data class ItemShareEntity(
     val personId: Long,
 )
 
+/**
+ * A payment account chosen for a bill, listed in its WhatsApp messages. Deleting the bill or the account removes the
+ * choice, so a deleted account never shows up in a later message.
+ */
+@Entity(
+    tableName = "bill_payment_accounts",
+    primaryKeys = ["billId", "accountId"],
+    foreignKeys = [
+        ForeignKey(entity = BillEntity::class, parentColumns = ["id"], childColumns = ["billId"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(
+            entity = PaymentAccountEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["accountId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("accountId")],
+)
+data class BillPaymentAccountEntity(
+    val billId: Long,
+    val accountId: Long,
+)
+
 /** A bill row with everything that belongs to it, loaded in one transaction. */
 data class BillWithParts(
     @Embedded val bill: BillEntity,
     @Relation(parentColumn = "id", entityColumn = "billId") val items: List<ItemEntity>,
     @Relation(parentColumn = "id", entityColumn = "billId") val people: List<PersonEntity>,
     @Relation(parentColumn = "id", entityColumn = "billId") val shares: List<ItemShareEntity>,
+    @Relation(parentColumn = "id", entityColumn = "billId") val accounts: List<BillPaymentAccountEntity>,
 )

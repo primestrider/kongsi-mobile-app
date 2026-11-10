@@ -157,6 +157,8 @@ fun NavGraphBuilder.billDestinations(navController: NavController) {
                     },
                     onOpenBreakdown = viewModel::onOpenBreakdown,
                     onCloseBreakdown = viewModel::onCloseBreakdown,
+                    onToggleAccount = viewModel::toggleAccount,
+                    onAddAccount = { navController.navigate(PaymentAccountEditRoute()) },
                     onDone = {
                         viewModel.finish()
                         // Back to Home: the whole flow of this bill leaves the back stack.

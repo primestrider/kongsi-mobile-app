@@ -22,9 +22,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -59,6 +56,7 @@ import com.primestrider.kongsi.feature.bill.impl.R
 import com.primestrider.kongsi.feature.bill.model.BillItem
 import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 import com.primestrider.kongsi.feature.bill.model.Person
+import com.primestrider.kongsi.feature.bill.ui.flow.CheckChip
 import com.primestrider.kongsi.feature.bill.ui.flow.FlowStep
 import com.primestrider.kongsi.feature.bill.ui.flow.PersonAvatar
 import com.primestrider.kongsi.feature.bill.ui.flow.RunningTotal
@@ -246,14 +244,14 @@ private fun ItemCard(
         ) {
             ItemTitle(row.item, Modifier.padding(horizontal = Spacing.s1))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s2), verticalArrangement = Arrangement.spacedBy(Spacing.s2)) {
-                ShareChip(
+                CheckChip(
                     text = stringResource(R.string.bill_assign_everyone),
                     selected = people.isNotEmpty() && sharers.size == people.size,
                     onClick = onToggleEveryone,
                 )
                 people.forEach { person ->
                     val name = person.shownName()
-                    ShareChip(
+                    CheckChip(
                         text = name,
                         selected = person.person.id in sharers,
                         onClick = { onToggle(person.person.id) },
@@ -261,37 +259,6 @@ private fun ItemCard(
                     )
                 }
             }
-        }
-    }
-}
-
-/**
- * A person (or "Everyone") on an item: ticked chips are filled and carry a check mark, so the colour is never the only
- * cue. TalkBack reads it as a checkbox with the person's name.
- */
-@Composable
-private fun ShareChip(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    leading: (@Composable () -> Unit)? = null,
-) {
-    val scheme = MaterialTheme.colorScheme
-    Surface(
-        shape = RoundedCornerShape(Radii.full),
-        color = if (selected) scheme.secondaryContainer else scheme.surface,
-        contentColor = if (selected) scheme.onSecondaryContainer else scheme.onSurface,
-        border = BorderStroke(1.dp, if (selected) scheme.secondaryContainer else scheme.outlineVariant),
-        modifier = Modifier.toggleable(value = selected, role = Role.Checkbox, onValueChange = { onClick() }),
-    ) {
-        Row(
-            Modifier.heightIn(min = 48.dp).padding(start = if (leading == null) Spacing.s3 else Spacing.s1, end = Spacing.s3),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Spacing.s2),
-        ) {
-            leading?.invoke()
-            Text(text, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (selected) Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
         }
     }
 }

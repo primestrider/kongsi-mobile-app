@@ -49,6 +49,7 @@ class DefaultBillRepository(
             people = stamped.people.mapIndexed { index, person -> person.toEntity(stamped.id, index) },
             items = stamped.items.mapIndexed { index, item -> item.toEntity(stamped.id, index) },
             sharers = stamped.items.map { it.sharedBy },
+            accountIds = stamped.paymentAccountIds.orEmpty(),
         )
     }
 
@@ -80,6 +81,7 @@ fun BillWithParts.toBill(): Bill {
         tax = BillCharge(bill.taxMinor, bill.taxRateBps),
         discountMinor = bill.discountMinor,
         receiptTotalMinor = bill.receiptTotalMinor,
+        paymentAccountIds = if (bill.accountsChosen) accounts.map { it.accountId }.toSet() else null,
     )
 }
 
@@ -96,6 +98,7 @@ fun Bill.toEntity(): BillEntity =
         taxRateBps = tax.rateBps,
         discountMinor = discountMinor,
         receiptTotalMinor = receiptTotalMinor,
+        accountsChosen = paymentAccountIds != null,
     )
 
 private fun Person.toEntity(

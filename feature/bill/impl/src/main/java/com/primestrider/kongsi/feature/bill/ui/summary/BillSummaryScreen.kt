@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,13 +25,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.primestrider.kongsi.core.designsystem.component.AppBottomSheet
+import com.primestrider.kongsi.core.designsystem.component.AppButton
 import com.primestrider.kongsi.core.designsystem.component.AppScaffold
+import com.primestrider.kongsi.core.designsystem.component.ButtonVariant
 import com.primestrider.kongsi.core.designsystem.theme.PreviewTheme
 import com.primestrider.kongsi.core.designsystem.theme.Radii
 import com.primestrider.kongsi.core.designsystem.theme.Spacing
@@ -40,7 +44,10 @@ import com.primestrider.kongsi.core.util.formatMoney
 import com.primestrider.kongsi.core.util.formatPercent
 import com.primestrider.kongsi.feature.bill.impl.R
 import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
+import com.primestrider.kongsi.feature.bill.model.PaymentAccount
+import com.primestrider.kongsi.feature.bill.model.PaymentAccountType
 import com.primestrider.kongsi.feature.bill.model.Person
+import com.primestrider.kongsi.feature.bill.ui.flow.CheckChip
 import com.primestrider.kongsi.feature.bill.ui.flow.FlowStep
 import com.primestrider.kongsi.feature.bill.ui.flow.PersonAvatar
 import com.primestrider.kongsi.feature.bill.ui.flow.RunningTotal
@@ -57,6 +64,8 @@ data class BillSummaryActions(
     val onStepClick: (FlowStep) -> Unit,
     val onOpenBreakdown: (Long) -> Unit,
     val onCloseBreakdown: () -> Unit,
+    val onToggleAccount: (Long) -> Unit,
+    val onAddAccount: () -> Unit,
     val onDone: () -> Unit,
 )
 
@@ -99,6 +108,7 @@ fun BillSummaryScreen(
             items(state.people, key = { it.row.person.id }) { person ->
                 PersonCard(person, onClick = { actions.onOpenBreakdown(person.row.person.id) })
             }
+            item(key = "accounts") { Accounts(state.accounts, state.selectedAccountIds, actions) }
         }
     }
 
@@ -186,6 +196,48 @@ private fun PersonCard(
             }
             // Never truncated, also at large font sizes: the amount is the point of this screen.
             Text(formatMoney(person.totalMinor, DEFAULT_CURRENCY, locale), style = MaterialTheme.typography.titleMedium)
+        }
+    }
+}
+
+/** The payer's accounts to list in the message, as chips; "Add account" while none is saved. */
+@Composable
+private fun Accounts(
+    accounts: List<PaymentAccount>,
+    selected: Set<Long>,
+    actions: BillSummaryActions,
+) {
+    Column(
+        Modifier.padding(start = Spacing.s4, end = Spacing.s4, top = Spacing.s4),
+        verticalArrangement = Arrangement.spacedBy(Spacing.s2),
+    ) {
+        Text(
+            stringResource(R.string.bill_summary_accounts),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.semantics { heading() },
+        )
+        if (accounts.isEmpty()) {
+            Text(
+                stringResource(R.string.bill_accounts_empty_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            AppButton(stringResource(R.string.bill_accounts_add), onClick = actions.onAddAccount, variant = ButtonVariant.OUTLINED)
+        } else {
+            Text(
+                stringResource(R.string.bill_summary_accounts_support),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s2), verticalArrangement = Arrangement.spacedBy(Spacing.s2)) {
+                accounts.forEach { account ->
+                    CheckChip(
+                        text = stringResource(R.string.bill_summary_account_chip, account.provider, account.number),
+                        selected = account.id in selected,
+                        onClick = { actions.onToggleAccount(account.id) },
+                    )
+                }
+            }
         }
     }
 }
@@ -314,14 +366,26 @@ private val previewState =
         totalMinor = 152_460,
         assignedMinor = 152_460,
         complete = true,
+        accounts =
+            listOf(
+                PaymentAccount(1, PaymentAccountType.BANK, "BCA", "1234567890", "Ricky", isDefault = true),
+                PaymentAccount(2, PaymentAccountType.EWALLET, "GoPay", "081234567890", "Ricky", isDefault = false),
+            ),
+        selectedAccountIds = setOf(1),
     )
 
-private val previewActions = BillSummaryActions({}, {}, {}, {}, {})
+private val previewActions = BillSummaryActions({}, {}, {}, {}, {}, {}, {})
 
 @ThemePreviews
 @Composable
 private fun BillSummaryScreenPreview() {
     PreviewTheme { BillSummaryScreen(previewState, previewActions) }
+}
+
+@ThemePreviews
+@Composable
+private fun BillSummaryNoAccountsPreview() {
+    PreviewTheme { BillSummaryScreen(previewState.copy(accounts = emptyList(), selectedAccountIds = emptySet()), previewActions) }
 }
 
 @ThemePreviews

@@ -1,19 +1,23 @@
 package com.primestrider.kongsi.feature.bill.ui.flow
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.HorizontalDivider
@@ -234,6 +238,37 @@ fun PersonAvatar(
 ) {
     val tone = personTone(index)
     Avatar(name = name, modifier = modifier, size = size, shape = CircleShape, containerColor = tone.container, contentColor = tone.content)
+}
+
+/**
+ * A chip that is ticked or not, such as a person on an item or an account on a bill: ticked chips are filled and carry a
+ * check mark, so the colour is never the only cue. TalkBack reads it as a checkbox with its [text].
+ */
+@Composable
+fun CheckChip(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    leading: (@Composable () -> Unit)? = null,
+) {
+    val scheme = MaterialTheme.colorScheme
+    Surface(
+        shape = RoundedCornerShape(Radii.full),
+        color = if (selected) scheme.secondaryContainer else scheme.surface,
+        contentColor = if (selected) scheme.onSecondaryContainer else scheme.onSurface,
+        border = BorderStroke(1.dp, if (selected) scheme.secondaryContainer else scheme.outlineVariant),
+        modifier = Modifier.toggleable(value = selected, role = Role.Checkbox, onValueChange = { onClick() }),
+    ) {
+        Row(
+            Modifier.heightIn(min = 48.dp).padding(start = if (leading == null) Spacing.s3 else Spacing.s1, end = Spacing.s3),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.s2),
+        ) {
+            leading?.invoke()
+            Text(text, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (selected) Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+        }
+    }
 }
 
 /**

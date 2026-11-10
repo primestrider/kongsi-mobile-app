@@ -23,9 +23,10 @@ abstract class BillDao {
     abstract suspend fun get(id: Long): BillWithParts?
 
     /**
-     * Stores [bill] and replaces everything in it with [people] and [items], all or nothing. Rows with id 0 get a new
-     * id. [sharers] runs parallel to [items]: the ids of the people who had each item (people already stored, or given
-     * here with their id). Returns the bill's id.
+     * Stores [bill] and replaces everything in it with [people], [items] and the payment accounts [accountIds], all or
+     * nothing. Rows with id 0 get a new id. [sharers] runs parallel to [items]: the ids of the people who had each item
+     * (people already stored, or given here with their id). Accounts deleted in the meantime are left out. Returns the
+     * bill's id.
      */
     @Transaction
     open suspend fun replace(
@@ -33,6 +34,7 @@ abstract class BillDao {
         people: List<PersonEntity>,
         items: List<ItemEntity>,
         sharers: List<Set<Long>>,
+        accountIds: Set<Long>,
     ): Long {
         require(items.size == sharers.size) { "One set of sharers per item" }
         val inserted = upsertBill(bill)
@@ -45,6 +47,8 @@ abstract class BillDao {
             val itemId = insertItem(item.copy(billId = billId))
             insertShares(sharers[index].filter { it in personIds }.map { ItemShareEntity(billId, itemId, it) })
         }
+        deleteAccounts(billId)
+        if (accountIds.isNotEmpty()) insertAccounts(billId, accountIds.toList())
         return billId
     }
 
@@ -60,6 +64,18 @@ abstract class BillDao {
 
     @Query("DELETE FROM bill_people WHERE billId = :billId")
     protected abstract suspend fun deletePeople(billId: Long)
+
+    @Query("DELETE FROM bill_payment_accounts WHERE billId = :billId")
+    protected abstract suspend fun deleteAccounts(billId: Long)
+
+    /** Only accounts that still exist, so a stale choice cannot break the save. */
+    @Query(
+        "INSERT INTO bill_payment_accounts (billId, accountId) SELECT :billId, id FROM payment_accounts WHERE id IN (:accountIds)",
+    )
+    protected abstract suspend fun insertAccounts(
+        billId: Long,
+        accountIds: List<Long>,
+    )
 
     @Insert
     protected abstract suspend fun insertItem(item: ItemEntity): Long

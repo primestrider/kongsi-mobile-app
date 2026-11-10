@@ -32,7 +32,8 @@ data class BillCharge(
  * A bill: its people, its items in receipt order and its charges. Money is in minor units of [currency] (IDR has none,
  * so Rp45.000 is 45000). [discountMinor] is a bill-level discount; a discount on one item is its lower price instead.
  * [receiptTotalMinor] is the total printed on the receipt, when known, to warn when the lines do not add up to it.
- * [payerPersonId] is the person who paid; their share is shown but not requested. [id] 0 means not saved yet.
+ * [payerPersonId] is the person who paid; their share is shown but not requested. [paymentAccountIds] are the payer's
+ * accounts listed in this bill's messages; null until chosen, when the default accounts apply. [id] 0 means not saved yet.
  */
 data class Bill(
     val people: List<Person>,
@@ -46,6 +47,7 @@ data class Bill(
     val createdAt: Long = 0,
     val currency: String = DEFAULT_CURRENCY,
     val payerPersonId: Long? = null,
+    val paymentAccountIds: Set<Long>? = null,
 )
 
 /** Kongsi v1 is IDR only; the code is stored with every bill for later. */

@@ -3,12 +3,17 @@ package com.primestrider.kongsi.feature.bill.ui.summary
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsOff
+import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.primestrider.kongsi.core.designsystem.theme.AppTheme
+import com.primestrider.kongsi.feature.bill.model.PaymentAccount
+import com.primestrider.kongsi.feature.bill.model.PaymentAccountType
 import com.primestrider.kongsi.feature.bill.model.Person
 import com.primestrider.kongsi.feature.bill.ui.people.PersonRow
 import org.junit.Assert.assertEquals
@@ -31,6 +36,8 @@ class BillSummaryScreenTest {
             onStepClick = { events += "step $it" },
             onOpenBreakdown = { events += "open $it" },
             onCloseBreakdown = { events += "close" },
+            onToggleAccount = { events += "account $it" },
+            onAddAccount = { events += "add account" },
             onDone = { events += "done" },
         )
 
@@ -98,6 +105,25 @@ class BillSummaryScreenTest {
         rule.onNodeWithText("Service 5% of your order").assertIsDisplayed()
         rule.onNodeWithText("Tax 10% of your order + service").assertIsDisplayed()
         rule.onNodeWithText("Rp3,780").assertIsDisplayed()
+    }
+
+    @Test
+    fun accounts_are_chips_ticked_for_this_bill() {
+        val bca = PaymentAccount(1, PaymentAccountType.BANK, "BCA", "1234567890", "Ricky", isDefault = true)
+        val gopay = PaymentAccount(2, PaymentAccountType.EWALLET, "GoPay", "081234567890", "Ricky", isDefault = false)
+        show(state.copy(accounts = listOf(bca, gopay), selectedAccountIds = setOf(1)))
+
+        rule.onNodeWithText("BCA · 1234567890").performScrollTo().assertIsOn()
+        rule.onNodeWithText("GoPay · 081234567890").assertIsOff().performClick()
+        assertEquals(listOf("account 2"), events)
+    }
+
+    @Test
+    fun without_accounts_the_summary_offers_to_add_one() {
+        show(state)
+
+        rule.onNodeWithText("Add account").performScrollTo().performClick()
+        assertEquals(listOf("add account"), events)
     }
 
     @Test

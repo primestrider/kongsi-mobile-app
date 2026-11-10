@@ -3,13 +3,17 @@ package com.primestrider.kongsi.feature.bill.ui.summary
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.primestrider.kongsi.core.designsystem.component.Messenger
 import com.primestrider.kongsi.feature.bill.model.Bill
 import com.primestrider.kongsi.feature.bill.model.BillCharge
 import com.primestrider.kongsi.feature.bill.model.BillItem
+import com.primestrider.kongsi.feature.bill.model.PaymentAccount
+import com.primestrider.kongsi.feature.bill.model.PaymentAccountType
 import com.primestrider.kongsi.feature.bill.model.Person
 import com.primestrider.kongsi.feature.bill.model.SplitCalculator
 import com.primestrider.kongsi.feature.bill.ui.FakeBillRepository
 import com.primestrider.kongsi.feature.bill.ui.FakeFrequentPeopleRepository
+import com.primestrider.kongsi.feature.bill.ui.FakePaymentAccountRepository
 import com.primestrider.kongsi.feature.bill.ui.people.rowsOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -61,6 +65,11 @@ class BillSummaryViewModelTest {
         )
 
     private val frequent = FakeFrequentPeopleRepository()
+    private val bills = FakeBillRepository(listOf(example))
+
+    private val bca = PaymentAccount(1, PaymentAccountType.BANK, "BCA", "1234567890", "Ricky", isDefault = true)
+    private val gopay = PaymentAccount(2, PaymentAccountType.EWALLET, "GoPay", "081234567890", "Ricky", isDefault = false)
+    private val accounts = FakePaymentAccountRepository(listOf(bca, gopay))
 
     @Before
     fun setUp() = Dispatchers.setMain(main)
@@ -71,11 +80,22 @@ class BillSummaryViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun TestScope.viewModel(bill: Bill = example): BillSummaryViewModel =
-        BillSummaryViewModel(SavedStateHandle(mapOf("billId" to bill.id)), FakeBillRepository(listOf(bill)), frequent, this).also {
+    private fun TestScope.viewModel(bill: Bill? = null): BillSummaryViewModel {
+        val repository = if (bill == null) bills else FakeBillRepository(listOf(bill))
+        return BillSummaryViewModel(
+            SavedStateHandle(mapOf("billId" to (bill ?: example).id)),
+            repository,
+            frequent,
+            accounts,
+            Messenger(),
+            this,
+        ).also {
             created += it
             backgroundScope.launch { it.state.collect {} }
         }
+    }
+
+    private suspend fun storedAccounts() = requireNotNull(bills.get(example.id)).paymentAccountIds
 
     private fun BillSummaryUiState.person(id: Long) = people.single { it.row.person.id == id }
 
@@ -188,6 +208,52 @@ class BillSummaryViewModelTest {
             advanceUntilIdle()
 
             assertEquals(listOf(listOf("Budi", "Ani")), frequent.remembered.map { people -> people.map { it.name } })
+        }
+
+    @Test
+    fun a_new_bill_starts_with_the_default_accounts_once() =
+        runTest(main) {
+            val viewModel = viewModel()
+            advanceUntilIdle()
+
+            assertEquals(setOf(bca.id), storedAccounts())
+            assertEquals(listOf(bca, gopay), viewModel.state.value.accounts)
+            assertEquals(setOf(bca.id), viewModel.state.value.selectedAccountIds)
+
+            // Taking the default off is a choice: opening the Summary again does not bring it back.
+            viewModel.toggleAccount(bca.id)
+            advanceUntilIdle()
+            viewModel(null)
+            advanceUntilIdle()
+            assertEquals(emptySet<Long>(), storedAccounts())
+        }
+
+    @Test
+    fun the_choice_is_saved_with_the_bill_and_survives_reopening() =
+        runTest(main) {
+            viewModel().toggleAccount(gopay.id)
+            advanceUntilIdle()
+
+            assertEquals(setOf(bca.id, gopay.id), storedAccounts())
+            val reopened = viewModel()
+            advanceUntilIdle()
+            assertEquals(setOf(bca.id, gopay.id), reopened.state.value.selectedAccountIds)
+        }
+
+    @Test
+    fun an_account_added_from_the_summary_becomes_the_bills_default() =
+        runTest(main) {
+            accounts.delete(bca.id)
+            accounts.delete(gopay.id)
+            val viewModel = viewModel()
+            advanceUntilIdle()
+            assertNull(storedAccounts())
+
+            val added = accounts.save(bca.copy(id = 0))
+            advanceUntilIdle()
+
+            assertEquals(setOf(added), storedAccounts())
+            assertEquals(setOf(added), viewModel.state.value.selectedAccountIds)
         }
 
     @Test

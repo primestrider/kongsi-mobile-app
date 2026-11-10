@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.primestrider.kongsi.feature.bill.model.Bill
 import com.primestrider.kongsi.feature.bill.model.BillCharge
 import com.primestrider.kongsi.feature.bill.model.BillItem
+import com.primestrider.kongsi.feature.bill.model.PaymentAccount
+import com.primestrider.kongsi.feature.bill.model.PaymentAccountType
 import com.primestrider.kongsi.feature.bill.model.Person
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -146,6 +148,50 @@ class BillRepositoryTest {
             repository.save(removed)
 
             assertEquals(bill, repository.get(bill.id))
+        }
+
+    private suspend fun account(provider: String): Long =
+        DefaultPaymentAccountRepository(database.paymentAccountDao())
+            .save(
+                PaymentAccount(
+                    type = PaymentAccountType.BANK,
+                    provider = provider,
+                    number = "1234567890",
+                    holderName = "Ricky",
+                    isDefault = true,
+                ),
+            )
+
+    @Test
+    fun chosen_payment_accounts_come_back_and_not_chosen_stays_null() =
+        runTest {
+            val bill = dinner()
+            assertNull(bill.paymentAccountIds)
+            val bca = account("BCA")
+            account("BRI")
+
+            repository.save(bill.copy(paymentAccountIds = setOf(bca)))
+            assertEquals(setOf(bca), repository.get(bill.id)?.paymentAccountIds)
+
+            // Choosing none is a choice too: it is not reset to the defaults.
+            repository.save(bill.copy(paymentAccountIds = emptySet()))
+            assertEquals(emptySet<Long>(), repository.get(bill.id)?.paymentAccountIds)
+        }
+
+    @Test
+    fun deleting_an_account_removes_it_from_bills_and_a_stale_choice_still_saves() =
+        runTest {
+            val bill = dinner()
+            val bca = account("BCA")
+            val bri = account("BRI")
+            repository.save(bill.copy(paymentAccountIds = setOf(bca, bri)))
+
+            database.paymentAccountDao().delete(bca)
+            assertEquals(setOf(bri), repository.get(bill.id)?.paymentAccountIds)
+
+            // A screen that still holds the old choice saves without failing; the deleted account is left out.
+            repository.save(bill.copy(paymentAccountIds = setOf(bca, bri)))
+            assertEquals(setOf(bri), repository.get(bill.id)?.paymentAccountIds)
         }
 
     @Test

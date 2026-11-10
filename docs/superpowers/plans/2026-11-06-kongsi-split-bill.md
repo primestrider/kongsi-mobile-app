@@ -304,7 +304,7 @@ feature/bill/impl
 - [x] **12. Payment accounts** (built early, with Task 1; reorder not yet). Entities, DAO, repository; list screen (reorder, mark default, delete with undo) and
       edit screen (type, provider picker, number, holder name, note) reached from Home's top bar. Tests: validation
       for bank and e-wallet numbers, default selection, deleting an account removes it from bill selections.
-- [ ] **13. Account selection on Summary.** Chips for saved accounts, defaults pre-selected for a new bill, choice
+- [x] **13. Account selection on Summary.** (Stored in `bill_payment_accounts` plus `bills.accountsChosen`, kongsi.db v4; defaults are applied once, as soon as an account exists.) Chips for saved accounts, defaults pre-selected for a new bill, choice
       saved with the bill, "Add account" when none exist. Tests: defaults applied once, choice survives reopening.
 - [ ] **14. BillMessageBuilder.** Pure, locale-aware (en/id), currency formatting from `core.util`. Tests: golden
       strings for en and id, with zero, one and several accounts (bank and e-wallet), number on its own line,

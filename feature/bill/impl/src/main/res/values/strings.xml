@@ -119,6 +119,9 @@
     <string name="bill_summary_owes_cd">%1$s owes %2$s</string>
     <string name="bill_summary_my_share_cd">You paid the bill. Your share is %1$s</string>
     <string name="bill_summary_done">Done</string>
+    <string name="bill_summary_accounts">Friends transfer to</string>
+    <string name="bill_summary_accounts_support">Ticked accounts go in the WhatsApp message.</string>
+    <string name="bill_summary_account_chip">%1$s · %2$s</string>
     <string name="bill_money_spoken">%1$s rupiah</string>
     <string name="bill_breakdown_title">How was this calculated?</string>
     <string name="bill_breakdown_shared">%1$s (shared with %2$s, %3$s)</string>
