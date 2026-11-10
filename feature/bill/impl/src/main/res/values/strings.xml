@@ -95,7 +95,24 @@
     <string name="bill_people_remove_cd">Remove %1$s</string>
     <string name="bill_people_already_added">%1$s is already on this bill</string>
     <string name="bill_people_empty">Add the friends you are splitting with.</string>
-    <string name="bill_people_next_soon">Splitting the items is coming soon</string>
+
+    <!-- Assign -->
+    <string name="bill_assign_title">Who had what?</string>
+    <string name="bill_assign_by_item">By item</string>
+    <string name="bill_assign_by_person">By person</string>
+    <string name="bill_assign_everyone">Everyone</string>
+    <string name="bill_assign_split_equally">Split whole bill equally</string>
+    <string name="bill_assign_split_done">Every item is now shared by everyone</string>
+    <plurals name="bill_assign_unassigned">
+        <item quantity="one">%d item not assigned yet</item>
+        <item quantity="other">%d items not assigned yet</item>
+    </plurals>
+    <string name="bill_assign_unassigned_action">Tap to assign</string>
+    <string name="bill_assign_person_question">%1$s, what did you have?</string>
+    <string name="bill_assign_me_question">What did you have?</string>
+    <string name="bill_assign_shared_with">With %1$s</string>
+    <string name="bill_assign_nobody">Nobody yet</string>
+    <string name="bill_assign_next_soon">The summary is coming soon</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Bank accounts &amp; e-wallets</string>

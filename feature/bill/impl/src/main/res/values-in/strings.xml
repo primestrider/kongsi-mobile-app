@@ -94,7 +94,23 @@
     <string name="bill_people_remove_cd">Hapus %1$s</string>
     <string name="bill_people_already_added">%1$s sudah ada di bill ini</string>
     <string name="bill_people_empty">Tambahkan teman yang ikut patungan.</string>
-    <string name="bill_people_next_soon">Fitur membagi item segera hadir</string>
+
+    <!-- Assign -->
+    <string name="bill_assign_title">Siapa pesan apa?</string>
+    <string name="bill_assign_by_item">Per item</string>
+    <string name="bill_assign_by_person">Per orang</string>
+    <string name="bill_assign_everyone">Semua</string>
+    <string name="bill_assign_split_equally">Bagi rata semuanya</string>
+    <string name="bill_assign_split_done">Semua item sekarang dibagi rata</string>
+    <plurals name="bill_assign_unassigned">
+        <item quantity="other">%d item belum dibagi</item>
+    </plurals>
+    <string name="bill_assign_unassigned_action">Ketuk untuk membagi</string>
+    <string name="bill_assign_person_question">%1$s pesan apa saja?</string>
+    <string name="bill_assign_me_question">Kamu pesan apa saja?</string>
+    <string name="bill_assign_shared_with">Bareng %1$s</string>
+    <string name="bill_assign_nobody">Belum ada</string>
+    <string name="bill_assign_next_soon">Ringkasan segera hadir</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Rekening &amp; e-wallet</string>

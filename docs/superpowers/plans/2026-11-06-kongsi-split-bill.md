@@ -292,7 +292,7 @@ feature/bill/impl
       (denied), typed name, frequent people first, remove; "Me" fixed. Permission asked on first focus via
       `PermissionGate`. Tests: ViewModel with fake `ContactsRepository` for granted/denied, adding the same number twice
       is blocked, duplicate names allowed but distinguished, frequent people saved after a bill is finished.
-- [ ] **10. Assign screen.** Item-first and person-first modes, person chips with avatars, "Everyone", "Split
+- [x] **10. Assign screen.** (Next shows "coming soon" until Summary exists; Task 11 points it at `BillSummaryRoute`.) Item-first and person-first modes, person chips with avatars, "Everyone", "Split
       equally", progress in the bottom bar. Blocks next step while items are unassigned, with a tap-to-fix message.
       Tests: toggling shares in both modes gives the same result, blocking state, progress amount.
 - [ ] **11. Summary screen.** Per-person totals and the "How was this calculated?" breakdown sheet in plain language
