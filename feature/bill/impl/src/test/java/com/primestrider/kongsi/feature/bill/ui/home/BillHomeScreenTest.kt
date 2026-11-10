@@ -1,10 +1,13 @@
 package com.primestrider.kongsi.feature.bill.ui.home
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextReplacement
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.primestrider.kongsi.core.designsystem.theme.AppTheme
 import org.junit.Assert.assertEquals
@@ -29,6 +32,8 @@ class BillHomeScreenTest {
                     onOpenPaymentAccounts = { events += "accounts" },
                     onDeleteBill = { events += "delete $it" },
                     onOpenBill = { events += "open $it" },
+                    onRenameBill = { id, title -> events += "rename $id $title" },
+                    onDuplicateBill = { events += "duplicate $it" },
                 )
             }
         }
@@ -38,7 +43,15 @@ class BillHomeScreenTest {
             loaded = true,
             bills =
                 listOf(
-                    BillRow(id = 7, title = "Makan Malam Sushi", createdAt = 0, totalMinor = 152_460, peopleCount = 3),
+                    BillRow(
+                        id = 7,
+                        title = "Makan Malam Sushi",
+                        createdAt = 0,
+                        totalMinor = 152_460,
+                        peopleCount = 3,
+                        owingCount = 2,
+                        paidCount = 1,
+                    ),
                     BillRow(id = 8, title = "", createdAt = 0, totalMinor = 30_000, peopleCount = 1),
                 ),
         )
@@ -76,10 +89,43 @@ class BillHomeScreenTest {
     }
 
     @Test
-    fun delete_button_names_the_bill_and_reports_it() {
+    fun the_menu_of_a_bill_deletes_it() {
         show(loadedWithBills)
-        rule.onNodeWithContentDescription("Delete Makan Malam Sushi").performClick()
+        rule.onNodeWithContentDescription("More for Makan Malam Sushi").performClick()
+        rule.onNodeWithText("Delete").performClick()
         assertEquals(listOf("delete 7"), events)
+    }
+
+    @Test
+    fun the_menu_of_a_bill_duplicates_it() {
+        show(loadedWithBills)
+        rule.onNodeWithContentDescription("More for Makan Malam Sushi").performClick()
+        rule.onNodeWithText("Duplicate").performClick()
+        assertEquals(listOf("duplicate 7"), events)
+    }
+
+    @Test
+    fun renaming_starts_from_the_current_name() {
+        show(loadedWithBills)
+        rule.onNodeWithContentDescription("More for Makan Malam Sushi").performClick()
+        rule.onNodeWithText("Rename").performClick()
+
+        rule.onNode(hasSetTextAction()).assertTextContains("Makan Malam Sushi").performTextReplacement("Sushi Jumat")
+        rule.onNodeWithText("Save").performClick()
+
+        assertEquals(listOf("rename 7 Sushi Jumat"), events)
+    }
+
+    @Test
+    fun a_bill_says_how_many_have_paid() {
+        show(loadedWithBills)
+        rule.onNodeWithText("1 of 2 paid", substring = true).assertIsDisplayed()
+    }
+
+    @Test
+    fun a_bill_everyone_paid_says_so() {
+        show(loadedWithBills.copy(bills = listOf(loadedWithBills.bills.first().copy(paidCount = 2))))
+        rule.onNodeWithText("All paid", substring = true).assertIsDisplayed()
     }
 
     @Test

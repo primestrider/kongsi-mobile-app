@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Home -->
     <string name="bill_home_title">Kongsi</string>
     <string name="bill_home_new_bill">New bill</string>
@@ -11,7 +11,15 @@
     <string name="bill_home_step_send">Send every friend their total on WhatsApp</string>
     <string name="bill_home_history_title">Your bills</string>
     <string name="bill_home_untitled">Untitled bill</string>
-    <string name="bill_home_delete_cd">Delete %1$s</string>
+    <string name="bill_home_more_cd">More for %1$s</string>
+    <string name="bill_home_rename">Rename</string>
+    <string name="bill_home_duplicate">Duplicate</string>
+    <string name="bill_home_delete">Delete</string>
+    <string name="bill_home_rename_title">Rename bill</string>
+    <string name="bill_home_rename_label">Bill name</string>
+    <!-- "paid" / "lunas" does not change with the number, so no plural is needed. -->
+    <string name="bill_home_paid_count" tools:ignore="PluralsCandidate">%1$d of %2$d paid</string>
+    <string name="bill_home_all_paid">All paid</string>
     <string name="bill_home_deleted">%1$s deleted</string>
     <string name="bill_home_deleted_untitled">Bill deleted</string>
     <string name="bill_home_delete_failed">Could not delete. Try again.</string>
@@ -138,6 +146,8 @@
     <string name="bill_summary_accounts_support">Ticked accounts go in the WhatsApp message.</string>
     <string name="bill_summary_account_chip">%1$s · %2$s</string>
     <string name="bill_summary_send">Send</string>
+    <string name="bill_summary_paid">Paid</string>
+    <string name="bill_summary_paid_cd">%1$s has paid</string>
     <string name="bill_summary_send_cd">Send %1$s their part on WhatsApp</string>
     <string name="bill_summary_send_group">Send summary to group</string>
     <string name="bill_summary_add_number">Add number</string>

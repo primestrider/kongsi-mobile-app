@@ -46,6 +46,7 @@ class BillSummaryScreenTest {
             onContactsAllowed = {},
             onPickNumber = { events += "pick ${it.phone}" },
             onNumberPickerResult = {},
+            onTogglePaid = { events += "paid $it" },
             onDone = { events += "done" },
         )
 
@@ -180,6 +181,29 @@ class BillSummaryScreenTest {
         rule.onNodeWithText("Ani Lestari").assertIsDisplayed()
         rule.onNodeWithText("Use 085711112222").performClick()
         assertEquals(listOf("pick 6285711112222"), events)
+    }
+
+    @Test
+    fun someone_who_owes_can_be_marked_as_paid() {
+        show(
+            state.copy(
+                people =
+                    state.people.map {
+                        if (it.row ==
+                            ani
+                        ) {
+                            it.copy(row = ani.copy(person = ani.person.copy(paid = true)))
+                        } else {
+                            it
+                        }
+                    },
+            ),
+        )
+
+        rule.onNodeWithContentDescription("Budi has paid").assertIsOff().performClick()
+        rule.onNodeWithContentDescription("Ani has paid").performScrollTo().assertIsOn()
+        rule.onNodeWithContentDescription("Ricky has paid").assertDoesNotExist()
+        assertEquals(listOf("paid 2"), events)
     }
 
     @Test

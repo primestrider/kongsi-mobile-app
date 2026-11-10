@@ -13,7 +13,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -192,6 +194,50 @@ class BillRepositoryTest {
             // A screen that still holds the old choice saves without failing; the deleted account is left out.
             repository.save(bill.copy(paymentAccountIds = setOf(bca, bri)))
             assertEquals(setOf(bri), repository.get(bill.id)?.paymentAccountIds)
+        }
+
+    @Test
+    fun who_paid_is_saved_with_each_person() =
+        runTest {
+            val bill = dinner()
+            val (budi, ani) = bill.people
+
+            repository.save(bill.copy(people = listOf(budi.copy(paid = true), ani)))
+
+            assertEquals(listOf(true, false), repository.get(bill.id)?.people?.map { it.paid })
+        }
+
+    @Test
+    fun a_duplicate_has_the_same_people_items_and_shares_under_new_ids() =
+        runTest {
+            val original = dinner()
+            val bca = account("BCA")
+            repository.save(original.copy(paymentAccountIds = setOf(bca), people = original.people.map { it.copy(paid = true) }))
+
+            val copyId = requireNotNull(repository.duplicate(original.id))
+            val copy = requireNotNull(repository.get(copyId))
+
+            assertNotEquals(original.id, copyId)
+            assertEquals(original.title, copy.title)
+            assertEquals(original.people.map { it.name to it.phone }, copy.people.map { it.name to it.phone })
+            assertTrue(copy.people.none { it.paid })
+            assertTrue(copy.people.map { it.id }.none { it in original.people.map { p -> p.id } })
+            val names = { bill: Bill -> bill.people.associate { it.id to it.name } }
+            assertEquals(
+                original.items.map { item -> item.name to item.sharedBy.map(names(original)::getValue).toSet() },
+                copy.items.map { item -> item.name to item.sharedBy.map(names(copy)::getValue).toSet() },
+            )
+            assertEquals("Budi", copy.people.single { it.id == copy.payerPersonId }.name)
+            assertEquals(original.service, copy.service)
+            assertEquals(setOf(bca), copy.paymentAccountIds)
+            // The original is untouched.
+            assertEquals(listOf(true, true), repository.get(original.id)?.people?.map { it.paid })
+        }
+
+    @Test
+    fun duplicating_a_missing_bill_gives_nothing() =
+        runTest {
+            assertNull(repository.duplicate(404))
         }
 
     @Test

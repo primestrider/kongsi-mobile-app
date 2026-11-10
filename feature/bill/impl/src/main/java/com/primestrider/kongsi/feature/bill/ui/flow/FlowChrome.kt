@@ -249,6 +249,7 @@ fun CheckChip(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     leading: (@Composable () -> Unit)? = null,
 ) {
     val scheme = MaterialTheme.colorScheme
@@ -257,7 +258,7 @@ fun CheckChip(
         color = if (selected) scheme.secondaryContainer else scheme.surface,
         contentColor = if (selected) scheme.onSecondaryContainer else scheme.onSurface,
         border = BorderStroke(1.dp, if (selected) scheme.secondaryContainer else scheme.outlineVariant),
-        modifier = Modifier.toggleable(value = selected, role = Role.Checkbox, onValueChange = { onClick() }),
+        modifier = modifier.toggleable(value = selected, role = Role.Checkbox, onValueChange = { onClick() }),
     ) {
         Row(
             Modifier.heightIn(min = 48.dp).padding(start = if (leading == null) Spacing.s3 else Spacing.s1, end = Spacing.s3),

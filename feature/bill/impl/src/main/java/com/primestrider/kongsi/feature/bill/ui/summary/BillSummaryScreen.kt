@@ -87,6 +87,7 @@ data class BillSummaryActions(
     val onContactsAllowed: (Boolean) -> Unit,
     val onPickNumber: (NumberOption) -> Unit,
     val onNumberPickerResult: (Uri?) -> Unit,
+    val onTogglePaid: (Long) -> Unit,
     val onDone: () -> Unit,
 )
 
@@ -137,6 +138,7 @@ fun BillSummaryScreen(
                     onOpen = { actions.onOpenBreakdown(id) },
                     onSend = { actions.onSend(id) },
                     onAddNumber = { actions.onAddNumber(id) },
+                    onTogglePaid = { actions.onTogglePaid(id) },
                 )
             }
             item(key = "group") {
@@ -240,6 +242,7 @@ private fun PersonCard(
     onOpen: () -> Unit,
     onSend: () -> Unit,
     onAddNumber: () -> Unit,
+    onTogglePaid: () -> Unit,
 ) {
     val locale = currentLocale()
     val row = person.row
@@ -295,21 +298,26 @@ private fun PersonCard(
                 // Never truncated, also at large font sizes: the amount is the point of this screen.
                 Text(formatMoney(person.totalMinor, DEFAULT_CURRENCY, locale), style = MaterialTheme.typography.titleMedium)
             }
-            if (!row.isMe) SendActions(row, canSend, onSend, onAddNumber)
+            if (!row.isMe) SendActions(row, canSend, onSend, onAddNumber, onTogglePaid)
         }
     }
 }
 
-/** "Send" (to their chat, or to a chat picked in WhatsApp without a number) and "Add number" when they have none. */
+/**
+ * "Send" (to their chat, or to a chat picked in WhatsApp without a number), "Add number" when they have none, and
+ * "Paid" to tick once they have paid.
+ */
 @Composable
 private fun SendActions(
     row: PersonRow,
     canSend: Boolean,
     onSend: () -> Unit,
     onAddNumber: () -> Unit,
+    onTogglePaid: () -> Unit,
 ) {
     val sendDescription = stringResource(R.string.bill_summary_send_cd, row.label)
     val addDescription = stringResource(R.string.bill_summary_add_number_cd, row.label)
+    val paidDescription = stringResource(R.string.bill_summary_paid_cd, row.label)
     FlowRow(
         Modifier.padding(start = Spacing.s3, end = Spacing.s3, bottom = Spacing.s3),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s2),
@@ -330,6 +338,12 @@ private fun SendActions(
                 modifier = Modifier.semantics { contentDescription = addDescription },
             )
         }
+        CheckChip(
+            text = stringResource(R.string.bill_summary_paid),
+            selected = row.person.paid,
+            onClick = onTogglePaid,
+            modifier = Modifier.semantics { contentDescription = paidDescription },
+        )
     }
 }
 
@@ -506,7 +520,7 @@ private val previewState =
         selectedAccountIds = setOf(1),
     )
 
-private val previewActions = BillSummaryActions({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+private val previewActions = BillSummaryActions({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 
 @ThemePreviews
 @Composable

@@ -59,6 +59,9 @@ fun BillHome(onOpen: (Any) -> Unit) {
         onOpenPaymentAccounts = { onOpen(PaymentAccountsRoute) },
         onDeleteBill = viewModel::delete,
         onOpenBill = { id -> onOpen(BillEditRoute(id)) },
+        onRenameBill = viewModel::rename,
+        // The copy opens on Review, where its name and items can be changed for this time.
+        onDuplicateBill = { id -> viewModel.duplicate(id) { copyId -> onOpen(BillEditRoute(copyId)) } },
     )
 }
 
@@ -196,6 +199,7 @@ fun NavGraphBuilder.billDestinations(navController: NavController) {
                     onContactsAllowed = viewModel::onContactsAllowed,
                     onPickNumber = viewModel::pickNumber,
                     onNumberPickerResult = viewModel::onNumberPickerResult,
+                    onTogglePaid = viewModel::togglePaid,
                     onDone = {
                         viewModel.finish()
                         // Back to Home: the whole flow of this bill leaves the back stack.

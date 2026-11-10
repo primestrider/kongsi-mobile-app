@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Home -->
     <string name="bill_home_title">Kongsi</string>
     <string name="bill_home_new_bill">Bill baru</string>
@@ -11,7 +11,15 @@
     <string name="bill_home_step_send">Kirim total tiap teman lewat WhatsApp</string>
     <string name="bill_home_history_title">Bill kamu</string>
     <string name="bill_home_untitled">Bill tanpa judul</string>
-    <string name="bill_home_delete_cd">Hapus %1$s</string>
+    <string name="bill_home_more_cd">Lainnya untuk %1$s</string>
+    <string name="bill_home_rename">Ganti nama</string>
+    <string name="bill_home_duplicate">Duplikat</string>
+    <string name="bill_home_delete">Hapus</string>
+    <string name="bill_home_rename_title">Ganti nama tagihan</string>
+    <string name="bill_home_rename_label">Nama tagihan</string>
+    <!-- "paid" / "lunas" does not change with the number, so no plural is needed. -->
+    <string name="bill_home_paid_count" tools:ignore="PluralsCandidate">%1$d dari %2$d lunas</string>
+    <string name="bill_home_all_paid">Semua lunas</string>
     <string name="bill_home_deleted">%1$s dihapus</string>
     <string name="bill_home_deleted_untitled">Bill dihapus</string>
     <string name="bill_home_delete_failed">Gagal menghapus. Coba lagi.</string>
@@ -136,6 +144,8 @@
     <string name="bill_summary_accounts_support">Rekening yang dicentang masuk ke pesan WhatsApp.</string>
     <string name="bill_summary_account_chip">%1$s · %2$s</string>
     <string name="bill_summary_send">Kirim</string>
+    <string name="bill_summary_paid">Lunas</string>
+    <string name="bill_summary_paid_cd">%1$s sudah bayar</string>
     <string name="bill_summary_send_cd">Kirim bagian %1$s lewat WhatsApp</string>
     <string name="bill_summary_send_group">Kirim ringkasan ke grup</string>
     <string name="bill_summary_add_number">Tambah nomor</string>

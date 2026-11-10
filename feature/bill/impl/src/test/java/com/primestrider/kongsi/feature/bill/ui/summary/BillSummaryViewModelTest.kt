@@ -383,6 +383,27 @@ class BillSummaryViewModelTest {
         }
 
     @Test
+    fun marking_someone_as_paid_is_saved_and_can_be_undone() =
+        runTest(main) {
+            val viewModel = viewModel()
+            advanceUntilIdle()
+
+            viewModel.togglePaid(budi)
+            advanceUntilIdle()
+            assertEquals(true, requireNotNull(bills.get(example.id)).people.single { it.id == budi }.paid)
+            assertEquals(
+                true,
+                viewModel.state.value.people
+                    .single { it.row.person.id == budi }
+                    .row.person.paid,
+            )
+
+            viewModel.togglePaid(budi)
+            advanceUntilIdle()
+            assertEquals(false, requireNotNull(bills.get(example.id)).people.single { it.id == budi }.paid)
+        }
+
+    @Test
     fun shared_item_fractions_read_as_people_say_them() {
         assertEquals("½", fractionText(2))
         assertEquals("⅓", fractionText(3))

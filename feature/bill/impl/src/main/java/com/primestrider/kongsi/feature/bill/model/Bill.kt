@@ -1,10 +1,14 @@
 package com.primestrider.kongsi.feature.bill.model
 
-/** Someone on a bill. The payer is a person too; their share is shown but not requested. */
+/**
+ * Someone on a bill. The payer is a person too; their share is shown but not requested. [paid] is ticked by the payer
+ * on the Summary once this person has paid their part.
+ */
 data class Person(
     val id: Long,
     val name: String,
     val phone: String? = null,
+    val paid: Boolean = false,
 )
 
 /**

@@ -160,6 +160,16 @@ class BillSummaryViewModel
             }
         }
 
+        /** Marks [personId] as having paid their part, or not any more. */
+        fun togglePaid(personId: Long) {
+            viewModelScope.launch {
+                save { stored ->
+                    if (stored.people.none { it.id == personId }) return@save null
+                    stored.copy(people = stored.people.map { if (it.id == personId) it.copy(paid = !it.paid) else it })
+                }
+            }
+        }
+
         fun onOpenBreakdown(personId: Long) {
             savedStateHandle[OPEN_PERSON] = personId
         }

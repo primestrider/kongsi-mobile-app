@@ -61,6 +61,15 @@ class BillHomeViewModelTest {
             people = listOf(budi),
             items = listOf(BillItem(2, "Latte", 30_000, sharedBy = setOf(budi.id))),
         )
+    private val paidLunch =
+        Bill(
+            id = 3,
+            title = "Makan Siang",
+            createdAt = 300,
+            payerPersonId = budi.id,
+            people = listOf(budi, ani.copy(paid = true), Person(3, "Citra")),
+            items = listOf(BillItem(3, "Nasi", 60_000, sharedBy = setOf(budi.id, ani.id, 3))),
+        )
     private val bca = PaymentAccount(1, PaymentAccountType.BANK, "BCA", "1234567890", "Ricky", isDefault = true)
 
     @Before
@@ -71,6 +80,47 @@ class BillHomeViewModelTest {
         created.forEach { it.viewModelScope.cancel() }
         Dispatchers.resetMain()
     }
+
+    @Test
+    fun each_bill_says_how_many_of_those_who_owe_have_paid() =
+        runTest(main) {
+            val viewModel = viewModel(FakeBillRepository(listOf(paidLunch)))
+            advanceUntilIdle()
+
+            // Budi paid the bill, so only Ani and Citra owe; Ani has paid.
+            val row =
+                viewModel.state.value.bills
+                    .single()
+            assertEquals(2, row.owingCount)
+            assertEquals(1, row.paidCount)
+        }
+
+    @Test
+    fun renaming_saves_the_trimmed_name() =
+        runTest(main) {
+            val bills = FakeBillRepository(listOf(sushi))
+            val viewModel = viewModel(bills)
+
+            viewModel.rename(sushi.id, "  Sushi Jumat  ")
+            advanceUntilIdle()
+
+            assertEquals("Sushi Jumat", bills.get(sushi.id)?.title)
+        }
+
+    @Test
+    fun duplicating_makes_a_copy_and_hands_back_its_id() =
+        runTest(main) {
+            val bills = FakeBillRepository(listOf(sushi))
+            val viewModel = viewModel(bills)
+            val opened = mutableListOf<Long>()
+
+            viewModel.duplicate(sushi.id) { opened += it }
+            advanceUntilIdle()
+
+            val copy = requireNotNull(bills.get(opened.single()))
+            assertEquals(listOf("Budi", "Ani"), copy.people.map { it.name })
+            assertEquals(listOf("Roll"), copy.items.map { it.name })
+        }
 
     private fun TestScope.viewModel(
         bills: FakeBillRepository,
@@ -92,8 +142,8 @@ class BillHomeViewModelTest {
             assertTrue(state.loaded)
             assertEquals(
                 listOf(
-                    BillRow(id = 2, title = "Kopi", createdAt = 200, totalMinor = 30_000, peopleCount = 1),
-                    BillRow(id = 1, title = "Sushi", createdAt = 100, totalMinor = 110_000, peopleCount = 2),
+                    BillRow(id = 2, title = "Kopi", createdAt = 200, totalMinor = 30_000, peopleCount = 1, owingCount = 1),
+                    BillRow(id = 1, title = "Sushi", createdAt = 100, totalMinor = 110_000, peopleCount = 2, owingCount = 2),
                 ),
                 state.bills,
             )

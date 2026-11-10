@@ -23,13 +23,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/** One line of the bill history. [title] is empty for a bill the user did not name. */
+/**
+ * One line of the bill history. [title] is empty for a bill the user did not name. [owingCount] is everyone but the
+ * payer, [paidCount] those of them marked as paid.
+ */
 data class BillRow(
     val id: Long,
     val title: String,
     val createdAt: Long,
     val totalMinor: Long,
     val peopleCount: Int,
+    val owingCount: Int = 0,
+    val paidCount: Int = 0,
 )
 
 data class BillHomeUiState(
@@ -42,8 +47,9 @@ data class BillHomeUiState(
 )
 
 /**
- * Home: the bill history and the payment-account hint. Delete happens at once and offers Undo; the undo runs in
- * [appScope], so it still works after the user has left the screen while the message is showing.
+ * Home: the bill history and the payment-account hint. A bill can be renamed, duplicated (for a bill that repeats) or
+ * deleted. Delete happens at once and offers Undo; the undo runs in [appScope], so it still works after the user has
+ * left the screen while the message is showing.
  */
 @HiltViewModel
 class BillHomeViewModel
@@ -90,6 +96,37 @@ class BillHomeViewModel
             }
         }
 
+        /** Gives bill [id] the name [title] (trimmed; blank leaves it unnamed). */
+        fun rename(
+            id: Long,
+            title: String,
+        ) {
+            viewModelScope.launch {
+                write {
+                    val bill = bills.get(id) ?: return@write
+                    bills.save(bill.copy(title = title.trim()))
+                }
+            }
+        }
+
+        /** Saves a copy of bill [id] and hands its id to [onCopied], to open it. */
+        fun duplicate(
+            id: Long,
+            onCopied: (Long) -> Unit,
+        ) {
+            viewModelScope.launch { write { bills.duplicate(id)?.let(onCopied) } }
+        }
+
+        private suspend fun write(block: suspend () -> Unit) {
+            try {
+                block()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: SQLiteException) {
+                messenger.error(UiText.Resource(R.string.bill_save_failed))
+            }
+        }
+
         private suspend fun restore(bill: Bill) {
             try {
                 bills.save(bill)
@@ -106,4 +143,6 @@ private fun Bill.toRow() =
         createdAt = createdAt,
         totalMinor = SplitCalculator.split(this).totalMinor,
         peopleCount = people.size,
+        owingCount = people.count { it.id != payerPersonId },
+        paidCount = people.count { it.id != payerPersonId && it.paid },
     )

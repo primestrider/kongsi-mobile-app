@@ -26,6 +26,39 @@ interface BillRepository {
 
     /** Deletes the bill with its items and people and returns it (for undo), or null when it did not exist. */
     suspend fun delete(id: Long): Bill?
+
+    /**
+     * Saves a copy of bill [id], for a bill that repeats (the weekly lunch): the same name, people, items, who had what,
+     * charges and payment accounts, under new ids, with nobody marked as paid. Returns the copy's id, or null when the
+     * bill does not exist. Saved in two steps (people, then the items that refer to them by their new ids).
+     */
+    suspend fun duplicate(id: Long): Long? {
+        val original = get(id) ?: return null
+        val copyId =
+            save(
+                original.copy(
+                    id = 0,
+                    createdAt = 0,
+                    payerPersonId = null,
+                    people = original.people.map { it.copy(id = 0, paid = false) },
+                    items = emptyList(),
+                ),
+            )
+        val copy = get(copyId) ?: return copyId
+        // People keep their order, so the n-th person of the copy is the n-th of the original.
+        val newIds =
+            original.people
+                .map { it.id }
+                .zip(copy.people.map { it.id })
+                .toMap()
+        save(
+            copy.copy(
+                payerPersonId = original.payerPersonId?.let(newIds::get),
+                items = original.items.map { item -> item.copy(id = 0, sharedBy = item.sharedBy.mapNotNull(newIds::get).toSet()) },
+            ),
+        )
+        return copyId
+    }
 }
 
 /** [BillRepository] on Room; [clock] stamps `createdAt` and is replaceable in tests. */
@@ -64,7 +97,7 @@ fun BillWithParts.toBill(): Bill {
         createdAt = bill.createdAt,
         currency = bill.currency,
         payerPersonId = bill.payerPersonId,
-        people = people.sortedBy { it.position }.map { Person(id = it.id, name = it.name, phone = it.phone) },
+        people = people.sortedBy { it.position }.map { Person(id = it.id, name = it.name, phone = it.phone, paid = it.paid) },
         items =
             items.sortedBy { it.position }.map { item ->
                 BillItem(
@@ -104,7 +137,7 @@ fun Bill.toEntity(): BillEntity =
 private fun Person.toEntity(
     billId: Long,
     position: Int,
-) = PersonEntity(id = id, billId = billId, name = name, phone = phone, position = position)
+) = PersonEntity(id = id, billId = billId, name = name, phone = phone, position = position, paid = paid)
 
 private fun BillItem.toEntity(
     billId: Long,

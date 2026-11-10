@@ -19,6 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +30,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -36,8 +45,10 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.primestrider.kongsi.core.designsystem.component.AppBottomSheet
 import com.primestrider.kongsi.core.designsystem.component.AppButton
 import com.primestrider.kongsi.core.designsystem.component.AppScaffold
+import com.primestrider.kongsi.core.designsystem.component.AppTextField
 import com.primestrider.kongsi.core.designsystem.component.ButtonVariant
 import com.primestrider.kongsi.core.designsystem.theme.PreviewTheme
 import com.primestrider.kongsi.core.designsystem.theme.Radii
@@ -52,7 +63,7 @@ import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 /**
  * Kongsi's Home: the bill history, newest first ("New bill" lives in the navigation bar). While empty it explains the
  * three steps of a split. Until a payment account is saved, a card suggests adding one (accounts also live in
- * Profile). Deleting a bill happens at once; the ViewModel offers Undo.
+ * Profile). Each bill's menu renames, duplicates or deletes it; deleting happens at once and the ViewModel offers Undo.
  */
 @Composable
 fun BillHomeScreen(
@@ -60,7 +71,10 @@ fun BillHomeScreen(
     onOpenPaymentAccounts: () -> Unit,
     onDeleteBill: (Long) -> Unit,
     onOpenBill: (Long) -> Unit,
+    onRenameBill: (id: Long, title: String) -> Unit,
+    onDuplicateBill: (Long) -> Unit,
 ) {
+    var renaming by rememberSaveable { mutableStateOf<Long?>(null) }
     AppScaffold(title = stringResource(R.string.bill_home_title)) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding),
@@ -85,6 +99,8 @@ fun BillHomeScreen(
                         BillCard(
                             bill,
                             onOpen = { onOpenBill(bill.id) },
+                            onRename = { renaming = bill.id },
+                            onDuplicate = { onDuplicateBill(bill.id) },
                             onDelete = { onDeleteBill(bill.id) },
                             modifier = Modifier.animateItem(),
                         )
@@ -93,12 +109,55 @@ fun BillHomeScreen(
             }
         }
     }
+
+    state.bills.firstOrNull { it.id == renaming }?.let { bill ->
+        RenameSheet(
+            current = bill.title,
+            onSave = { title ->
+                onRenameBill(bill.id, title)
+                renaming = null
+            },
+            onDismiss = { renaming = null },
+        )
+    }
 }
+
+/** A new name for a bill, starting from the current one. */
+@Composable
+private fun RenameSheet(
+    current: String,
+    onSave: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var title by rememberSaveable { mutableStateOf(current) }
+    AppBottomSheet(onDismiss = onDismiss, title = stringResource(R.string.bill_home_rename_title)) {
+        AppTextField(
+            value = title,
+            onValueChange = { title = it.take(MAX_TITLE_LENGTH) },
+            label = stringResource(R.string.bill_home_rename_label),
+        )
+        AppButton(text = stringResource(R.string.bill_account_save), onClick = { onSave(title) }, fullWidth = true)
+    }
+}
+
+/** Long enough for any bill name, short enough to stay readable in the history. */
+private const val MAX_TITLE_LENGTH = 60
+
+/** "1 of 2 paid", or "All paid" once everyone who owes has paid; nothing for a bill no one owes on. */
+@Composable
+private fun paidText(bill: BillRow): String? =
+    when {
+        bill.owingCount == 0 -> null
+        bill.paidCount >= bill.owingCount -> stringResource(R.string.bill_home_all_paid)
+        else -> stringResource(R.string.bill_home_paid_count, bill.paidCount, bill.owingCount)
+    }
 
 @Composable
 private fun BillCard(
     bill: BillRow,
     onOpen: () -> Unit,
+    onRename: () -> Unit,
+    onDuplicate: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -120,8 +179,11 @@ private fun BillCard(
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Spacing.s0_5)) {
                 Text(title, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
-                    formatDate(bill.createdAt, locale) + " · " +
+                    listOfNotNull(
+                        formatDate(bill.createdAt, locale),
                         pluralStringResource(R.plurals.bill_home_people, bill.peopleCount, bill.peopleCount),
+                        paidText(bill),
+                    ).joinToString(" · "),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -130,11 +192,41 @@ private fun BillCard(
                 formatMoney(bill.totalMinor, DEFAULT_CURRENCY, locale),
                 style = MaterialTheme.typography.titleMedium,
             )
-            IconButton(onClick = onDelete) {
-                Icon(
-                    Icons.Filled.Delete,
-                    contentDescription = stringResource(R.string.bill_home_delete_cd, title),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            BillMenu(title, onRename, onDuplicate, onDelete)
+        }
+    }
+}
+
+/** A bill's "⋮" menu: Rename, Duplicate, Delete. */
+@Composable
+private fun BillMenu(
+    title: String,
+    onRename: () -> Unit,
+    onDuplicate: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    var open by remember { mutableStateOf(false) }
+    Box {
+        IconButton(onClick = { open = true }) {
+            Icon(
+                Icons.Filled.MoreVert,
+                contentDescription = stringResource(R.string.bill_home_more_cd, title),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+            listOf(
+                Triple(R.string.bill_home_rename, Icons.Filled.Edit, onRename),
+                Triple(R.string.bill_home_duplicate, Icons.Filled.Add, onDuplicate),
+                Triple(R.string.bill_home_delete, Icons.Filled.Delete, onDelete),
+            ).forEach { (label, icon, action) ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(label)) },
+                    leadingIcon = { Icon(icon, contentDescription = null) },
+                    onClick = {
+                        open = false
+                        action()
+                    },
                 )
             }
         }
@@ -262,6 +354,8 @@ private fun BillHomeScreenPreview() {
                 ),
             onOpenPaymentAccounts = {},
             onDeleteBill = {},
+            onRenameBill = { _, _ -> },
+            onDuplicateBill = {},
             onOpenBill = {},
         )
     }
@@ -272,6 +366,6 @@ private fun BillHomeScreenPreview() {
 private fun BillHomeEmptyPreview() {
     PreviewTheme {
         BillHomeScreen(state = BillHomeUiState(loaded = true, showAccountHint = true), onOpenPaymentAccounts = {
-        }, onDeleteBill = {}, onOpenBill = {})
+        }, onDeleteBill = {}, onOpenBill = {}, onRenameBill = { _, _ -> }, onDuplicateBill = {})
     }
 }

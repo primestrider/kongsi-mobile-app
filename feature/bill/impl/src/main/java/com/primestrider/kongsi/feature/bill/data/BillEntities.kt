@@ -70,6 +70,8 @@ data class PersonEntity(
     val name: String,
     val phone: String?,
     val position: Int,
+    /** Whether this person has paid their part. */
+    @ColumnInfo(defaultValue = "0") val paid: Boolean,
 )
 
 /**

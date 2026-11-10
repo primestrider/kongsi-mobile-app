@@ -326,7 +326,7 @@ feature/bill/impl
 
 ### Phase 4: Polish
 
-- [ ] **21.** Rename/duplicate a bill, "mark as paid" per person, release build (`release-build` skill).
+- [ ] **21.** Rename/duplicate a bill, "mark as paid" per person, release build (`release-build` skill). (Done: rename and duplicate from each bill's menu on Home, the copy opening on Review; "Paid" per person on Summary, "1 of 2 paid" on Home, kongsi.db v5. Still open: the release build.)
 - [ ] **22. Usability test.** Run the test described under UX Principles on a release build, write findings to
       `docs/ux/2026-usability-findings.md`, fix every hesitation point, repeat with 2 new testers.
 
