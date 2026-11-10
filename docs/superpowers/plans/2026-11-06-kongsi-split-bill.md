@@ -306,7 +306,7 @@ feature/bill/impl
       for bank and e-wallet numbers, default selection, deleting an account removes it from bill selections.
 - [x] **13. Account selection on Summary.** (Stored in `bill_payment_accounts` plus `bills.accountsChosen`, kongsi.db v4; defaults are applied once, as soon as an account exists.) Chips for saved accounts, defaults pre-selected for a new bill, choice
       saved with the bill, "Add account" when none exist. Tests: defaults applied once, choice survives reopening.
-- [ ] **14. BillMessageBuilder.** Pure, locale-aware (en/id), currency formatting from `core.util`. Tests: golden
+- [x] **14. BillMessageBuilder.** (`share/BillMessageBuilder.forPerson`; the breakdown moved to `model/Breakdown.kt` so Summary and the message share it. The group summary comes with Task 16.) Pure, locale-aware (en/id), currency formatting from `core.util`. Tests: golden
       strings for en and id, with zero, one and several accounts (bank and e-wallet), number on its own line,
       shared-item fraction text.
 - [ ] **15. WhatsAppSharer.** `wa.me` link from `IndonesianPhone.international` (Task 7), `ACTION_SEND` with WhatsApp →

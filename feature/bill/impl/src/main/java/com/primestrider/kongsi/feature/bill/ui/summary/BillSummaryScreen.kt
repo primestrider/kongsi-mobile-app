@@ -43,10 +43,12 @@ import com.primestrider.kongsi.core.util.currentLocale
 import com.primestrider.kongsi.core.util.formatMoney
 import com.primestrider.kongsi.core.util.formatPercent
 import com.primestrider.kongsi.feature.bill.impl.R
+import com.primestrider.kongsi.feature.bill.model.BreakdownLine
 import com.primestrider.kongsi.feature.bill.model.DEFAULT_CURRENCY
 import com.primestrider.kongsi.feature.bill.model.PaymentAccount
 import com.primestrider.kongsi.feature.bill.model.PaymentAccountType
 import com.primestrider.kongsi.feature.bill.model.Person
+import com.primestrider.kongsi.feature.bill.model.fractionText
 import com.primestrider.kongsi.feature.bill.ui.flow.CheckChip
 import com.primestrider.kongsi.feature.bill.ui.flow.FlowStep
 import com.primestrider.kongsi.feature.bill.ui.flow.PersonAvatar
@@ -114,7 +116,7 @@ fun BillSummaryScreen(
 
     state.people.firstOrNull { it.row.person.id == state.openPersonId }?.let { person ->
         AppBottomSheet(onDismiss = actions.onCloseBreakdown, title = stringResource(R.string.bill_breakdown_title)) {
-            Breakdown(person)
+            Breakdown(person, state.people.associate { it.row.person.id to it.row })
         }
     }
 }
@@ -244,7 +246,10 @@ private fun Accounts(
 
 /** "How was this calculated?": the person and their total, then one line per item and charge. */
 @Composable
-private fun Breakdown(person: SummaryPerson) {
+private fun Breakdown(
+    person: SummaryPerson,
+    rows: Map<Long, PersonRow>,
+) {
     val locale = currentLocale()
     val money = { minor: Long -> formatMoney(minor, DEFAULT_CURRENCY, locale) }
     Row(
@@ -266,7 +271,7 @@ private fun Breakdown(person: SummaryPerson) {
             Modifier.fillMaxWidth().semantics(mergeDescendants = true) {},
             horizontalArrangement = Arrangement.spacedBy(Spacing.s3),
         ) {
-            Text(lineText(line, locale), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+            Text(lineText(line, locale, rows), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
             Text(
                 when (line) {
                     is BreakdownLine.Discount -> "−" + money(line.amountMinor)
@@ -283,6 +288,7 @@ private fun Breakdown(person: SummaryPerson) {
 private fun lineText(
     line: BreakdownLine,
     locale: Locale,
+    rows: Map<Long, PersonRow>,
 ): String {
     val rate = { bps: Int -> formatPercent(bps / BPS_PER_UNIT, locale) }
     return when (line) {
@@ -294,7 +300,7 @@ private fun lineText(
                 stringResource(
                     R.string.bill_breakdown_shared,
                     name,
-                    line.sharedWith.map { it.otherName() }.joinToString(", "),
+                    line.sharedWith.mapNotNull { rows[it]?.otherName() }.joinToString(", "),
                     fractionText(line.sharers),
                 )
             }
@@ -323,11 +329,6 @@ private fun lineText(
 
 private const val BPS_PER_UNIT = 10_000.0
 
-/** One person's part of an item shared by [sharers]: "½", "⅓", … "⅒", then "1/11". */
-internal fun fractionText(sharers: Int): String = VULGAR_FRACTIONS.getOrNull(sharers - 2) ?: "1/$sharers"
-
-private val VULGAR_FRACTIONS = listOf("½", "⅓", "¼", "⅕", "⅙", "⅐", "⅛", "⅑", "⅒")
-
 private val previewPeople =
     listOf(
         PersonRow(Person(1, "Ricky"), 0, "Ricky", isMe = true),
@@ -347,7 +348,7 @@ private val previewState =
                     41_580,
                     listOf(
                         BreakdownLine.Item("Nasi Goreng", 1, emptyList(), 1, 30_000),
-                        BreakdownLine.Item("Ocha", 1, listOf(previewPeople[2]), 2, 6_000),
+                        BreakdownLine.Item("Ocha", 1, listOf(3), 2, 6_000),
                         BreakdownLine.Service(500, 1_800),
                         BreakdownLine.Tax(1_000, onService = true, 3_780),
                     ),
@@ -357,7 +358,7 @@ private val previewState =
                     110_880,
                     listOf(
                         BreakdownLine.Item("Steak", 1, emptyList(), 1, 90_000),
-                        BreakdownLine.Item("Ocha", 1, listOf(previewPeople[1]), 2, 6_000),
+                        BreakdownLine.Item("Ocha", 1, listOf(2), 2, 6_000),
                         BreakdownLine.Service(500, 4_800),
                         BreakdownLine.Tax(1_000, onService = true, 10_080),
                     ),

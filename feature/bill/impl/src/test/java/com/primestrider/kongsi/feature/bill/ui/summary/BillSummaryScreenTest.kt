@@ -12,6 +12,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.primestrider.kongsi.core.designsystem.theme.AppTheme
+import com.primestrider.kongsi.feature.bill.model.BreakdownLine
 import com.primestrider.kongsi.feature.bill.model.PaymentAccount
 import com.primestrider.kongsi.feature.bill.model.PaymentAccountType
 import com.primestrider.kongsi.feature.bill.model.Person
@@ -48,7 +49,7 @@ class BillSummaryScreenTest {
     private val budiLines =
         listOf(
             BreakdownLine.Item("Nasi Goreng", 1, emptyList(), 1, 30_000),
-            BreakdownLine.Item("Ocha", 1, listOf(ani), 2, 6_000),
+            BreakdownLine.Item("Ocha", 1, listOf(3), 2, 6_000),
             BreakdownLine.Service(500, 1_800),
             BreakdownLine.Tax(1_000, onService = true, 3_780),
         )

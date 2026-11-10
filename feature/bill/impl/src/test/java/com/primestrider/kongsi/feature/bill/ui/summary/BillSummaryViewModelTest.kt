@@ -7,14 +7,16 @@ import com.primestrider.kongsi.core.designsystem.component.Messenger
 import com.primestrider.kongsi.feature.bill.model.Bill
 import com.primestrider.kongsi.feature.bill.model.BillCharge
 import com.primestrider.kongsi.feature.bill.model.BillItem
+import com.primestrider.kongsi.feature.bill.model.BreakdownLine
 import com.primestrider.kongsi.feature.bill.model.PaymentAccount
 import com.primestrider.kongsi.feature.bill.model.PaymentAccountType
 import com.primestrider.kongsi.feature.bill.model.Person
 import com.primestrider.kongsi.feature.bill.model.SplitCalculator
+import com.primestrider.kongsi.feature.bill.model.breakdownOf
+import com.primestrider.kongsi.feature.bill.model.fractionText
 import com.primestrider.kongsi.feature.bill.ui.FakeBillRepository
 import com.primestrider.kongsi.feature.bill.ui.FakeFrequentPeopleRepository
 import com.primestrider.kongsi.feature.bill.ui.FakePaymentAccountRepository
-import com.primestrider.kongsi.feature.bill.ui.people.rowsOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -115,7 +117,7 @@ class BillSummaryViewModelTest {
             val lines = budiShare.lines
             assertEquals(BreakdownLine.Item("Nasi Goreng", 1, emptyList(), 1, 30_000), lines[0])
             val ocha = lines[1] as BreakdownLine.Item
-            assertEquals(listOf("Ani"), ocha.sharedWith.map { it.label })
+            assertEquals(listOf(ani), ocha.sharedWith)
             assertEquals(2, ocha.sharers)
             assertEquals(6_000, ocha.amountMinor)
             assertEquals(BreakdownLine.Service(500, 1_800), lines[2])
@@ -145,7 +147,7 @@ class BillSummaryViewModelTest {
         // Each part is Rp5.000,5 and shows as Rp5.001: three such items miss Budi's total by Rp1, five by Rp2.
         fun linesFor(count: Long): List<BreakdownLine> {
             val bill = Bill(people = people, items = (1L..count).map { BillItem(it, "Item $it", 10_001, setOf(budi, ani)) })
-            return breakdownOf(bill, SplitCalculator.split(bill).shares.first(), rowsOf(bill))
+            return breakdownOf(bill, SplitCalculator.split(bill).shares.first())
         }
 
         assertTrue(linesFor(3).none { it is BreakdownLine.Rounding })
