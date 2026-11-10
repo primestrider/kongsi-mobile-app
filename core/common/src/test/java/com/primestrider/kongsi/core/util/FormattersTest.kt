@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Locale
+import java.util.TimeZone
 
 class FormattersTest {
     @Test
@@ -30,6 +31,28 @@ class FormattersTest {
 
     @Test
     fun iso_date_is_shown_in_the_locale() = assertEquals("May 23, 2024", formatIsoDate("2024-05-23T08:56:21.618Z", Locale.US))
+
+    @Test
+    fun epoch_millis_date_is_shown_in_the_locale_and_time_zone() {
+        // 2026-11-06T17:30:00Z is already Nov 7 in Jakarta (UTC+7).
+        val millis = 1_793_986_200_000L
+        assertEquals("Nov 7, 2026", formatDate(millis, Locale.US, TimeZone.getTimeZone("Asia/Jakarta")))
+        assertEquals("Nov 6, 2026", formatDate(millis, Locale.US, TimeZone.getTimeZone("UTC")))
+    }
+
+    @Test
+    fun rupiah_from_minor_units_has_no_decimals_and_the_rp_symbol() {
+        assertEquals("Rp152.460", formatMoney(152_460, "IDR", Locale.forLanguageTag("id-ID")))
+        assertEquals("Rp152,460", formatMoney(152_460, "IDR", Locale.US))
+        assertEquals("Rp0", formatMoney(0, "IDR", Locale.forLanguageTag("id-ID")))
+    }
+
+    @Test
+    fun money_with_decimals_moves_the_point_exactly() {
+        assertEquals("$1,234.05", formatMoney(123_405, "USD", Locale.US))
+        // Far beyond what a Double holds exactly.
+        assertEquals("Rp9.007.199.254.740.993", formatMoney(9_007_199_254_740_993, "IDR", Locale.forLanguageTag("id-ID")))
+    }
 
     @Test
     fun unparseable_date_is_shown_as_is() = assertEquals("soon", formatIsoDate("soon", Locale.US))

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- What ReceiptFileProvider (authority ${applicationId}.receipts) may hand out: receipt photos the camera app writes
+     to cache/receipts/. They are deleted once read. -->
+<paths>
+    <cache-path name="receipts" path="receipts/" />
+</paths>

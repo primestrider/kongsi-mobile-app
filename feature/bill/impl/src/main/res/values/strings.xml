@@ -1,18 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Home -->
     <string name="bill_home_title">Kongsi</string>
     <string name="bill_home_new_bill">New bill</string>
-    <string name="bill_home_new_bill_soon">Creating a bill is coming soon</string>
     <string name="bill_home_empty_title">No bills yet</string>
     <string name="bill_home_empty_body">Bills you split will show up here.</string>
     <string name="bill_home_steps_title">How it works</string>
     <string name="bill_home_step_capture">Snap the receipt, or type the items in</string>
     <string name="bill_home_step_assign">Tick who had what. Tax and service follow each share</string>
     <string name="bill_home_step_send">Send every friend their total on WhatsApp</string>
+    <string name="bill_home_history_title">Your bills</string>
+    <string name="bill_home_untitled">Untitled bill</string>
+    <string name="bill_home_more_cd">More for %1$s</string>
+    <string name="bill_home_rename">Rename</string>
+    <string name="bill_home_duplicate">Duplicate</string>
+    <string name="bill_home_delete">Delete</string>
+    <string name="bill_home_rename_title">Rename bill</string>
+    <string name="bill_home_rename_label">Bill name</string>
+    <!-- "paid" / "lunas" does not change with the number, so no plural is needed. -->
+    <string name="bill_home_paid_count" tools:ignore="PluralsCandidate">%1$d of %2$d paid</string>
+    <string name="bill_home_all_paid">All paid</string>
+    <string name="bill_home_deleted">%1$s deleted</string>
+    <string name="bill_home_deleted_untitled">Bill deleted</string>
+    <string name="bill_home_delete_failed">Could not delete. Try again.</string>
+    <plurals name="bill_home_people">
+        <item quantity="one">%d person</item>
+        <item quantity="other">%d people</item>
+    </plurals>
     <string name="bill_home_account_hint_title">Where should friends pay you?</string>
     <string name="bill_home_account_hint_body">Add your bank account or e-wallet and it is included in every bill you send.</string>
     <string name="bill_home_account_hint_action">Add account</string>
+
+    <!-- Bill flow -->
+    <string name="bill_step_items">Items</string>
+    <string name="bill_step_people">People</string>
+    <string name="bill_step_assign">Assign</string>
+    <string name="bill_step_summary">Summary</string>
+    <string name="bill_total_matches_receipt">Matches the receipt</string>
+    <string name="bill_total_receipt_says">Receipt says %1$s</string>
+    <string name="bill_total_assigned">%1$s of %2$s assigned</string>
+    <string name="bill_total_shares_add_up">Everyone\'s share adds up to %1$s</string>
+    <string name="bill_money_invalid">Type an amount like 45.000 or 45rb</string>
+
+    <!-- Review items -->
+    <string name="bill_review_title_new">New bill</string>
+    <string name="bill_review_name">Bill name</string>
+    <string name="bill_review_name_hint">e.g. Sushi dinner</string>
+    <string name="bill_review_items">Items</string>
+    <string name="bill_review_items_empty">Add what is on the receipt, one line at a time.</string>
+    <string name="bill_review_add_item">Add item</string>
+    <string name="bill_review_charges">Service, tax and discount</string>
+    <string name="bill_review_service">Service</string>
+    <string name="bill_review_tax">Tax</string>
+    <string name="bill_review_discount">Discount</string>
+    <string name="bill_review_rate">%</string>
+    <string name="bill_review_receipt_total">Total on the receipt</string>
+    <string name="bill_review_receipt_total_support">Optional. We check that everything adds up to it.</string>
+    <string name="bill_review_next">Next</string>
+    <string name="bill_item_tag_no_tax">no tax</string>
+    <string name="bill_item_tag_no_service">no service</string>
+    <string name="bill_item_add_title">Add item</string>
+    <string name="bill_item_edit_title">Edit item</string>
+    <string name="bill_item_name">Item name</string>
+    <string name="bill_item_name_error">Type what the item is</string>
+    <string name="bill_item_quantity">Quantity</string>
+    <string name="bill_item_quantity_error">At least 1</string>
+    <string name="bill_item_price">Price for all of them</string>
+    <string name="bill_item_price_error">Type the price on the receipt</string>
+    <string name="bill_item_serviceable">Service is charged on it</string>
+    <string name="bill_item_taxable">Tax is charged on it</string>
+    <string name="bill_item_save">Save</string>
+    <string name="bill_item_delete">Delete item</string>
+    <string name="bill_item_deleted">%1$s deleted</string>
+    <string name="bill_save_failed">Could not save. Try again.</string>
+    <string name="bill_warning_title_total">The total does not match</string>
+    <string name="bill_warning_title_tax">Check the tax</string>
+    <string name="bill_warning_title_service">Check the service charge</string>
+    <string name="bill_warning_title_discount">Check the discount</string>
+    <string name="bill_item_quantity_name">%1$d× %2$s</string>
+    <string name="bill_warning_receipt_total">Items and charges come to %1$s, but the receipt says %2$s. Check the prices.</string>
+    <string name="bill_warning_rate_tax">Tax on the receipt is %1$s, but %2$s of the items is %3$s. Is an item tax-free?</string>
+    <string name="bill_warning_rate_service">Service on the receipt is %1$s, but %2$s of the items is %3$s. Is an item without service?</string>
+    <string name="bill_warning_no_taxable">There is tax, but every item is tax-free. Turn tax on for the items it is charged on.</string>
+    <string name="bill_warning_no_serviceable">There is a service charge, but no item has service. Turn it on for the items it is charged on.</string>
+    <string name="bill_warning_no_discountable">There is a discount, but no item yet to take it from.</string>
+
+    <!-- Capture -->
+    <string name="bill_capture_title">New bill</string>
+    <string name="bill_capture_take_photo">Take a photo</string>
+    <string name="bill_capture_take_photo_body">Kongsi reads the items, you check them.</string>
+    <string name="bill_capture_choose_photo">Choose from gallery</string>
+    <string name="bill_capture_choose_photo_body">A receipt photo you already have.</string>
+    <string name="bill_capture_tips">For a good read, lay the receipt flat in good light, with all of it in the photo.</string>
+    <string name="bill_capture_manual">Type it in myself</string>
+    <string name="bill_capture_no_camera">No camera app found. Choose a photo or type the bill in.</string>
+    <string name="bill_capture_no_gallery">No photo picker found. Take a photo or type the bill in.</string>
+    <string name="bill_capture_reading">Reading the receipt…</string>
+    <string name="bill_capture_reading_body">This takes a few seconds, right on your phone.</string>
+    <string name="bill_capture_failed_unreadable">Couldn\'t read the receipt</string>
+    <string name="bill_capture_failed_nothing">No items found on the photo</string>
+    <string name="bill_capture_failed_action">Try a sharper photo in good light, or type the items in.</string>
+    <!-- People -->
+    <string name="bill_people_title">Who was there?</string>
+    <string name="bill_people_search">Search contacts or type a name</string>
+    <string name="bill_people_contacts_reason">Kongsi reads your contacts only to find the WhatsApp numbers of your friends while you search.</string>
+    <string name="bill_people_contacts_blocked">Contacts access is off. Choose from contacts below, or turn it on in Settings.</string>
+    <string name="bill_people_open_settings">Settings</string>
+    <string name="bill_people_pick_contact">Choose from contacts</string>
+    <string name="bill_people_add_typed">Add \"%1$s\" without a number</string>
+    <string name="bill_people_frequent">From earlier bills</string>
+    <string name="bill_people_on_bill">On this bill</string>
+    <string name="bill_people_me">You</string>
+    <string name="bill_people_me_named">You (%1$s)</string>
+    <string name="bill_people_me_pays">Paid the bill</string>
+    <string name="bill_people_no_number">No number</string>
+    <string name="bill_people_whatsapp">WhatsApp</string>
+    <string name="bill_people_remove_cd">Remove %1$s</string>
+    <string name="bill_people_already_added">%1$s is already on this bill</string>
+    <string name="bill_people_empty">Add the friends you are splitting with.</string>
+
+    <!-- Assign -->
+    <string name="bill_assign_title">Who had what?</string>
+    <string name="bill_assign_by_item">By item</string>
+    <string name="bill_assign_by_person">By person</string>
+    <string name="bill_assign_everyone">Everyone</string>
+    <string name="bill_assign_split_equally">Split whole bill equally</string>
+    <string name="bill_assign_split_done">Every item is now shared by everyone</string>
+    <plurals name="bill_assign_unassigned">
+        <item quantity="one">%d item not assigned yet</item>
+        <item quantity="other">%d items not assigned yet</item>
+    </plurals>
+    <string name="bill_assign_unassigned_action">Tap to assign</string>
+    <string name="bill_assign_person_question">%1$s, what did you have?</string>
+    <string name="bill_assign_me_question">What did you have?</string>
+    <string name="bill_assign_shared_with">With %1$s</string>
+    <string name="bill_assign_nobody">Nobody yet</string>
+    <!-- Summary -->
+    <string name="bill_summary_title">Who pays what</string>
+    <string name="bill_summary_hint">Tap a name to see how their share was worked out.</string>
+    <string name="bill_summary_nothing">Had nothing</string>
+    <string name="bill_summary_owes_cd">%1$s owes %2$s</string>
+    <string name="bill_summary_my_share_cd">You paid the bill. Your share is %1$s</string>
+    <string name="bill_summary_done">Done</string>
+    <string name="bill_summary_accounts">Friends transfer to</string>
+    <string name="bill_summary_accounts_support">Ticked accounts go in the WhatsApp message.</string>
+    <string name="bill_summary_account_chip">%1$s · %2$s</string>
+    <string name="bill_summary_send">Send</string>
+    <string name="bill_summary_paid">Paid</string>
+    <string name="bill_summary_paid_cd">%1$s has paid</string>
+    <string name="bill_summary_send_cd">Send %1$s their part on WhatsApp</string>
+    <string name="bill_summary_send_group">Send summary to group</string>
+    <string name="bill_summary_add_number">Add number</string>
+    <string name="bill_summary_add_number_cd">Add %1$s\'s number</string>
+    <string name="bill_summary_number_title">%1$s\'s number</string>
+    <string name="bill_summary_number_search">Search contacts or type a number</string>
+    <string name="bill_summary_use_number">Use %1$s</string>
+    <string name="bill_summary_number_taken">%1$s already has this number</string>
+    <string name="bill_money_spoken">%1$s rupiah</string>
+    <string name="bill_breakdown_title">How was this calculated?</string>
+    <string name="bill_breakdown_shared">%1$s (shared with %2$s, %3$s)</string>
+    <string name="bill_breakdown_service_rate">Service %1$s of your order</string>
+    <string name="bill_breakdown_service">Service on your order</string>
+    <string name="bill_breakdown_tax_rate_service">Tax %1$s of your order + service</string>
+    <string name="bill_breakdown_tax_rate">Tax %1$s of your order</string>
+    <string name="bill_breakdown_tax_service">Tax on your order + service</string>
+    <string name="bill_breakdown_tax">Tax on your order</string>
+    <string name="bill_breakdown_discount">Discount, by what you ordered</string>
+    <string name="bill_breakdown_rounding_added">%1$s rounding added</string>
+    <string name="bill_breakdown_rounding_taken">%1$s rounding taken off</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Bank accounts &amp; e-wallets</string>

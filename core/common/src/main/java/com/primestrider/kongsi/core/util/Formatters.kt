@@ -3,11 +3,14 @@ package com.primestrider.kongsi.core.util
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalConfiguration
+import java.math.BigDecimal
 import java.text.DateFormat
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Currency
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.abs
@@ -29,6 +32,34 @@ fun formatCurrency(
                 maximumFractionDigits = it
             }
         }.format(amount)
+
+/**
+ * [amountMinor] minor units of [currencyCode] as money in [locale], exactly (no floating point). Rupiah has no
+ * decimals in practice and always shows as "Rp" (Java's defaults are two decimals and "IDR" outside Indonesia).
+ */
+fun formatMoney(
+    amountMinor: Long,
+    currencyCode: String,
+    locale: Locale = Locale.getDefault(),
+): String {
+    val currency = Currency.getInstance(currencyCode)
+    val digits = if (currencyCode == RUPIAH) 0 else currency.defaultFractionDigits.coerceAtLeast(0)
+    val format =
+        (NumberFormat.getCurrencyInstance(locale) as DecimalFormat).apply {
+            this.currency = currency
+            minimumFractionDigits = digits
+            maximumFractionDigits = digits
+            if (currencyCode == RUPIAH) {
+                decimalFormatSymbols = decimalFormatSymbols.apply { currencySymbol = "Rp" }
+                // Some locales put a space between symbol and amount; Indonesians write "Rp45.000".
+                positivePrefix = positivePrefix.replace("Rp ", "Rp").replace("Rp ", "Rp")
+                negativePrefix = negativePrefix.replace("Rp ", "Rp").replace("Rp ", "Rp")
+            }
+        }
+    return format.format(BigDecimal.valueOf(amountMinor, digits))
+}
+
+private const val RUPIAH = "IDR"
 
 /** [fraction] as a percentage (0.125 → "12.5%"): no decimals for whole percentages, otherwise one. */
 fun formatPercent(
@@ -61,6 +92,13 @@ fun formatIsoDate(
         } ?: return iso
     return DateFormat.getDateInstance(DateFormat.MEDIUM, locale).apply { timeZone = utc }.format(date)
 }
+
+/** The calendar date of [epochMillis] in [timeZone] (the device's by default), written the way [locale] writes dates. */
+fun formatDate(
+    epochMillis: Long,
+    locale: Locale = Locale.getDefault(),
+    timeZone: TimeZone = TimeZone.getDefault(),
+): String = DateFormat.getDateInstance(DateFormat.MEDIUM, locale).apply { this.timeZone = timeZone }.format(Date(epochMillis))
 
 /** The locale of the current app language; pass it to the formatters from composables. */
 @Composable

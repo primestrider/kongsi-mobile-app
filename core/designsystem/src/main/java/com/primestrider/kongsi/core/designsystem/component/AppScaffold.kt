@@ -50,7 +50,7 @@ fun AppTopBar(
     )
 }
 
-/** Screen frame used by every screen: [AppTopBar] plus Material 3 slots for snackbars and a FAB. */
+/** Screen frame used by every screen: [AppTopBar] plus Material 3 slots for snackbars, a FAB and a bottom bar. */
 @Composable
 fun AppScaffold(
     title: String,
@@ -59,6 +59,7 @@ fun AppScaffold(
     actions: @Composable RowScope.() -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
+    bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -66,6 +67,7 @@ fun AppScaffold(
         topBar = { AppTopBar(title = title, onBack = onBack, actions = actions) },
         snackbarHost = snackbarHost,
         floatingActionButton = floatingActionButton,
+        bottomBar = bottomBar,
         content = content,
     )
 }

@@ -1,0 +1,12 @@
+{
+  "items": [
+    { "name": "Es Kopi Susu Aren", "quantity": 2, "totalMinor": 44000 },
+    { "name": "Croissant Butter", "quantity": 1, "totalMinor": 28000 },
+    { "name": "Americano Hot", "quantity": 1, "totalMinor": 25000 }
+  ],
+  "subtotalMinor": 97000,
+  "service": null,
+  "tax": { "amountMinor": 10670, "rateBps": 1100 },
+  "discountMinor": 0,
+  "totalMinor": 107670
+}

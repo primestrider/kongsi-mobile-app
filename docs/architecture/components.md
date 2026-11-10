@@ -30,7 +30,7 @@ Rules:
 | `LoadingState`, `EmptyState`, `ErrorState` | `StateViews.kt` | Whole-area states of a screen or section: spinner, nothing-yet with optional action, failure with Retry |
 | `LoadingOverlay` | `StateViews.kt` | Blocking spinner over its parent `Box` while a critical action runs; swallows touches and is announced only as "Loading" |
 | `Banner`, `BannerVariant` | `Banner.kt` | Inline alert in the page (info / success / warning / error) with optional action and dismiss |
-| `Avatar`, `AvatarGroup`, `AvatarSize`, `AvatarStatus`, `initialsOf` | `Avatar.kt` | Avatar (sizes 32/40/48/64dp, circle or custom shape, presence dot announced to TalkBack). Pass `imageUrl` to load a picture with Coil (`SubcomposeAsyncImage`, clipped to the shape); the initials show while it loads and if it fails. Overlapping group with "+N" overflow (initials only) |
+| `Avatar`, `AvatarGroup`, `AvatarSize`, `AvatarStatus`, `initialsOf` | `Avatar.kt` | Avatar (sizes 32/40/48/64dp, circle or custom shape, presence dot announced to TalkBack). Pass `imageUrl` to load a picture with Coil (`SubcomposeAsyncImage`, clipped to the shape); the initials show while it loads and if it fails. `containerColor` / `contentColor` tint the initials circle (pass a `personTone(index)` to give each person on a bill their own colour, readable in both themes). Overlapping group with "+N" overflow (initials only) |
 | `Skeleton`, `SkeletonText` | `Skeleton.kt` | Pulsing placeholders while content loads; `SkeletonText` is announced as "Loading" |
 | `SectionHeader` | `SectionHeader.kt` | Section title marked as an accessibility heading, with an optional "See all" style action |
 | `InfoRow` | `InfoRow.kt` | Label / value pairs (order id, status, address); long values wrap |

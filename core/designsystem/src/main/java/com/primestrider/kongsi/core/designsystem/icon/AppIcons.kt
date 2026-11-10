@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.compose.ui.unit.dp
 
 /**
- * Icons that `material-icons-core` lacks, drawn from Material Symbols (Apache 2.0) so the app does not need the large
+ * Icons that `material-icons-core` lacks, drawn from Material Symbols and Material Icons (Apache 2.0) so the app does not need the large
  * `material-icons-extended` artifact. Tint them like any `Icons.Filled` icon.
  */
 object AppIcons {
@@ -25,7 +25,32 @@ object AppIcons {
             .clearGroup()
             .build()
     }
+
+    /** A camera (Material Icons `photo_camera`, filled): "Take a photo" of a receipt. */
+    val Camera: ImageVector by lazy { icon24("Camera", CAMERA_PATH) }
+
+    /** A picture (Material Icons `image`, filled): "Choose from gallery". */
+    val Photo: ImageVector by lazy { icon24("Photo", PHOTO_PATH) }
 }
+
+/** A filled icon on the classic Material Icons 24×24 grid. */
+private fun icon24(
+    name: String,
+    path: String,
+): ImageVector =
+    ImageVector
+        .Builder(name = name, defaultWidth = 24.dp, defaultHeight = 24.dp, viewportWidth = 24f, viewportHeight = 24f)
+        .addPath(pathData = addPathNodes(path), fill = SolidColor(Color.Black))
+        .build()
+
+private const val CAMERA_PATH =
+    "M12,12m-3.2,0a3.2,3.2 0,1 1,6.4 0a3.2,3.2 0,1 1,-6.4 0" +
+        "M9,2L7.17,4L4,4c-1.1,0 -2,0.9 -2,2v12c0,1.1 0.9,2 2,2h16c1.1,0 2,-0.9 2,-2L22,6c0,-1.1 -0.9,-2 -2,-2h-3.17L15,2L9,2z" +
+        "M12,17c-2.76,0 -5,-2.24 -5,-5s2.24,-5 5,-5 5,2.24 5,5 -2.24,5 -5,5z"
+
+private const val PHOTO_PATH =
+    "M21,19V5c0,-1.1 -0.9,-2 -2,-2H5c-1.1,0 -2,0.9 -2,2v14c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2z" +
+        "M8.5,13.5l2.5,3.01L14.5,12l4.5,6H5l3.5,-4.5z"
 
 private const val LIST_ADD_PATH =
     "M640-440q17 0 28.5-11.5T680-480q0-17-11.5-28.5T640-520H480q-17 0-28.5 11.5T440-480q0 17 11.5 28.5T48" +

@@ -1,0 +1,13 @@
+{
+  "items": [
+    { "name": "nasi rames", "quantity": 1, "totalMinor": 15000 },
+    { "name": "tempe goreng", "quantity": 1, "totalMinor": 3000 },
+    { "name": "es teh", "quantity": 1, "totalMinor": 4000 },
+    { "name": "kerupuk", "quantity": 1, "totalMinor": 2000 }
+  ],
+  "subtotalMinor": null,
+  "service": null,
+  "tax": null,
+  "discountMinor": 0,
+  "totalMinor": 24000
+}

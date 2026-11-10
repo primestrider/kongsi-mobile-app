@@ -1,0 +1,15 @@
+MINIMARKET SERBA ADA
+JL RAYA BOGOR KM 30
+NPWP 01.234.567.8-901.000
+06.11.2026-20:15  2.0.31  K-01
+INDOMIE GORENG
+  5 x 3.500                  17.500
+AQUA 600ML                    4.000
+ROTI TAWAR GANDUM            18.900
+TEH BOTOL KOTAK
+  3 x 4.200                  12.600
+HARGA JUAL :                 53.000
+TOTAL                        53.000
+TUNAI                       100.000
+KEMBALI                      47.000
+PPN : 5.252   DPP : 47.748

@@ -266,36 +266,36 @@ feature/bill/impl
 - [x] **1. Module skeleton + Home.** `:feature:bill:{api,impl}`, `kongsi.db`, `BillHome` wired into `:app`: empty
       bill history, "New bill" FAB (shows "coming soon" until Task 6), overflow menu → payment accounts, banner
       suggesting an account while none is saved.
-- [ ] **2. SplitCalculator.** Pure function `split(bill): SplitResult` (per-person shares with item, service, tax and
+- [x] **2. SplitCalculator.** Pure function `split(bill): SplitResult` (per-person shares with item, service, tax and
       discount parts, plus warnings), following Split Rules. Tests: the Budi/Ani worked example; equal split; shared
       item among 3 with remainder; item not serviceable; item not taxable; item serviceable but not taxable (its
       service is not taxed); all items tax-free with tax 0; tax above zero with no taxable item (blocking error);
       rate vs. printed amount mismatch warning; bill-level discount; payer included; unassigned item reported; the
       sum of shares always equals the total (property-style loop over random bills and random flags).
-- [ ] **3. Room data layer.** Entities, DAO, DB, mappers, repository, Hilt module. Tests: DAO round-trip incl.
+- [x] **3. Room data layer.** Entities, DAO, DB, mappers, repository, Hilt module. Tests: DAO round-trip incl.
       item shares, cascade delete of a bill.
-- [ ] **4. Bill list screen.** Empty state, list, delete with undo. ViewModel + screen tests.
-- [ ] **5. Shared flow chrome.** Step indicator, running-total bottom bar, person colour/initials avatar, money input
+- [x] **4. Bill list screen.** Empty state, list, delete with undo. ViewModel + screen tests.
+- [x] **5. Shared flow chrome.** Step indicator, running-total bottom bar, person colour/initials avatar, money input
       field (`45.000`, `45rb`, `45k`) in `core:designsystem` if reusable. Tests: money input parsing table, bottom bar
       states (matches / doesn't match / partly assigned).
-- [ ] **6. Review/edit items screen.** Add/edit/delete item with undo, "service" and "tax" toggles inside the item edit
+- [x] **6. Review/edit items screen.** Add/edit/delete item with undo, "service" and "tax" toggles inside the item edit
       sheet with a tag on the row when off, charges with "%" helper, receipt photo sheet, the warnings from Split
       Rules worded per UX Principles and jumping to the item they concern. Tests: validation (empty name, zero
       price), toggling flags updates the warnings, total mismatch warning, tax mismatch warning, blocking error when a
       charge has no eligible item, tapping a warning focuses the item.
-- [ ] **7. Phone numbers.** `PhoneNumbers.normalise` (`08…`, `+62 8…`, `62-8…` → `628…`; strip spaces, `-`, `(`, `)`),
+- [x] **7. Phone numbers.** Done as `IndonesianPhone.international` in `core.util` (next to `local` and `subscriber`, which Profile and e-wallet accounts already used), instead of a separate `PhoneNumbers.normalise` (`08…`, `+62 8…`, `62-8…` → `628…`; strip spaces, `-`, `(`, `)`),
       used by contacts, frequent people and WhatsApp. Tests: normalisation table, invalid input returns null.
-- [ ] **8. ContactsRepository.** `search(query)` and `fromPickerResult(uri)` over `ContactsContract`, mobile numbers
+- [x] **8. ContactsRepository.** `search(query)` and `fromPickerResult(uri)` over `ContactsContract`, mobile numbers
       first, one row per number, WhatsApp badge. Tests: Robolectric `ContentProvider` fixture with several contacts,
       multiple numbers, no number, Indonesian names.
-- [ ] **9. People screen.** Search field with inline contact results (permission granted), picker button
+- [x] **9. People screen.** (Frequent people are saved by "Done" on Summary since Task 11.) Search field with inline contact results (permission granted), picker button
       (denied), typed name, frequent people first, remove; "Me" fixed. Permission asked on first focus via
       `PermissionGate`. Tests: ViewModel with fake `ContactsRepository` for granted/denied, adding the same number twice
       is blocked, duplicate names allowed but distinguished, frequent people saved after a bill is finished.
-- [ ] **10. Assign screen.** Item-first and person-first modes, person chips with avatars, "Everyone", "Split
+- [x] **10. Assign screen.** Item-first and person-first modes, person chips with avatars, "Everyone", "Split
       equally", progress in the bottom bar. Blocks next step while items are unassigned, with a tap-to-fix message.
       Tests: toggling shares in both modes gives the same result, blocking state, progress amount.
-- [ ] **11. Summary screen.** Per-person totals and the "How was this calculated?" breakdown sheet in plain language
+- [x] **11. Summary screen.** (Item lines are each rounded on their own; the difference from the total is a line only above Rp1. "Done" remembers the people and returns Home; Task 16 adds the share actions.) Per-person totals and the "How was this calculated?" breakdown sheet in plain language
       (UX Principles point 3), payer marked, "adds up to the receipt ✓". Tests: breakdown lines for the Budi/Ani
       example, shared-item fraction text, rounding line only when above Rp1, TalkBack content descriptions.
 
@@ -304,29 +304,29 @@ feature/bill/impl
 - [x] **12. Payment accounts** (built early, with Task 1; reorder not yet). Entities, DAO, repository; list screen (reorder, mark default, delete with undo) and
       edit screen (type, provider picker, number, holder name, note) reached from Home's top bar. Tests: validation
       for bank and e-wallet numbers, default selection, deleting an account removes it from bill selections.
-- [ ] **13. Account selection on Summary.** Chips for saved accounts, defaults pre-selected for a new bill, choice
+- [x] **13. Account selection on Summary.** (Stored in `bill_payment_accounts` plus `bills.accountsChosen`, kongsi.db v4; defaults are applied once, as soon as an account exists.) Chips for saved accounts, defaults pre-selected for a new bill, choice
       saved with the bill, "Add account" when none exist. Tests: defaults applied once, choice survives reopening.
-- [ ] **14. BillMessageBuilder.** Pure, locale-aware (en/id), currency formatting from `core.util`. Tests: golden
+- [x] **14. BillMessageBuilder.** (`share/BillMessageBuilder.forPerson`; the breakdown moved to `model/Breakdown.kt` so Summary and the message share it. The group summary comes with Task 16.) Pure, locale-aware (en/id), currency formatting from `core.util`. Tests: golden
       strings for en and id, with zero, one and several accounts (bank and e-wallet), number on its own line,
       shared-item fraction text.
-- [ ] **15. WhatsAppSharer.** `wa.me` link from the number normalised in Task 7, `ACTION_SEND` with WhatsApp →
+- [x] **15. WhatsAppSharer.** (A number that is not an Indonesian mobile is sent through WhatsApp's own chat picker instead of `wa.me`.) `wa.me` link from `IndonesianPhone.international` (Task 7), `ACTION_SEND` with WhatsApp →
       WhatsApp Business → chooser fallback, `<queries>` in manifest. Tests: intent built for each fallback case
       (Robolectric `ShadowPackageManager`).
-- [ ] **16. Share actions on Summary.** "Send" per person, "Send summary to group". A person without a number gets an
+- [x] **16. Share actions on Summary.** (The group summary lists each person's total, the payer last when above zero. "Add number" is a sheet with the People step's contact search, now shared in `ui/people/ContactSearch.kt`.) "Send" per person, "Send summary to group". A person without a number gets an
       "Add number" action that opens the same contact search.
 
 ### Phase 3: Receipt scanning
 
-- [ ] **17. Capture screen.** Take photo (FileProvider + `TakePicture`), pick photo (`PickVisualMedia`), manual entry.
-- [ ] **18. ReceiptParser.** Pure parser + fixture tests for at least 8 real receipt layouts (restaurant with PB1 +
+- [x] **17. Capture screen.** ("New bill" opens `BillCaptureRoute`. Until Task 20 a photo is deleted and the user goes on to type the items, with a "coming soon" note. Photos go to `cache/receipts/` through `ReceiptFileProvider`; Task 19 deletes them after reading.) Take photo (FileProvider + `TakePicture`), pick photo (`PickVisualMedia`), manual entry.
+- [x] **18. ReceiptParser.** (`ocr/ReceiptParser`, with 8 made-up layouts in common Indonesian formats; replace or add real, anonymised receipts as they come.) Pure parser + fixture tests for at least 8 real receipt layouts (restaurant with PB1 +
       service, coffee shop, minimarket, receipt with discount, qty-prefixed lines, `45.000,00` format).
-- [ ] **19. ReceiptScanner.** ML Kit wrapper, add the dependency to `gradle/libs.versions.toml`, loading/error
+- [x] **19. ReceiptScanner.** (`com.google.mlkit:text-recognition` 16.0.1, bundled Latin model. `BillCaptureViewModel` reads the photo with a "Reading the receipt…" state; a photo that cannot be read, or has no item, says so above the choices.) ML Kit wrapper, add the dependency to `gradle/libs.versions.toml`, loading/error
       states ("Couldn't read the receipt, enter it manually"), delete the image after scanning.
-- [ ] **20. Wire capture → OCR → Review.** Prefill the Review screen; a manual test on a device with real receipts.
+- [ ] **20. Wire capture → OCR → Review.** (Code done: a read receipt is saved as a draft (`ParsedReceipt.toDraftBill`) and opened on Review. Still open: the manual test on a device with real receipts.) Prefill the Review screen; a manual test on a device with real receipts.
 
 ### Phase 4: Polish
 
-- [ ] **21.** Rename/duplicate a bill, "mark as paid" per person, release build (`release-build` skill).
+- [ ] **21.** Rename/duplicate a bill, "mark as paid" per person, release build (`release-build` skill). (Done: rename and duplicate from each bill's menu on Home, the copy opening on Review; "Paid" per person on Summary, "1 of 2 paid" on Home, kongsi.db v5. Still open: the release build.)
 - [ ] **22. Usability test.** Run the test described under UX Principles on a release build, write findings to
       `docs/ux/2026-usability-findings.md`, fix every hesitation point, repeat with 2 new testers.
 

@@ -1,18 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Home -->
     <string name="bill_home_title">Kongsi</string>
     <string name="bill_home_new_bill">Bill baru</string>
-    <string name="bill_home_new_bill_soon">Fitur membuat bill segera hadir</string>
     <string name="bill_home_empty_title">Belum ada bill</string>
     <string name="bill_home_empty_body">Bill yang sudah kamu bagi akan muncul di sini.</string>
     <string name="bill_home_steps_title">Cara kerjanya</string>
     <string name="bill_home_step_capture">Foto struknya, atau ketik itemnya sendiri</string>
     <string name="bill_home_step_assign">Tandai siapa pesan apa. Pajak dan servis ikut porsi masing-masing</string>
     <string name="bill_home_step_send">Kirim total tiap teman lewat WhatsApp</string>
+    <string name="bill_home_history_title">Bill kamu</string>
+    <string name="bill_home_untitled">Bill tanpa judul</string>
+    <string name="bill_home_more_cd">Lainnya untuk %1$s</string>
+    <string name="bill_home_rename">Ganti nama</string>
+    <string name="bill_home_duplicate">Duplikat</string>
+    <string name="bill_home_delete">Hapus</string>
+    <string name="bill_home_rename_title">Ganti nama tagihan</string>
+    <string name="bill_home_rename_label">Nama tagihan</string>
+    <!-- "paid" / "lunas" does not change with the number, so no plural is needed. -->
+    <string name="bill_home_paid_count" tools:ignore="PluralsCandidate">%1$d dari %2$d lunas</string>
+    <string name="bill_home_all_paid">Semua lunas</string>
+    <string name="bill_home_deleted">%1$s dihapus</string>
+    <string name="bill_home_deleted_untitled">Bill dihapus</string>
+    <string name="bill_home_delete_failed">Gagal menghapus. Coba lagi.</string>
+    <plurals name="bill_home_people">
+        <item quantity="other">%d orang</item>
+    </plurals>
     <string name="bill_home_account_hint_title">Teman mau transfer ke mana?</string>
     <string name="bill_home_account_hint_body">Tambahkan rekening bank atau e-wallet kamu, nanti otomatis dicantumkan di setiap tagihan.</string>
     <string name="bill_home_account_hint_action">Tambah rekening</string>
+
+    <!-- Bill flow -->
+    <string name="bill_step_items">Item</string>
+    <string name="bill_step_people">Orang</string>
+    <string name="bill_step_assign">Bagi</string>
+    <string name="bill_step_summary">Ringkasan</string>
+    <string name="bill_total_matches_receipt">Sesuai struk</string>
+    <string name="bill_total_receipt_says">Di struk %1$s</string>
+    <string name="bill_total_assigned">%1$s dari %2$s sudah dibagi</string>
+    <string name="bill_total_shares_add_up">Total semua bagian pas %1$s</string>
+    <string name="bill_money_invalid">Ketik nominal, mis. 45.000 atau 45rb</string>
+
+    <!-- Review items -->
+    <string name="bill_review_title_new">Bill baru</string>
+    <string name="bill_review_name">Nama bill</string>
+    <string name="bill_review_name_hint">mis. Makan malam sushi</string>
+    <string name="bill_review_items">Item</string>
+    <string name="bill_review_items_empty">Masukkan isi struk, satu baris per item.</string>
+    <string name="bill_review_add_item">Tambah item</string>
+    <string name="bill_review_charges">Servis, pajak, dan diskon</string>
+    <string name="bill_review_service">Servis</string>
+    <string name="bill_review_tax">Pajak</string>
+    <string name="bill_review_discount">Diskon</string>
+    <string name="bill_review_rate">%</string>
+    <string name="bill_review_receipt_total">Total di struk</string>
+    <string name="bill_review_receipt_total_support">Opsional. Kami cek semuanya pas dengan total ini.</string>
+    <string name="bill_review_next">Lanjut</string>
+    <string name="bill_item_tag_no_tax">tanpa pajak</string>
+    <string name="bill_item_tag_no_service">tanpa servis</string>
+    <string name="bill_item_add_title">Tambah item</string>
+    <string name="bill_item_edit_title">Ubah item</string>
+    <string name="bill_item_name">Nama item</string>
+    <string name="bill_item_name_error">Isi nama item</string>
+    <string name="bill_item_quantity">Jumlah</string>
+    <string name="bill_item_quantity_error">Minimal 1</string>
+    <string name="bill_item_price">Harga total item ini</string>
+    <string name="bill_item_price_error">Isi harga sesuai struk</string>
+    <string name="bill_item_serviceable">Kena servis</string>
+    <string name="bill_item_taxable">Kena pajak</string>
+    <string name="bill_item_save">Simpan</string>
+    <string name="bill_item_delete">Hapus item</string>
+    <string name="bill_item_deleted">%1$s dihapus</string>
+    <string name="bill_save_failed">Gagal menyimpan. Coba lagi.</string>
+    <string name="bill_warning_title_total">Totalnya tidak pas</string>
+    <string name="bill_warning_title_tax">Cek pajaknya</string>
+    <string name="bill_warning_title_service">Cek biaya servisnya</string>
+    <string name="bill_warning_title_discount">Cek diskonnya</string>
+    <string name="bill_item_quantity_name">%1$d× %2$s</string>
+    <string name="bill_warning_receipt_total">Item dan biaya totalnya %1$s, tapi di struk %2$s. Cek lagi harganya.</string>
+    <string name="bill_warning_rate_tax">Pajak di struk %1$s, tapi %2$s dari item jadinya %3$s. Ada item yang bebas pajak?</string>
+    <string name="bill_warning_rate_service">Servis di struk %1$s, tapi %2$s dari item jadinya %3$s. Ada item tanpa servis?</string>
+    <string name="bill_warning_no_taxable">Ada pajak, tapi semua item bebas pajak. Nyalakan pajak di item yang kena.</string>
+    <string name="bill_warning_no_serviceable">Ada biaya servis, tapi tidak ada item yang kena servis. Nyalakan di item yang kena.</string>
+    <string name="bill_warning_no_discountable">Ada diskon, tapi belum ada item untuk dipotong.</string>
+
+    <!-- Capture -->
+    <string name="bill_capture_title">Tagihan baru</string>
+    <string name="bill_capture_take_photo">Foto struk</string>
+    <string name="bill_capture_take_photo_body">Kongsi baca itemnya, kamu tinggal cek.</string>
+    <string name="bill_capture_choose_photo">Pilih dari galeri</string>
+    <string name="bill_capture_choose_photo_body">Foto struk yang sudah ada.</string>
+    <string name="bill_capture_tips">Biar terbaca jelas, taruh struk di tempat datar dan terang, dan pastikan seluruh struk masuk foto.</string>
+    <string name="bill_capture_manual">Ketik sendiri</string>
+    <string name="bill_capture_no_camera">Tidak ada aplikasi kamera. Pilih foto atau ketik tagihannya.</string>
+    <string name="bill_capture_no_gallery">Tidak ada pemilih foto. Foto struknya atau ketik tagihannya.</string>
+    <string name="bill_capture_reading">Membaca struk…</string>
+    <string name="bill_capture_reading_body">Cuma beberapa detik, langsung di HP-mu.</string>
+    <string name="bill_capture_failed_unreadable">Struk tidak terbaca</string>
+    <string name="bill_capture_failed_nothing">Tidak ada item di foto</string>
+    <string name="bill_capture_failed_action">Coba foto yang lebih jelas di tempat terang, atau ketik itemnya sendiri.</string>
+    <!-- People -->
+    <string name="bill_people_title">Siapa saja yang ikut?</string>
+    <string name="bill_people_search">Cari kontak atau ketik nama</string>
+    <string name="bill_people_contacts_reason">Kongsi membaca kontak hanya untuk mencari nomor WhatsApp teman saat kamu mencari.</string>
+    <string name="bill_people_contacts_blocked">Akses kontak mati. Pilih dari kontak di bawah, atau nyalakan di Pengaturan.</string>
+    <string name="bill_people_open_settings">Pengaturan</string>
+    <string name="bill_people_pick_contact">Pilih dari kontak</string>
+    <string name="bill_people_add_typed">Tambah \"%1$s\" tanpa nomor</string>
+    <string name="bill_people_frequent">Dari bill sebelumnya</string>
+    <string name="bill_people_on_bill">Di bill ini</string>
+    <string name="bill_people_me">Kamu</string>
+    <string name="bill_people_me_named">Kamu (%1$s)</string>
+    <string name="bill_people_me_pays">Yang bayar</string>
+    <string name="bill_people_no_number">Tanpa nomor</string>
+    <string name="bill_people_whatsapp">WhatsApp</string>
+    <string name="bill_people_remove_cd">Hapus %1$s</string>
+    <string name="bill_people_already_added">%1$s sudah ada di bill ini</string>
+    <string name="bill_people_empty">Tambahkan teman yang ikut patungan.</string>
+
+    <!-- Assign -->
+    <string name="bill_assign_title">Siapa pesan apa?</string>
+    <string name="bill_assign_by_item">Per item</string>
+    <string name="bill_assign_by_person">Per orang</string>
+    <string name="bill_assign_everyone">Semua</string>
+    <string name="bill_assign_split_equally">Bagi rata semuanya</string>
+    <string name="bill_assign_split_done">Semua item sekarang dibagi rata</string>
+    <plurals name="bill_assign_unassigned">
+        <item quantity="other">%d item belum dibagi</item>
+    </plurals>
+    <string name="bill_assign_unassigned_action">Ketuk untuk membagi</string>
+    <string name="bill_assign_person_question">%1$s pesan apa saja?</string>
+    <string name="bill_assign_me_question">Kamu pesan apa saja?</string>
+    <string name="bill_assign_shared_with">Bareng %1$s</string>
+    <string name="bill_assign_nobody">Belum ada</string>
+    <!-- Summary -->
+    <string name="bill_summary_title">Siapa bayar berapa</string>
+    <string name="bill_summary_hint">Ketuk nama untuk lihat cara hitung bagiannya.</string>
+    <string name="bill_summary_nothing">Tidak pesan apa-apa</string>
+    <string name="bill_summary_owes_cd">%1$s harus bayar %2$s</string>
+    <string name="bill_summary_my_share_cd">Kamu yang bayar tagihan. Bagianmu %1$s</string>
+    <string name="bill_summary_done">Selesai</string>
+    <string name="bill_summary_accounts">Transfer ke</string>
+    <string name="bill_summary_accounts_support">Rekening yang dicentang masuk ke pesan WhatsApp.</string>
+    <string name="bill_summary_account_chip">%1$s · %2$s</string>
+    <string name="bill_summary_send">Kirim</string>
+    <string name="bill_summary_paid">Lunas</string>
+    <string name="bill_summary_paid_cd">%1$s sudah bayar</string>
+    <string name="bill_summary_send_cd">Kirim bagian %1$s lewat WhatsApp</string>
+    <string name="bill_summary_send_group">Kirim ringkasan ke grup</string>
+    <string name="bill_summary_add_number">Tambah nomor</string>
+    <string name="bill_summary_add_number_cd">Tambah nomor %1$s</string>
+    <string name="bill_summary_number_title">Nomor %1$s</string>
+    <string name="bill_summary_number_search">Cari kontak atau ketik nomor</string>
+    <string name="bill_summary_use_number">Pakai %1$s</string>
+    <string name="bill_summary_number_taken">Nomor ini sudah dipakai %1$s</string>
+    <string name="bill_money_spoken">%1$s rupiah</string>
+    <string name="bill_breakdown_title">Gimana hitungannya?</string>
+    <string name="bill_breakdown_shared">%1$s (bareng %2$s, %3$s)</string>
+    <string name="bill_breakdown_service_rate">Servis %1$s dari pesananmu</string>
+    <string name="bill_breakdown_service">Servis untuk pesananmu</string>
+    <string name="bill_breakdown_tax_rate_service">Pajak %1$s dari pesananmu + servis</string>
+    <string name="bill_breakdown_tax_rate">Pajak %1$s dari pesananmu</string>
+    <string name="bill_breakdown_tax_service">Pajak untuk pesananmu + servis</string>
+    <string name="bill_breakdown_tax">Pajak untuk pesananmu</string>
+    <string name="bill_breakdown_discount">Diskon, sesuai pesananmu</string>
+    <string name="bill_breakdown_rounding_added">Pembulatan %1$s ditambahkan</string>
+    <string name="bill_breakdown_rounding_taken">Pembulatan %1$s dikurangi</string>
 
     <!-- Payment accounts list -->
     <string name="bill_accounts_title">Rekening &amp; e-wallet</string>

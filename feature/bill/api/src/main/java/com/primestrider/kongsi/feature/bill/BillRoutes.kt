@@ -4,6 +4,34 @@ import kotlinx.serialization.Serializable
 
 // Routes of the bill feature. Home itself is the app's HomeRoute; the bill feature renders it (BillHome).
 
+/** How a new bill starts: a photo of the receipt (camera or gallery), or typing it in. */
+@Serializable
+data object BillCaptureRoute
+
+/** Review, the first step of a bill: its items and charges. [billId] 0 starts a new bill. */
+@Serializable
+data class BillEditRoute(
+    val billId: Long = 0,
+)
+
+/** People, the second step: who was there. */
+@Serializable
+data class BillPeopleRoute(
+    val billId: Long,
+)
+
+/** Assign, the third step: who had which item. */
+@Serializable
+data class BillAssignRoute(
+    val billId: Long,
+)
+
+/** Summary, the last step: what each person owes and how it was worked out. */
+@Serializable
+data class BillSummaryRoute(
+    val billId: Long,
+)
+
 /** The bill creator's own bank accounts and e-wallets, shown in the WhatsApp message. */
 @Serializable
 data object PaymentAccountsRoute

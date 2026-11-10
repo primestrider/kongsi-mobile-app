@@ -1,0 +1,9 @@
+WARUNG BAKMI JAYA
+Bakmi Ayam Jamur             32.000
+Pangsit Goreng               18.000
+  Disc 10%                   -1.800
+Es Jeruk                     12.000
+Subtotal                     60.200
+Diskon Member                -6.020
+PB1 10%                       5.418
+Total                        59.598

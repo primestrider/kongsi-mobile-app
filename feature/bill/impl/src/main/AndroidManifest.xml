@@ -6,4 +6,25 @@
          contacts, or from Profile > Permissions; the system contact picker works without it. -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- Sending a bill: WhatsApp, then WhatsApp Business, must be visible to check which one is installed
+         (WhatsAppSharer). -->
+    <queries>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+    </queries>
+
+    <application>
+        <!-- Lets the phone's camera app write a receipt photo into our cache (TakePicture needs no CAMERA permission).
+             A subclass of FileProvider, so it cannot clash with another module's provider in the merged manifest. -->
+        <provider
+            android:name="com.primestrider.kongsi.feature.bill.ui.capture.ReceiptFileProvider"
+            android:authorities="${applicationId}.receipts"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/receipt_paths" />
+        </provider>
+    </application>
+
 </manifest>
