@@ -1,5 +1,7 @@
 package com.primestrider.kongsi.feature.bill.ui.summary
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -55,7 +61,12 @@ import com.primestrider.kongsi.feature.bill.ui.flow.PersonAvatar
 import com.primestrider.kongsi.feature.bill.ui.flow.RunningTotal
 import com.primestrider.kongsi.feature.bill.ui.flow.RunningTotalBar
 import com.primestrider.kongsi.feature.bill.ui.flow.StepIndicator
+import com.primestrider.kongsi.feature.bill.ui.people.ChoiceRow
+import com.primestrider.kongsi.feature.bill.ui.people.ContactSearchField
+import com.primestrider.kongsi.feature.bill.ui.people.NameAndNumber
 import com.primestrider.kongsi.feature.bill.ui.people.PersonRow
+import com.primestrider.kongsi.feature.bill.ui.people.PickPhoneNumber
+import com.primestrider.kongsi.feature.bill.ui.people.shownNumber
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.abs
@@ -68,18 +79,29 @@ data class BillSummaryActions(
     val onCloseBreakdown: () -> Unit,
     val onToggleAccount: (Long) -> Unit,
     val onAddAccount: () -> Unit,
+    /** Sends a person their message, or the group its summary when the id is null. */
+    val onSend: (Long?) -> Unit,
+    val onAddNumber: (Long) -> Unit,
+    val onCloseNumber: () -> Unit,
+    val onNumberQueryChange: (String) -> Unit,
+    val onContactsAllowed: (Boolean) -> Unit,
+    val onPickNumber: (NumberOption) -> Unit,
+    val onNumberPickerResult: (Uri?) -> Unit,
     val onDone: () -> Unit,
 )
 
 /**
- * Summary: what everyone owes, the payer first and marked. Tapping a person opens "How was this calculated?"; the bar
- * confirms that the shares add up to the bill total.
+ * Summary: what everyone owes, the payer first and marked. Tapping a person opens "How was this calculated?"; each
+ * person can be sent their part on WhatsApp, or given a number first, and the group its summary. The bar confirms that
+ * the shares add up to the bill total. [numberQuery] is the "Add number" search text, read straight from the ViewModel.
  */
 @Composable
 fun BillSummaryScreen(
     state: BillSummaryUiState,
+    numberQuery: String,
     actions: BillSummaryActions,
 ) {
+    val picker = rememberLauncherForActivityResult(PickPhoneNumber) { uri -> actions.onNumberPickerResult(uri) }
     AppScaffold(
         title = stringResource(R.string.bill_summary_title),
         onBack = actions.onBack,
@@ -108,7 +130,24 @@ fun BillSummaryScreen(
                 )
             }
             items(state.people, key = { it.row.person.id }) { person ->
-                PersonCard(person, onClick = { actions.onOpenBreakdown(person.row.person.id) })
+                val id = person.row.person.id
+                PersonCard(
+                    person = person,
+                    canSend = state.complete,
+                    onOpen = { actions.onOpenBreakdown(id) },
+                    onSend = { actions.onSend(id) },
+                    onAddNumber = { actions.onAddNumber(id) },
+                )
+            }
+            item(key = "group") {
+                AppButton(
+                    text = stringResource(R.string.bill_summary_send_group),
+                    onClick = { actions.onSend(null) },
+                    variant = ButtonVariant.OUTLINED,
+                    enabled = state.complete,
+                    fullWidth = true,
+                    modifier = Modifier.padding(horizontal = Spacing.s4, vertical = Spacing.s2),
+                )
             }
             item(key = "accounts") { Accounts(state.accounts, state.selectedAccountIds, actions) }
         }
@@ -119,7 +158,56 @@ fun BillSummaryScreen(
             Breakdown(person, state.people.associate { it.row.person.id to it.row })
         }
     }
+
+    state.people.firstOrNull { it.row.person.id == state.numberForId }?.let { person ->
+        AppBottomSheet(
+            onDismiss = actions.onCloseNumber,
+            title = stringResource(R.string.bill_summary_number_title, person.row.label),
+        ) {
+            NumberSearch(state.numberOptions, numberQuery, actions, onPickContact = { picker.launch(Unit) })
+        }
+    }
 }
+
+/** "Add number": the contact search of the People step, offering numbers only, with the system picker below. */
+@Composable
+private fun NumberSearch(
+    options: List<NumberOption>,
+    query: String,
+    actions: BillSummaryActions,
+    onPickContact: () -> Unit,
+) {
+    ContactSearchField(
+        query = query,
+        onQueryChange = actions.onNumberQueryChange,
+        placeholder = stringResource(R.string.bill_summary_number_search),
+        onContactsAllowed = actions.onContactsAllowed,
+    )
+    Column {
+        options.take(MAX_NUMBER_OPTIONS).forEach { option ->
+            ChoiceRow(onClick = { actions.onPickNumber(option) }, horizontalPadding = 0.dp) {
+                if (option.name == null) {
+                    Icon(Icons.Filled.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    Text(
+                        stringResource(R.string.bill_summary_use_number, shownNumber(option.phone)),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                } else {
+                    NameAndNumber(option.name, shownNumber(option.phone), option.whatsApp)
+                }
+            }
+        }
+    }
+    AppButton(
+        text = stringResource(R.string.bill_people_pick_contact),
+        onClick = onPickContact,
+        variant = ButtonVariant.SECONDARY,
+        leadingIcon = Icons.Filled.Person,
+    )
+}
+
+/** The sheet does not scroll, so it shows the best few matches; typing more narrows them down. */
+private const val MAX_NUMBER_OPTIONS = 5
 
 /** The name a person goes by here: "You (Ricky)" for the payer, otherwise their label. */
 @Composable
@@ -141,10 +229,17 @@ private fun spokenMoney(
     locale: Locale,
 ): String = stringResource(R.string.bill_money_spoken, NumberFormat.getIntegerInstance(locale).format(minor))
 
+/**
+ * A person and what they owe; tapping it opens their breakdown. Everyone but the payer can be sent their part, and
+ * someone without a number can be given one.
+ */
 @Composable
 private fun PersonCard(
     person: SummaryPerson,
-    onClick: () -> Unit,
+    canSend: Boolean,
+    onOpen: () -> Unit,
+    onSend: () -> Unit,
+    onAddNumber: () -> Unit,
 ) {
     val locale = currentLocale()
     val row = person.row
@@ -159,45 +254,81 @@ private fun PersonCard(
         shape = RoundedCornerShape(Radii.xl),
         color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier =
-            Modifier
-                .padding(horizontal = Spacing.s4)
-                .fillMaxWidth()
-                // One sentence for TalkBack ("Budi owes 41,580 rupiah") instead of the name, items and amount apart.
-                .clearAndSetSemantics {
-                    contentDescription = description
-                    role = Role.Button
-                    onClick(label = sheetLabel) {
-                        onClick()
-                        true
-                    }
-                }.clickable(onClick = onClick),
+        modifier = Modifier.padding(horizontal = Spacing.s4).fillMaxWidth(),
     ) {
-        Row(
-            Modifier.heightIn(min = 64.dp).padding(Spacing.s3),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Spacing.s3),
-        ) {
-            PersonAvatar(row.person.name.ifBlank { row.title() }, row.index)
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Spacing.s0_5)) {
-                Text(row.title(), style = MaterialTheme.typography.titleMedium)
-                Text(
-                    when {
-                        row.isMe -> stringResource(R.string.bill_people_me_pays)
-                        else ->
-                            person.lines
-                                .filterIsInstance<BreakdownLine.Item>()
-                                .joinToString(", ") { it.name }
-                                .ifEmpty { stringResource(R.string.bill_summary_nothing) }
-                    },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
+        Column {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    // One sentence for TalkBack ("Budi owes 41,580 rupiah") instead of the name, items and amount apart.
+                    .clearAndSetSemantics {
+                        contentDescription = description
+                        role = Role.Button
+                        onClick(label = sheetLabel) {
+                            onOpen()
+                            true
+                        }
+                    }.clickable(onClick = onOpen)
+                    .heightIn(min = 64.dp)
+                    .padding(Spacing.s3),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacing.s3),
+            ) {
+                PersonAvatar(row.person.name.ifBlank { row.title() }, row.index)
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Spacing.s0_5)) {
+                    Text(row.title(), style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        when {
+                            row.isMe -> stringResource(R.string.bill_people_me_pays)
+                            else ->
+                                person.lines
+                                    .filterIsInstance<BreakdownLine.Item>()
+                                    .joinToString(", ") { it.name }
+                                    .ifEmpty { stringResource(R.string.bill_summary_nothing) }
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                // Never truncated, also at large font sizes: the amount is the point of this screen.
+                Text(formatMoney(person.totalMinor, DEFAULT_CURRENCY, locale), style = MaterialTheme.typography.titleMedium)
             }
-            // Never truncated, also at large font sizes: the amount is the point of this screen.
-            Text(formatMoney(person.totalMinor, DEFAULT_CURRENCY, locale), style = MaterialTheme.typography.titleMedium)
+            if (!row.isMe) SendActions(row, canSend, onSend, onAddNumber)
+        }
+    }
+}
+
+/** "Send" (to their chat, or to a chat picked in WhatsApp without a number) and "Add number" when they have none. */
+@Composable
+private fun SendActions(
+    row: PersonRow,
+    canSend: Boolean,
+    onSend: () -> Unit,
+    onAddNumber: () -> Unit,
+) {
+    val sendDescription = stringResource(R.string.bill_summary_send_cd, row.label)
+    val addDescription = stringResource(R.string.bill_summary_add_number_cd, row.label)
+    FlowRow(
+        Modifier.padding(start = Spacing.s3, end = Spacing.s3, bottom = Spacing.s3),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.s2),
+        verticalArrangement = Arrangement.spacedBy(Spacing.s2),
+    ) {
+        AppButton(
+            text = stringResource(R.string.bill_summary_send),
+            onClick = onSend,
+            variant = ButtonVariant.SECONDARY,
+            enabled = canSend,
+            modifier = Modifier.semantics { contentDescription = sendDescription },
+        )
+        if (row.person.phone == null) {
+            AppButton(
+                text = stringResource(R.string.bill_summary_add_number),
+                onClick = onAddNumber,
+                variant = ButtonVariant.TEXT,
+                modifier = Modifier.semantics { contentDescription = addDescription },
+            )
         }
     }
 }
@@ -375,22 +506,41 @@ private val previewState =
         selectedAccountIds = setOf(1),
     )
 
-private val previewActions = BillSummaryActions({}, {}, {}, {}, {}, {}, {})
+private val previewActions = BillSummaryActions({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 
 @ThemePreviews
 @Composable
 private fun BillSummaryScreenPreview() {
-    PreviewTheme { BillSummaryScreen(previewState, previewActions) }
+    PreviewTheme { BillSummaryScreen(previewState, "", previewActions) }
 }
 
 @ThemePreviews
 @Composable
 private fun BillSummaryNoAccountsPreview() {
-    PreviewTheme { BillSummaryScreen(previewState.copy(accounts = emptyList(), selectedAccountIds = emptySet()), previewActions) }
+    PreviewTheme { BillSummaryScreen(previewState.copy(accounts = emptyList(), selectedAccountIds = emptySet()), "", previewActions) }
+}
+
+@ThemePreviews
+@Composable
+private fun BillSummaryAddNumberPreview() {
+    PreviewTheme {
+        BillSummaryScreen(
+            previewState.copy(
+                numberForId = 3,
+                numberOptions =
+                    listOf(
+                        NumberOption(null, "6285711112222"),
+                        NumberOption("Ani Lestari", "6285711112222", whatsApp = true),
+                    ),
+            ),
+            "0857 1111 2222",
+            previewActions,
+        )
+    }
 }
 
 @ThemePreviews
 @Composable
 private fun BillSummaryBreakdownPreview() {
-    PreviewTheme { BillSummaryScreen(previewState.copy(openPersonId = 2), previewActions) }
+    PreviewTheme { BillSummaryScreen(previewState.copy(openPersonId = 2), "", previewActions) }
 }

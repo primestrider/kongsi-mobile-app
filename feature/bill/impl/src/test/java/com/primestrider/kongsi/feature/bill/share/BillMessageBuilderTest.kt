@@ -145,6 +145,43 @@ class BillMessageBuilderTest {
     }
 
     @Test
+    fun group_summary_lists_what_everyone_owes_in_indonesian() {
+        assertEquals(
+            """
+            Ini pembagian tagihan "Makan Malam Sushi" (6 Nov 2026):
+            - Budi: Rp41.580
+            - Ani: Rp110.880
+            *Total: Rp152.460*
+
+            Bisa transfer ke:
+            BCA a.n. Ricky
+            1234567890
+
+            Dikirim dari Kongsi
+            """.trimIndent(),
+            BillMessageBuilder.forGroup(dinner, listOf(bca), indonesian, utc),
+        )
+    }
+
+    @Test
+    fun group_summary_names_the_payer_last_when_they_had_something() {
+        val bill = dinner.copy(title = "", items = dinner.items.map { if (it.id == 10L) it.copy(sharedBy = setOf(me)) else it })
+
+        assertEquals(
+            """
+            Here's the split for the bill (Nov 6, 2026):
+            - Budi: Rp6,930
+            - Ani: Rp110,880
+            - Ricky (paid the bill): Rp34,650
+            *Total: Rp152,460*
+
+            Sent from Kongsi
+            """.trimIndent(),
+            BillMessageBuilder.forGroup(bill, emptyList(), english, utc),
+        )
+    }
+
+    @Test
     fun charges_without_a_rate_a_discount_and_no_title_are_worded_plainly() {
         // Budi's items are Rp36.000 of Rp132.000, so his part of each charge is 36/132.
         val bill = dinner.copy(title = "", service = BillCharge(), tax = BillCharge(13_200), discountMinor = 6_600)

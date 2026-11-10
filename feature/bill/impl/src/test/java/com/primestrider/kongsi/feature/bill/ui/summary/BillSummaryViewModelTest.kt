@@ -1,9 +1,14 @@
 package com.primestrider.kongsi.feature.bill.ui.summary
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.primestrider.kongsi.core.designsystem.component.Messenger
+import com.primestrider.kongsi.core.designsystem.component.UiText
+import com.primestrider.kongsi.feature.bill.contacts.ContactMatch
+import com.primestrider.kongsi.feature.bill.data.FrequentPerson
+import com.primestrider.kongsi.feature.bill.impl.R
 import com.primestrider.kongsi.feature.bill.model.Bill
 import com.primestrider.kongsi.feature.bill.model.BillCharge
 import com.primestrider.kongsi.feature.bill.model.BillItem
@@ -14,12 +19,15 @@ import com.primestrider.kongsi.feature.bill.model.Person
 import com.primestrider.kongsi.feature.bill.model.SplitCalculator
 import com.primestrider.kongsi.feature.bill.model.breakdownOf
 import com.primestrider.kongsi.feature.bill.model.fractionText
+import com.primestrider.kongsi.feature.bill.share.BillMessageBuilder
 import com.primestrider.kongsi.feature.bill.ui.FakeBillRepository
+import com.primestrider.kongsi.feature.bill.ui.FakeContactsRepository
 import com.primestrider.kongsi.feature.bill.ui.FakeFrequentPeopleRepository
 import com.primestrider.kongsi.feature.bill.ui.FakePaymentAccountRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -36,6 +44,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.util.Locale
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [36])
@@ -55,7 +64,7 @@ class BillSummaryViewModelTest {
             title = "Dinner",
             createdAt = 1,
             payerPersonId = me,
-            people = listOf(Person(me, "Ricky"), Person(budi, "Budi", "6281234567890"), Person(ani, "Ani")),
+            people = listOf(Person(me, "Ricky"), Person(budi, "Budi", "6281234567890"), Person(ani, "Ani Lestari")),
             items =
                 listOf(
                     BillItem(10, "Nasi Goreng", 30_000, sharedBy = setOf(budi)),
@@ -72,6 +81,10 @@ class BillSummaryViewModelTest {
     private val bca = PaymentAccount(1, PaymentAccountType.BANK, "BCA", "1234567890", "Ricky", isDefault = true)
     private val gopay = PaymentAccount(2, PaymentAccountType.EWALLET, "GoPay", "081234567890", "Ricky", isDefault = false)
     private val accounts = FakePaymentAccountRepository(listOf(bca, gopay))
+    private val messenger = Messenger()
+    private val aniContact =
+        ContactMatch(5, "Ani Lestari", "0857-1111-2222", "6285711112222", mobile = true, photoUri = null, hasWhatsApp = true)
+    private val contacts = FakeContactsRepository(listOf(aniContact))
 
     @Before
     fun setUp() = Dispatchers.setMain(main)
@@ -89,7 +102,8 @@ class BillSummaryViewModelTest {
             repository,
             frequent,
             accounts,
-            Messenger(),
+            contacts,
+            messenger,
             this,
         ).also {
             created += it
@@ -209,7 +223,7 @@ class BillSummaryViewModelTest {
             viewModel.finish()
             advanceUntilIdle()
 
-            assertEquals(listOf(listOf("Budi", "Ani")), frequent.remembered.map { people -> people.map { it.name } })
+            assertEquals(listOf(listOf("Budi", "Ani Lestari")), frequent.remembered.map { people -> people.map { it.name } })
         }
 
     @Test
@@ -256,6 +270,116 @@ class BillSummaryViewModelTest {
 
             assertEquals(setOf(added), storedAccounts())
             assertEquals(setOf(added), viewModel.state.value.selectedAccountIds)
+        }
+
+    @Test
+    fun sending_to_someone_gives_their_message_and_number() =
+        runTest(main) {
+            val viewModel = viewModel()
+            advanceUntilIdle()
+            val sent = mutableListOf<Pair<String, String?>>()
+
+            viewModel.send(budi, Locale.US) { message, phone -> sent += message to phone }
+            advanceUntilIdle()
+
+            val expected = BillMessageBuilder.forPerson(requireNotNull(bills.get(example.id)), budi, listOf(bca), Locale.US)
+            assertEquals(listOf(expected to "6281234567890"), sent)
+        }
+
+    @Test
+    fun sending_to_the_group_gives_the_summary_without_a_number() =
+        runTest(main) {
+            val viewModel = viewModel()
+            advanceUntilIdle()
+            val sent = mutableListOf<Pair<String, String?>>()
+
+            viewModel.send(null, Locale.US) { message, phone -> sent += message to phone }
+            advanceUntilIdle()
+
+            val expected = BillMessageBuilder.forGroup(requireNotNull(bills.get(example.id)), listOf(bca), Locale.US)
+            assertEquals(listOf(expected to null), sent)
+        }
+
+    @Test
+    fun add_number_searches_for_the_person_by_name() =
+        runTest(main) {
+            frequent.stored =
+                listOf(
+                    FrequentPerson(1, "Ani Lestari", "6289999888877", useCount = 2),
+                    FrequentPerson(2, "Ani Lestari", null, useCount = 1),
+                )
+            val viewModel = viewModel()
+            viewModel.onContactsAllowed(true)
+            advanceUntilIdle()
+
+            viewModel.onAddNumber(ani)
+            advanceUntilIdle()
+
+            assertEquals(ani, viewModel.state.value.numberForId)
+            assertEquals("Ani Lestari", viewModel.numberQuery)
+            // Only people with a number are offered: remembered first, then the address book.
+            assertEquals(
+                listOf(NumberOption("Ani Lestari", "6289999888877"), NumberOption("Ani Lestari", "6285711112222", whatsApp = true)),
+                viewModel.state.value.numberOptions,
+            )
+        }
+
+    @Test
+    fun a_typed_mobile_number_is_offered_first() =
+        runTest(main) {
+            val viewModel = viewModel()
+            advanceUntilIdle()
+            viewModel.onAddNumber(ani)
+            viewModel.onNumberQueryChange("0812 9999 0000")
+            advanceUntilIdle()
+
+            assertEquals(
+                NumberOption(null, "6281299990000"),
+                viewModel.state.value.numberOptions
+                    .first(),
+            )
+        }
+
+    @Test
+    fun picking_a_number_saves_it_on_the_person_and_closes_the_search() =
+        runTest(main) {
+            val viewModel = viewModel()
+            advanceUntilIdle()
+            viewModel.onAddNumber(ani)
+            advanceUntilIdle()
+
+            viewModel.pickNumber(NumberOption("Ani Lestari", "6285711112222"))
+            advanceUntilIdle()
+
+            assertEquals("6285711112222", requireNotNull(bills.get(example.id)).people.single { it.id == ani }.phone)
+            assertNull(viewModel.state.value.numberForId)
+        }
+
+    @Test
+    fun a_number_already_on_the_bill_is_not_given_to_someone_else() =
+        runTest(main) {
+            val viewModel = viewModel()
+            advanceUntilIdle()
+            viewModel.onAddNumber(ani)
+
+            viewModel.pickNumber(NumberOption(null, "081234567890"))
+            advanceUntilIdle()
+
+            assertNull(requireNotNull(bills.get(example.id)).people.single { it.id == ani }.phone)
+            assertEquals(UiText.Resource(R.string.bill_summary_number_taken, listOf("Budi")), messenger.messages.first().text)
+        }
+
+    @Test
+    fun the_system_picker_fills_in_the_number() =
+        runTest(main) {
+            val viewModel = viewModel()
+            advanceUntilIdle()
+            viewModel.onAddNumber(ani)
+
+            viewModel.onNumberPickerResult(Uri.parse("content://com.android.contacts/data/phones/5"))
+            advanceUntilIdle()
+
+            assertEquals("6285711112222", requireNotNull(bills.get(example.id)).people.single { it.id == ani }.phone)
         }
 
     @Test

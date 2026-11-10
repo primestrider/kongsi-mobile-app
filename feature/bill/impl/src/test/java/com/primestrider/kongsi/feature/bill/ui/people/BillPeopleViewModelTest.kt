@@ -9,13 +9,13 @@ import com.primestrider.kongsi.core.datastore.UserProfileRepository
 import com.primestrider.kongsi.core.designsystem.component.Messenger
 import com.primestrider.kongsi.core.designsystem.component.UiText
 import com.primestrider.kongsi.feature.bill.contacts.ContactMatch
-import com.primestrider.kongsi.feature.bill.contacts.ContactsRepository
 import com.primestrider.kongsi.feature.bill.data.FrequentPerson
 import com.primestrider.kongsi.feature.bill.impl.R
 import com.primestrider.kongsi.feature.bill.model.Bill
 import com.primestrider.kongsi.feature.bill.model.BillItem
 import com.primestrider.kongsi.feature.bill.model.Person
 import com.primestrider.kongsi.feature.bill.ui.FakeBillRepository
+import com.primestrider.kongsi.feature.bill.ui.FakeContactsRepository
 import com.primestrider.kongsi.feature.bill.ui.FakeFrequentPeopleRepository
 import com.primestrider.kongsi.testing.InMemoryPreferencesDataStore
 import kotlinx.coroutines.Dispatchers
@@ -66,24 +66,8 @@ class BillPeopleViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private class FakeContacts(
-        private val matches: List<ContactMatch>,
-    ) : ContactsRepository {
-        val searched = mutableListOf<String>()
-
-        override suspend fun search(
-            query: String,
-            limit: Int,
-        ): List<ContactMatch> {
-            searched += query
-            return matches.filter { it.name.contains(query, ignoreCase = true) }
-        }
-
-        override suspend fun fromPickerResult(uri: Uri): ContactMatch? = matches.firstOrNull()
-    }
-
     private val bills = FakeBillRepository(listOf(draft))
-    private val contacts = FakeContacts(listOf(budiContact))
+    private val contacts = FakeContactsRepository(listOf(budiContact))
     private val frequent = FakeFrequentPeopleRepository()
 
     private suspend fun TestScope.viewModel(profile: UserProfile = UserProfile("Ricky", "081111222233")): BillPeopleViewModel {

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -14,6 +15,7 @@ import androidx.navigation.toRoute
 import com.primestrider.kongsi.core.designsystem.component.LocalMessenger
 import com.primestrider.kongsi.core.designsystem.component.NavBarAction
 import com.primestrider.kongsi.core.designsystem.icon.AppIcons
+import com.primestrider.kongsi.core.util.currentLocale
 import com.primestrider.kongsi.feature.bill.BillAssignRoute
 import com.primestrider.kongsi.feature.bill.BillEditRoute
 import com.primestrider.kongsi.feature.bill.BillPeopleRoute
@@ -21,6 +23,7 @@ import com.primestrider.kongsi.feature.bill.BillSummaryRoute
 import com.primestrider.kongsi.feature.bill.PaymentAccountEditRoute
 import com.primestrider.kongsi.feature.bill.PaymentAccountsRoute
 import com.primestrider.kongsi.feature.bill.impl.R
+import com.primestrider.kongsi.feature.bill.share.WhatsAppSharer
 import com.primestrider.kongsi.feature.bill.ui.accounts.PaymentAccountEditActions
 import com.primestrider.kongsi.feature.bill.ui.accounts.PaymentAccountEditScreen
 import com.primestrider.kongsi.feature.bill.ui.accounts.PaymentAccountEditViewModel
@@ -142,8 +145,11 @@ fun NavGraphBuilder.billDestinations(navController: NavController) {
     composable<BillSummaryRoute> {
         val viewModel: BillSummaryViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
+        val context = LocalContext.current
+        val locale = currentLocale()
         BillSummaryScreen(
             state = state,
+            numberQuery = viewModel.numberQuery,
             actions =
                 BillSummaryActions(
                     onBack = { navController.popBackStack() },
@@ -159,6 +165,15 @@ fun NavGraphBuilder.billDestinations(navController: NavController) {
                     onCloseBreakdown = viewModel::onCloseBreakdown,
                     onToggleAccount = viewModel::toggleAccount,
                     onAddAccount = { navController.navigate(PaymentAccountEditRoute()) },
+                    onSend = { personId ->
+                        viewModel.send(personId, locale) { message, phone -> WhatsAppSharer.share(context, message, phone) }
+                    },
+                    onAddNumber = viewModel::onAddNumber,
+                    onCloseNumber = viewModel::onCloseNumber,
+                    onNumberQueryChange = viewModel::onNumberQueryChange,
+                    onContactsAllowed = viewModel::onContactsAllowed,
+                    onPickNumber = viewModel::pickNumber,
+                    onNumberPickerResult = viewModel::onNumberPickerResult,
                     onDone = {
                         viewModel.finish()
                         // Back to Home: the whole flow of this bill leaves the back stack.

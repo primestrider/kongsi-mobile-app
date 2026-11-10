@@ -122,6 +122,15 @@
     <string name="bill_summary_accounts">Friends transfer to</string>
     <string name="bill_summary_accounts_support">Ticked accounts go in the WhatsApp message.</string>
     <string name="bill_summary_account_chip">%1$s · %2$s</string>
+    <string name="bill_summary_send">Send</string>
+    <string name="bill_summary_send_cd">Send %1$s their part on WhatsApp</string>
+    <string name="bill_summary_send_group">Send summary to group</string>
+    <string name="bill_summary_add_number">Add number</string>
+    <string name="bill_summary_add_number_cd">Add %1$s\'s number</string>
+    <string name="bill_summary_number_title">%1$s\'s number</string>
+    <string name="bill_summary_number_search">Search contacts or type a number</string>
+    <string name="bill_summary_use_number">Use %1$s</string>
+    <string name="bill_summary_number_taken">%1$s already has this number</string>
     <string name="bill_money_spoken">%1$s rupiah</string>
     <string name="bill_breakdown_title">How was this calculated?</string>
     <string name="bill_breakdown_shared">%1$s (shared with %2$s, %3$s)</string>

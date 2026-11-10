@@ -312,7 +312,7 @@ feature/bill/impl
 - [x] **15. WhatsAppSharer.** (A number that is not an Indonesian mobile is sent through WhatsApp's own chat picker instead of `wa.me`.) `wa.me` link from `IndonesianPhone.international` (Task 7), `ACTION_SEND` with WhatsApp →
       WhatsApp Business → chooser fallback, `<queries>` in manifest. Tests: intent built for each fallback case
       (Robolectric `ShadowPackageManager`).
-- [ ] **16. Share actions on Summary.** "Send" per person, "Send summary to group". A person without a number gets an
+- [x] **16. Share actions on Summary.** (The group summary lists each person's total, the payer last when above zero. "Add number" is a sheet with the People step's contact search, now shared in `ui/people/ContactSearch.kt`.) "Send" per person, "Send summary to group". A person without a number gets an
       "Add number" action that opens the same contact search.
 
 ### Phase 3: Receipt scanning
